@@ -1,0 +1,51 @@
+# ---------------------------------------------------------------------------
+# Dataset — MIT-Adobe FiveK, ~50 GB on local disk. NEVER commit this.
+# The pipeline treats it as read-only input; nothing here belongs in the repo.
+# ---------------------------------------------------------------------------
+Dataset/
+
+# --- Secrets and local configuration ---------------------------------------
+# .env holds real credentials; .env.example is the documented template and
+# must stay tracked (see the negation below).
+.env
+.env.*
+!.env.example
+
+# --- Python -----------------------------------------------------------------
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- .NET -------------------------------------------------------------------
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+TestResults/
+[Bb]uild[Ll]og.*
+
+# --- Node / Angular ---------------------------------------------------------
+node_modules/
+dist/
+.angular/
+*.tsbuildinfo
+coverage/
+
+# --- Editors and tooling ----------------------------------------------------
+.vs/
+.idea/
+*.swp
+
+# --- Operating system -------------------------------------------------------
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
