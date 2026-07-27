@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PhotoAssistant.Api/PhotoAssistant.Api.csproj" />
+    <Project Path="src/PhotoAssistant.Application/PhotoAssistant.Application.csproj" />
+    <Project Path="src/PhotoAssistant.Domain/PhotoAssistant.Domain.csproj" />
+    <Project Path="src/PhotoAssistant.Infrastructure/PhotoAssistant.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PhotoAssistant.Api.Tests/PhotoAssistant.Api.Tests.csproj" />
+  </Folder>
+</Solution>

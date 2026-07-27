@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Use cases, DTOs, validation, and the interfaces infrastructure implements. -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\PhotoAssistant.Domain\PhotoAssistant.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

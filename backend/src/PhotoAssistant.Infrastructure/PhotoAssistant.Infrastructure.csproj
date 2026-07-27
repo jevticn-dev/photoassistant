@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    EF Core, Postgres, S3 client, HTTP client to the ML service. Implements the
+    interfaces declared in Application and is registered through the single
+    AddInfrastructure extension.
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\PhotoAssistant.Application\PhotoAssistant.Application.csproj" />
+  </ItemGroup>
+
+</Project>

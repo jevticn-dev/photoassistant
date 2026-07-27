@@ -1,0 +1,40 @@
+<Project>
+
+  <!--
+    Central package management: versions live here, the .csproj files reference
+    packages by name only. Keeps the five projects from drifting apart and gives
+    a single place to answer "which version of X are we on".
+
+    CentralPackageTransitivePinningEnabled also lets us pin a package we never
+    reference directly — needed below.
+  -->
+
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup Label="ASP.NET Core">
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
+  </ItemGroup>
+
+  <ItemGroup Label="Transitive pins">
+    <!--
+      Microsoft.AspNetCore.OpenApi 10.0.10 resolves Microsoft.OpenApi 2.0.0,
+      which is affected by CVE-2026-49451 (uncontrolled recursion on a circular
+      schema reference, CVSS 7.5). Affected: 2.0.0-preview.11 .. 2.7.4; fixed in
+      2.7.5. Pinned forward inside the 2.x line, so the API surface ASP.NET Core
+      compiled against is unchanged.
+      Remove this pin once the framework package resolves a patched version.
+    -->
+    <PackageVersion Include="Microsoft.OpenApi" Version="2.11.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Testing">
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+</Project>
