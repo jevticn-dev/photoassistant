@@ -1,19 +1,33 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using PhotoAssistant.Application.Authentication;
+using PhotoAssistant.Infrastructure.Identity;
 using PhotoAssistant.Infrastructure.Persistence;
 
 namespace PhotoAssistant.Infrastructure;
 
 /// <summary>
 /// The single entry point through which the API registers infrastructure.
-/// Program.cs stays unaware of EF Core, Npgsql and the storage clients.
+/// Program.cs stays unaware of EF Core, Npgsql, Identity and the storage clients.
 /// </summary>
 public static class InfrastructureServiceExtensions
 {
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
+    {
+        services.AddPersistence(configuration);
+        services.AddAuthenticationServices(configuration);
+
+        return services;
+    }
+
+    private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<PhotoAssistantDbContext>(options =>
             options
@@ -24,8 +38,69 @@ public static class InfrastructureServiceExtensions
                 // property having to say so.
                 .UseSnakeCaseNamingConvention());
 
-        return services;
+        services.AddHealthChecks()
+            .AddDbContextCheck<PhotoAssistantDbContext>(name: "database");
     }
+
+    private static void AddAuthenticationServices(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var jwt = ReadJwtOptions(configuration);
+
+        services.AddSingleton(jwt);
+        services.AddSingleton(TimeProvider.System);
+        services.AddScoped<JwtTokenGenerator>();
+        services.AddScoped<IAuthenticationService, IdentityAuthenticationService>();
+
+        services
+            .AddIdentityCore<ApplicationUser>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+
+                // Length is the setting that actually matters; the character
+                // class rules mostly push people towards predictable
+                // substitutions. Identity's defaults are kept otherwise.
+                options.Password.RequiredLength = 8;
+
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+            })
+            .AddRoles<IdentityRole<Guid>>()
+            .AddEntityFrameworkStores<PhotoAssistantDbContext>();
+
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwt.Issuer,
+                    ValidAudience = jwt.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key)),
+
+                    // Tokens expire when they say they expire. The five minute
+                    // default grace period is a surprise nobody asked for.
+                    ClockSkew = TimeSpan.Zero,
+                };
+            });
+
+        services.AddAuthorization();
+    }
+
+    private static JwtOptions ReadJwtOptions(IConfiguration configuration) => new()
+    {
+        Key = Required(configuration, "JWT_KEY"),
+        Issuer = Required(configuration, "JWT_ISSUER"),
+        Audience = Required(configuration, "JWT_AUDIENCE"),
+        ExpiryMinutes = int.TryParse(configuration["JWT_EXPIRY_MINUTES"], out var minutes)
+            ? minutes
+            : 60,
+    };
 
     /// <summary>
     /// Assembles the connection string from individual settings instead of
