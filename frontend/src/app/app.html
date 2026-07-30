@@ -1,0 +1,13 @@
+<!--
+  Every visible string goes through the translate pipe, without exception —
+  including aria-label, placeholder and title attributes. Adding Serbian later
+  must stay a matter of one JSON file, not of editing templates.
+-->
+<header class="app-header">
+  <h1>{{ 'app.title' | translate }}</h1>
+  <p>{{ 'app.tagline' | translate }}</p>
+</header>
+
+<main>
+  <router-outlet />
+</main>

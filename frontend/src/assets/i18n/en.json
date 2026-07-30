@@ -1,0 +1,35 @@
+{
+  "app": {
+    "title": "PhotoAssistant",
+    "tagline": "Three edit suggestions for every photograph"
+  },
+  "nav": {
+    "projects": "Projects",
+    "signIn": "Sign in",
+    "signOut": "Sign out"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "noAccount": "Need an account?"
+    },
+    "register": {
+      "title": "Create an account",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create account",
+      "haveAccount": "Already have an account?"
+    }
+  },
+  "projects": {
+    "title": "Projects",
+    "empty": "No projects yet. Upload a photograph to begin."
+  },
+  "common": {
+    "loading": "Loading…",
+    "retry": "Try again"
+  }
+}
