@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using PhotoAssistant.Api.Middleware;
 using PhotoAssistant.Infrastructure;
+using PhotoAssistant.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,8 @@ builder.Services.AddProblemDetails(options =>
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 var app = builder.Build();
+
+await app.Services.ApplyMigrationsIfConfiguredAsync(builder.Configuration);
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();

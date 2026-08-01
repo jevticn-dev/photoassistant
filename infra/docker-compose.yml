@@ -87,6 +87,99 @@ services:
       S3_BUCKET_DERIVATIVES: ${S3_BUCKET_DERIVATIVES}
       S3_BUCKET_EXPORTS: ${S3_BUCKET_EXPORTS}
 
+  api:
+    # Build context is the repository root — global.json lives there and pins
+    # the SDK. Paths are relative to this file, hence the ..
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    container_name: photoassistant-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    ports:
+      - "${API_PORT}:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+
+      # Inside the compose network the database is reached by service name on
+      # its own port. POSTGRES_PORT in .env is the port published to the host
+      # (5433, because a local service holds 5432) and is irrelevant here.
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+      # The stack must come up from a clean state with no manual steps, so the
+      # api applies pending migrations at start-up. Off by default in code; see
+      # DatabaseMigrator for why this is a flag and not simply always on.
+      APPLY_MIGRATIONS_ON_STARTUP: "true"
+
+      JWT_KEY: ${JWT_KEY}
+      JWT_ISSUER: ${JWT_ISSUER}
+      JWT_AUDIENCE: ${JWT_AUDIENCE}
+      JWT_EXPIRY_MINUTES: ${JWT_EXPIRY_MINUTES}
+
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      S3_BUCKET_ORIGINALS: ${S3_BUCKET_ORIGINALS}
+      S3_BUCKET_DERIVATIVES: ${S3_BUCKET_DERIVATIVES}
+      S3_BUCKET_EXPORTS: ${S3_BUCKET_EXPORTS}
+
+      ML_SERVICE_URL: http://ml:8000
+
+  ml:
+    build:
+      context: ..
+      dockerfile: ml/Dockerfile
+    container_name: photoassistant-ml
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+    # ---------------------------------------------------------------------
+    # No `ports:` here, and that is the whole mechanism (ADR-8).
+    #
+    # Compose keeps every service on a private network; only what a service
+    # publishes is reachable from outside. Omitting the section is what makes
+    # "the ML service is internal" a fact rather than a claim in a docstring.
+    #
+    # There is no second line of defence: uvicorn must listen on 0.0.0.0 to
+    # accept connections from the api container, so publishing a port here
+    # exposes the service immediately. Adding one requires an ADR.
+    # ---------------------------------------------------------------------
+
+    environment:
+      ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: frontend/Dockerfile
+    container_name: photoassistant-frontend
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT}:80"
+
 volumes:
   pgdata:
   miniodata:
