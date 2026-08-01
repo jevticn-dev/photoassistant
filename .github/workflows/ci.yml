@@ -79,7 +79,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: astral-sh/setup-uv@v9
+      # Pinned to an exact release: unlike actions/*, this repository publishes
+      # no moving major tag, so @v9 resolves to nothing and the job fails during
+      # set-up, before any step runs. Bump this by hand.
+      - uses: astral-sh/setup-uv@v9.0.0
         with:
           enable-cache: true
           cache-dependency-glob: ml/uv.lock
