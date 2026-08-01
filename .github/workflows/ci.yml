@@ -1,0 +1,143 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+# A new push supersedes the previous run on the same branch; no reason to keep
+# paying for a result nobody will read.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend (.NET)
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        # The pgvector image, not plain postgres: the initial migration issues
+        # CREATE EXTENSION vector, which needs the extension binary present.
+        image: pgvector/pgvector:0.8.5-pg18-trixie
+        env:
+          POSTGRES_USER: photoassistant
+          POSTGRES_PASSWORD: ci-password
+          POSTGRES_DB: photoassistant
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U photoassistant -d photoassistant"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # Integration tests boot the real application, which reads its configuration
+      # from the environment. There is no .env file in CI, so the values are set
+      # here. None of them is a secret: the database lives and dies with this job.
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: '5432'
+      POSTGRES_USER: photoassistant
+      POSTGRES_PASSWORD: ci-password
+      POSTGRES_DB: photoassistant
+      JWT_KEY: ci-only-signing-key-not-used-anywhere-else-0123456789
+      JWT_ISSUER: photoassistant
+      JWT_AUDIENCE: photoassistant
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          # Reads the pinned version from global.json, so CI and the developer
+          # machine cannot drift apart.
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore backend/PhotoAssistant.slnx
+
+      - name: Build
+        run: dotnet build backend/PhotoAssistant.slnx -c Release --no-restore
+
+      - name: Test
+        run: dotnet test backend/PhotoAssistant.slnx -c Release --no-build
+
+      - name: Check for vulnerable packages
+        # Warnings are already errors during build (NU1903), but that only covers
+        # what the build resolves. This reports transitive advisories explicitly.
+        run: dotnet list backend/PhotoAssistant.slnx package --vulnerable --include-transitive
+
+  ml:
+    name: ML service (Python)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v9
+        with:
+          enable-cache: true
+          cache-dependency-glob: ml/uv.lock
+
+      - name: Install dependencies
+        # --frozen installs exactly what uv.lock pins and fails if the lock file
+        # disagrees with pyproject.toml, so a forgotten `uv lock` cannot slip in.
+        run: uv sync --project ml --extra service --frozen
+
+      - name: Lint
+        run: uv run --project ml --extra service ruff check ml
+
+      - name: Test
+        run: uv run --project ml --extra service pytest ml/tests
+
+      - name: Verify the library installs without the service extra
+        # The claim "the library does not depend on FastAPI" is about packaging,
+        # not imports, so the import-level test cannot prove it. This can.
+        run: |
+          uv run --no-project --with ./ml python - <<'PY'
+          import importlib.util
+          import photoassistant
+
+          leaked = [
+              name
+              for name in ("fastapi", "starlette", "uvicorn", "pydantic_settings")
+              if importlib.util.find_spec(name) is not None
+          ]
+          assert not leaked, f"library install pulled in service dependencies: {leaked}"
+          print(f"photoassistant {photoassistant.__version__}: no service dependencies")
+          PY
+
+  frontend:
+    name: Frontend (Angular)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          # Angular 22.1 requires ^22.22.3 || ^24.15.0 || >=26.0.0.
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
