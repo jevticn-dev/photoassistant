@@ -4,14 +4,14 @@ Angular 22 SPA (`photoassistant-web`) — editor, preporuke i nalozi.
 
 ## Struktura
 
-| Putanja | Sadržaj |
-|---|---|
+| Putanja                      | Sadržaj                                                                                                                                 |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | `src/app/features/<celina>/` | jedna fascikla po celini (`auth`, `projects`, kasnije `editor`, `recommendations`), sa svojim komponentama i rutama; učitavaju se lenjo |
-| `src/app/core/` | HTTP interceptor, auth guard, konfiguracija prevoda |
-| `src/app/shared/` | deljene komponente i pomoćne funkcije |
-| `src/app/renderer/` | **WebGL2 renderer — čist TypeScript, bez Angular zavisnosti** |
-| `src/assets/i18n/` | prevodi, učitavaju se u vreme izvršavanja |
-| `src/environments/` | adresa API-ja i jezik; ni jedan servis ne sme da je hardkoduje |
+| `src/app/core/`              | HTTP interceptor, auth guard, konfiguracija prevoda                                                                                     |
+| `src/app/shared/`            | deljene komponente i pomoćne funkcije                                                                                                   |
+| `src/app/renderer/`          | **WebGL2 renderer — čist TypeScript, bez Angular zavisnosti**                                                                           |
+| `src/assets/i18n/`           | prevodi, učitavaju se u vreme izvršavanja                                                                                               |
+| `src/environments/`          | adresa API-ja i jezik; ni jedan servis ne sme da je hardkoduje                                                                          |
 
 `renderer/` je izolovan namerno — mora biti uporediv sa Python implementacijom kroz golden
 test. Granicu čuva `renderer.spec.ts`; detalji u `src/app/renderer/README.md`.

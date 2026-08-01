@@ -19,9 +19,7 @@ describe('renderer boundary', () => {
     eager: true,
   }) as Record<string, string>;
 
-  const sourceFiles = Object.entries(sources).filter(
-    ([path]) => !path.endsWith('.spec.ts'),
-  );
+  const sourceFiles = Object.entries(sources).filter(([path]) => !path.endsWith('.spec.ts'));
 
   it('contains source files to check', () => {
     // Guards the test below: an empty folder would make it pass vacuously.

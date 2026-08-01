@@ -18,9 +18,9 @@ Granicu čuva `renderer.spec.ts`, po ugledu na `LayerDependencyTests` u backendu
 
 ## Šta ulazi
 
-| Fajl | Sadržaj | Faza |
-|---|---|---|
-| `types.ts` | TypeScript model šeme izmene (treći od tri jezika) | 1 |
-| `lut.ts` | generisanje LUT tabele od 1024 vrednosti iz tačaka krive | 1 |
-| `shader.ts` | fragment shader, redosled operacija iz plana §4.1 | 1 |
-| `renderer.ts` | priprema konteksta, tekstura, uniformi; petlja crtanja | 1 |
+| Fajl          | Sadržaj                                                  | Faza |
+| ------------- | -------------------------------------------------------- | ---- |
+| `types.ts`    | TypeScript model šeme izmene (treći od tri jezika)       | 1    |
+| `lut.ts`      | generisanje LUT tabele od 1024 vrednosti iz tačaka krive | 1    |
+| `shader.ts`   | fragment shader, redosled operacija iz plana §4.1        | 1    |
+| `renderer.ts` | priprema konteksta, tekstura, uniformi; petlja crtanja   | 1    |

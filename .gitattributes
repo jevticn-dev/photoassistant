@@ -1,0 +1,24 @@
+# Line endings.
+#
+# The repository stores LF, and every checkout keeps LF regardless of platform.
+#
+# Without `eol=lf` a Windows checkout produces CRLF, and prettier — whose
+# endOfLine default is "lf" — then reports every frontend file as badly
+# formatted. That failure would appear locally while CI, running on Linux, stayed
+# green: the worst kind, because the two disagree about the same commit.
+* text=auto eol=lf
+
+# Binary files must never be touched by normalisation.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.woff binary
+*.woff2 binary
+
+# Photography formats, for the fixtures and anything the pipeline produces.
+*.dng  binary
+*.tif  binary
+*.tiff binary
