@@ -1,0 +1,185 @@
+# PhotoAssistant — local environment.
+#
+# Run from the repository root:
+#   docker compose --env-file .env -f infra/docker-compose.yml up -d postgres minio
+#
+# Phase 0 defines the storage layer only. The api, ml and frontend services are
+# added in task 12 of docs/phases/phase-0.md.
+#
+# Every value comes from the root .env file (copy .env.example). No credentials
+# or ports are hard-coded here.
+
+name: photoassistant
+
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.5-pg18-trixie
+    container_name: photoassistant-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      # Postgres 18+ stores data in a major-version subdirectory
+      # (/var/lib/postgresql/18/docker), so the volume mounts one level up.
+      # Mounting /var/lib/postgresql/data — correct up to Postgres 17 — makes
+      # the container refuse to start. See docker-library/postgres#1259.
+      - pgdata:/var/lib/postgresql
+      # Runs only when the data directory is empty, i.e. on a fresh volume.
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # $$ keeps the variable for the container shell instead of letting
+      # Compose interpolate it at parse time.
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  minio:
+    # Pinned to the last published community release. Upstream entered
+    # maintenance mode in December 2025 and the repository was archived in
+    # 2026; see ADR-15. Storage sits behind an S3 abstraction (ADR-12), so
+    # replacing this service is a configuration change.
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    container_name: photoassistant-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "${MINIO_API_PORT}:9000"      # S3 API
+      - "${MINIO_CONSOLE_PORT}:9001"  # object browser
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # One-shot: creates the buckets, then exits. Idempotent — re-running the
+  # stack does not fail on buckets that already exist.
+  createbuckets:
+    image: minio/mc:RELEASE.2025-08-13T08-35-41Z
+    container_name: photoassistant-createbuckets
+    depends_on:
+      minio:
+        condition: service_healthy
+    restart: "no"
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD} &&
+      mc mb --ignore-existing local/$${S3_BUCKET_ORIGINALS} &&
+      mc mb --ignore-existing local/$${S3_BUCKET_DERIVATIVES} &&
+      mc mb --ignore-existing local/$${S3_BUCKET_EXPORTS} &&
+      mc ls local
+      "
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      S3_BUCKET_ORIGINALS: ${S3_BUCKET_ORIGINALS}
+      S3_BUCKET_DERIVATIVES: ${S3_BUCKET_DERIVATIVES}
+      S3_BUCKET_EXPORTS: ${S3_BUCKET_EXPORTS}
+
+  api:
+    # Build context is the repository root — global.json lives there and pins
+    # the SDK. Paths are relative to this file, hence the ..
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    container_name: photoassistant-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    ports:
+      - "${API_PORT}:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+
+      # Inside the compose network the database is reached by service name on
+      # its own port. POSTGRES_PORT in .env is the port published to the host
+      # (5433, because a local service holds 5432) and is irrelevant here.
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+      # The stack must come up from a clean state with no manual steps, so the
+      # api applies pending migrations at start-up. Off by default in code; see
+      # DatabaseMigrator for why this is a flag and not simply always on.
+      APPLY_MIGRATIONS_ON_STARTUP: "true"
+
+      JWT_KEY: ${JWT_KEY}
+      JWT_ISSUER: ${JWT_ISSUER}
+      JWT_AUDIENCE: ${JWT_AUDIENCE}
+      JWT_EXPIRY_MINUTES: ${JWT_EXPIRY_MINUTES}
+
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      S3_BUCKET_ORIGINALS: ${S3_BUCKET_ORIGINALS}
+      S3_BUCKET_DERIVATIVES: ${S3_BUCKET_DERIVATIVES}
+      S3_BUCKET_EXPORTS: ${S3_BUCKET_EXPORTS}
+
+      ML_SERVICE_URL: http://ml:8000
+
+  ml:
+    build:
+      context: ..
+      dockerfile: ml/Dockerfile
+    container_name: photoassistant-ml
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+    # ---------------------------------------------------------------------
+    # No `ports:` here, and that is the whole mechanism (ADR-8).
+    #
+    # Compose keeps every service on a private network; only what a service
+    # publishes is reachable from outside. Omitting the section is what makes
+    # "the ML service is internal" a fact rather than a claim in a docstring.
+    #
+    # There is no second line of defence: uvicorn must listen on 0.0.0.0 to
+    # accept connections from the api container, so publishing a port here
+    # exposes the service immediately. Adding one requires an ADR.
+    # ---------------------------------------------------------------------
+
+    environment:
+      ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: frontend/Dockerfile
+    container_name: photoassistant-frontend
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT}:80"
+
+volumes:
+  pgdata:
+  miniodata:

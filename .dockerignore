@@ -1,0 +1,37 @@
+# Docker sends the whole build context to the daemon before the first
+# instruction runs. .gitignore has no effect on that — this file does.
+
+# ---------------------------------------------------------------------------
+# The FiveK dataset is roughly 50 GB. Without this line every image build would
+# start by copying it. This is the one entry that must never be removed.
+# ---------------------------------------------------------------------------
+Dataset/
+
+.git/
+.github/
+.vs/
+.idea/
+
+# Secrets never enter an image; configuration arrives as environment variables.
+.env
+.env.*
+!.env.example
+
+# Build output and dependencies — restored inside the image, not copied in.
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/.angular/
+**/.venv/
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.ruff_cache/
+
+# Working documents and research scripts are not part of any deliverable.
+docs/
+sandbox/
+CLAUDE.md
+DECISIONS.md
+.claude/

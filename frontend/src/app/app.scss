@@ -1,0 +1,21 @@
+// Layout only. Visual design is chosen after phase 4, when the editor exists and
+// there is something to design around (plan §13).
+
+.app-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgb(0 0 0 / 12%);
+
+  h1 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+
+  p {
+    margin: 0.25rem 0 0;
+    opacity: 0.7;
+  }
+}
+
+main {
+  padding: 1.5rem;
+}

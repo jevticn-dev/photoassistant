@@ -61,4 +61,47 @@ sandbox/    istraživačke skripte, nisu deo isporuke
 
 ## Pokretanje
 
-Dokumentuje se kad skelet bude kompletan.
+Potrebno: Docker. Sve komande iz korena repoa.
+
+```bash
+cp .env.example .env        # popuniti vrednosti
+docker compose --env-file .env -f infra/docker-compose.yml up -d
+```
+
+Prvo pokretanje gradi tri slike i traje nekoliko minuta. Kad svi servisi budu `healthy`,
+aplikacija je na **http://localhost:4200** — baza se migrira sama, bez dodatnih koraka.
+
+| | Adresa |
+|---|---|
+| Aplikacija | http://localhost:4200 |
+| Health | http://localhost:4200/health |
+| OpenAPI dokument | http://localhost:8080/openapi/v1.json |
+| MinIO konzola | http://localhost:9001 |
+
+ML servis namerno nema objavljen port — interni je i dostupan samo .NET API-ju.
+
+Zaustavljanje: `docker compose ... down` (podaci ostaju) ili `down -v` (briše i volumene).
+
+## Razvoj
+
+Za svakodnevni rad podiže se samo skladišni sloj, a servisi se pokreću lokalno sa
+hot-reload-om:
+
+```bash
+docker compose --env-file .env -f infra/docker-compose.yml up -d postgres minio
+
+dotnet run --project backend/src/PhotoAssistant.Api
+uv run --project ml --extra service uvicorn service.main:app --reload --port 8000
+npm --prefix frontend start
+```
+
+Testovi:
+
+```bash
+dotnet test backend/PhotoAssistant.slnx
+uv run --project ml --extra service pytest ml/tests
+npm --prefix frontend test
+```
+
+Backend integracioni testovi traže podignut Postgres kontejner i koriste zasebnu bazu, da
+razvojni podaci ostanu netaknuti.

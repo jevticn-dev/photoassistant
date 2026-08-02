@@ -1,0 +1,68 @@
+[project]
+name = "photoassistant"
+version = "0.1.0"
+description = "Photo edit recipe library and internal ML service"
+readme = "README.md"
+requires-python = ">=3.14"
+
+# What the LIBRARY needs. Direct dependencies only, with ranges; the resolved
+# tree is pinned in uv.lock, which is committed — that file is what both the
+# local environment and the Docker image install from, so the two cannot drift.
+#
+# The offline pipeline installs exactly this set. Nothing here may be a service
+# concern, or the pipeline starts dragging a web framework along.
+dependencies = [
+    "pydantic>=2.13,<3",
+]
+
+[project.optional-dependencies]
+# What the SERVICE adds on top of the library. Installed with the `service`
+# extra; absent from a plain library install, which is what makes
+# "the library does not depend on FastAPI" a fact rather than an intention.
+#
+# Consequence for day-to-day work: the extra has to be named explicitly.
+#   uv sync --project ml --extra service   → service environment (tests need it)
+#   uv sync --project ml                   → library only, what the pipeline gets
+# uv has no setting to default an extra on (`default-groups` exists, an extras
+# equivalent does not), so the commands in CLAUDE.md spell it out.
+service = [
+    "fastapi>=0.141,<0.142",
+    "uvicorn[standard]>=0.52,<0.53",
+    "pydantic-settings>=2.14,<3",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1,<10",
+    # Required by starlette's TestClient. httpx2, not httpx: starlette 1.3
+    # deprecated the httpx backend and warns on every test run.
+    "httpx2>=2.9,<3",
+    "ruff>=0.16,<0.17",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+# Two packages: the library, which the offline pipeline imports as well, and the
+# thin service layer on top of it.
+packages = ["photoassistant", "service"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle
+    "F",    # pyflakes
+    "I",    # import sorting
+    "UP",   # pyupgrade
+    "B",    # bugbear
+    "SIM",  # simplify
+]

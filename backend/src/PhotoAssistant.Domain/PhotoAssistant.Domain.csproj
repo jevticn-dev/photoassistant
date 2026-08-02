@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Innermost layer: entities and domain rules.
+
+    No ProjectReference and no PackageReference, and that is the point —
+    nothing here may depend on EF Core, ASP.NET or any other infrastructure
+    concern. Adding a reference here is a design change, not a convenience.
+
+    Shared build settings live in backend/Directory.Build.props.
+  -->
+
+</Project>

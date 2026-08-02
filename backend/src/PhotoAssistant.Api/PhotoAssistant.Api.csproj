@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    Controllers, authentication, error middleware. The only publicly reachable
+    component; the frontend never calls the ML service directly.
+  -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="DotNetEnv" />
+    <!-- Required by `dotnet ef`, which builds the startup project to find the context. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PhotoAssistant.Application\PhotoAssistant.Application.csproj" />
+    <ProjectReference Include="..\PhotoAssistant.Infrastructure\PhotoAssistant.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
