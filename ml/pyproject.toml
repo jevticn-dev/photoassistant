@@ -38,6 +38,11 @@ dev = [
     # deprecated the httpx backend and warns on every test run.
     "httpx2>=2.9,<3",
     "ruff>=0.16,<0.17",
+    # Reading and writing the PNG fixtures: the generator in
+    # fixtures/images/generate.py and the renderer tests that load them. The
+    # library itself takes float arrays and never touches a file, so this stays
+    # out of [project] dependencies.
+    "pillow>=12.3,<13",
 ]
 
 [build-system]

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "white_balance": { "temperature": 22.0, "tint": -6.0 },
+  "tone": {
+    "exposure": 0.35,
+    "contrast": 18.0,
+    "highlights": -30.0,
+    "shadows": 25.0,
+    "whites": 10.0,
+    "blacks": -12.0
+  },
+  "color": { "saturation": 8.0, "vibrance": 20.0 },
+  "tone_curve": {
+    "points": [
+      [0.0, 0.0],
+      [0.12549, 0.086275],
+      [0.25098, 0.219608],
+      [0.501961, 0.501961],
+      [0.752941, 0.768627],
+      [1.0, 1.0]
+    ]
+  }
+}

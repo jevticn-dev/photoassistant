@@ -93,7 +93,9 @@ jobs:
         run: uv sync --project ml --extra service --frozen
 
       - name: Lint
-        run: uv run --project ml --extra service ruff check ml
+        # `fixtures` too: the test-image generator lives there and is committed
+        # Python, so it is held to the same standard as the library.
+        run: uv run --project ml --extra service ruff check ml fixtures
 
       - name: Test
         run: uv run --project ml --extra service pytest ml/tests
