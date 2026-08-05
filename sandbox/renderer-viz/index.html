@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RENDERER_SPEC — vizuelna provera</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page:           #f9f9f7;
+    --surface:        #fcfcfb;
+    --ink:            #0b0b0b;
+    --ink-2:          #52514e;
+    --muted:          #898781;
+    --grid:           #e1e0d9;
+    --axis:           #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --s1:             #2a78d6;
+    --s2:             #eb6834;
+    --s3:             #1baf7a;
+    --s4:             #eda100;
+    --good:           #006300;
+    --crit:           #d03b3b;
+    --code-bg:        #f0efec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page:      #0d0d0d;
+      --surface:   #1a1a19;
+      --ink:       #ffffff;
+      --ink-2:     #c3c2b7;
+      --muted:     #898781;
+      --grid:      #2c2c2a;
+      --axis:      #383835;
+      --border:    rgba(255,255,255,0.10);
+      --s1:        #3987e5;
+      --s2:        #d95926;
+      --s3:        #199e70;
+      --s4:        #c98500;
+      --good:      #0ca30c;
+      --crit:      #e66767;
+      --code-bg:   #232321;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page:    #0d0d0d;  --surface: #1a1a19;  --ink: #ffffff;  --ink-2: #c3c2b7;
+    --muted:   #898781;  --grid:    #2c2c2a;  --axis: #383835;
+    --border:  rgba(255,255,255,0.10);
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --good: #0ca30c; --crit: #e66767; --code-bg: #232321;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0 1rem 5rem;
+    background: var(--page); color: var(--ink);
+    font: 15px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  header { padding: 2.5rem 0 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+  h1 { font-size: 1.6rem; margin: 0 0 .4rem; letter-spacing: -0.01em; }
+  h2 { font-size: 1.15rem; margin: 0 0 .25rem; letter-spacing: -0.01em; }
+  .sub { color: var(--ink-2); margin: 0; }
+  .ref { color: var(--muted); font-size: .82rem; font-variant-numeric: tabular-nums; }
+  section {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.4rem 1.5rem 1.5rem; margin-bottom: 1.5rem;
+  }
+  .head { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: baseline; margin-bottom: .9rem; }
+  p { margin: .5rem 0; color: var(--ink-2); }
+  p.lead { color: var(--ink); }
+  code, .mono { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: .86em; }
+  code { background: var(--code-bg); padding: .1em .35em; border-radius: 3px; }
+  .plotwrap { overflow-x: auto; }
+  svg { display: block; max-width: 100%; height: auto; touch-action: none; }
+  .ctl { display: flex; flex-wrap: wrap; gap: .7rem 1.4rem; margin: 1rem 0 .3rem; }
+  .ctl label { display: flex; align-items: center; gap: .5rem; font-size: .86rem; color: var(--ink-2); }
+  .ctl input[type=range] { width: 150px; accent-color: var(--s1); }
+  .ctl .val { font-variant-numeric: tabular-nums; color: var(--ink); min-width: 3.2em; text-align: right; font-family: ui-monospace, Consolas, monospace; font-size: .84rem; }
+  button {
+    font: inherit; font-size: .85rem; padding: .35rem .8rem; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--page); color: var(--ink); cursor: pointer;
+  }
+  button:hover { border-color: var(--muted); }
+  .readout { margin-top: .9rem; padding: .7rem .9rem; background: var(--code-bg); border-radius: 7px;
+             font-family: ui-monospace, Consolas, monospace; font-size: .82rem; line-height: 1.7;
+             color: var(--ink-2); white-space: pre-wrap; }
+  .readout b { color: var(--ink); font-weight: 600; }
+  .ok { color: var(--good); font-weight: 600; }
+  .bad { color: var(--crit); font-weight: 600; }
+  .legend { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; margin: .6rem 0 0; font-size: .83rem; color: var(--ink-2); }
+  .legend span { display: inline-flex; align-items: center; gap: .4rem; }
+  .swatch { width: 11px; height: 11px; border-radius: 2px; flex: none; }
+  .note { font-size: .84rem; color: var(--muted); margin-top: .8rem; }
+  canvas { image-rendering: pixelated; width: 100%; max-width: 640px; height: auto;
+           border: 1px solid var(--border); border-radius: 6px; display: block; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.2rem; }
+  ul { color: var(--ink-2); padding-left: 1.2rem; margin: .5rem 0; }
+  li { margin: .2rem 0; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: .84rem; margin-top: .7rem; }
+  .tbl th, .tbl td { text-align: right; padding: .3rem .5rem; border-bottom: 1px solid var(--border);
+                     font-variant-numeric: tabular-nums; }
+  .tbl th:first-child, .tbl td:first-child { text-align: left; }
+  .tbl th { color: var(--muted); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>RENDERER_SPEC — vizuelna provera</h1>
+  <p class="sub">Sve formule iz <code>docs/RENDERER_SPEC.md</code>, nacrtane. Istraživački alat
+  (<code>sandbox/</code>), nije deo isporuke i nije implementacija Faze 1.</p>
+</header>
+
+<!-- ============================================================ 1 -->
+<section>
+  <div class="head"><h2>1 · sRGB prenosna funkcija</h2><span class="ref">spec §2.1 · notes §B1</span></div>
+  <p class="lead">Zašto aproksimacija stepenom 2,2 nije dovoljna.</p>
+  <p>Plava je prava, deo-po-deo definisana funkcija iz spec-a. Narandžasta je aproksimacija
+  <code>x^2.2</code>. Razlika je najveća u tamnim tonovima — tamo gde linearni rep najviše odstupa.</p>
+  <div class="plotwrap"><svg id="p-srgb" viewBox="0 0 620 300" role="img" aria-label="sRGB dekodiranje"></svg></div>
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--s1)"></i>deo-po-deo (spec)</span>
+    <span><i class="swatch" style="background:var(--s2)"></i>aproksimacija 2,2</span>
+  </div>
+  <div class="readout" id="r-srgb"></div>
+</section>
+
+<!-- ============================================================ 2 -->
+<section>
+  <div class="head"><h2>2 · smoothstep — gradivni element</h2><span class="ref">spec §7.1</span></div>
+  <p class="lead">Jedan polinom iz kog su izvedene i sve maske i kontrast.</p>
+  <p><code>S(x) = x²·(3 − 2x)</code> — prolazi kroz (0,0) i (1,1), a izvod mu je nula na oba kraja.
+  Zbog toga nema preloma kad se nadoveže na nešto drugo.</p>
+  <div class="plotwrap"><svg id="p-ss" viewBox="0 0 620 300" role="img" aria-label="smoothstep"></svg></div>
+</section>
+
+<!-- ============================================================ 3 -->
+<section>
+  <div class="head"><h2>3 · Kontrast</h2><span class="ref">spec §3.4</span></div>
+  <p class="lead">Pomeraj slajder i gledaj kako se dijagonala savija u S.</p>
+  <p><code>x ← x + s·(S(x) − x)</code>, gde je <code>s = contrast/100</code>. Isprekidana linija je
+  dijagonala (identitet). Na <code>s = 0</code> kriva leži tačno na njoj.</p>
+  <div class="ctl">
+    <label>contrast <input type="range" id="c-contrast" min="-100" max="100" value="40" step="1"><span class="val" id="v-contrast">+40</span></label>
+    <button id="c-reset">neutralno (0)</button>
+  </div>
+  <div class="plotwrap"><svg id="p-contrast" viewBox="0 0 620 300" role="img" aria-label="kontrast"></svg></div>
+  <div class="readout" id="r-contrast"></div>
+</section>
+
+<!-- ============================================================ 4 -->
+<section>
+  <div class="head"><h2>4 · Maske tonskih regiona</h2><span class="ref">spec §7.2 · notes §B3</span></div>
+  <p class="lead">Kako se kaže „samo svetli delovi". Četiri težinske funkcije po lumi.</p>
+  <p>Proveri dve tvrdnje iz spec-a: <code>w_bl + w_sh = 1</code> na celom <code>[0, 0.25]</code>, i
+  <code>w_hi + w_wh = 1</code> na celom <code>[0.75, 1]</code> — parovi koji dele kraj opsega predaju
+  težinu bez rupe. Siva linija je zbir sva četiri; njen ugib na sredini pokazuje da su srednji
+  tonovi zaštićeni od regionalnih slajdera.</p>
+  <div class="plotwrap"><svg id="p-masks" viewBox="0 0 620 320" role="img" aria-label="maske tonskih regiona"></svg></div>
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--s1)"></i>blacks</span>
+    <span><i class="swatch" style="background:var(--s2)"></i>shadows</span>
+    <span><i class="swatch" style="background:var(--s3)"></i>highlights</span>
+    <span><i class="swatch" style="background:var(--s4)"></i>whites</span>
+    <span><i class="swatch" style="background:var(--muted)"></i>zbir</span>
+  </div>
+  <table class="tbl" id="t-masks"></table>
+  <p class="note">Vrednosti u tabeli su iste one iz spec-a §7.3 — ako se ne poklapaju, negde je greška.</p>
+</section>
+
+<!-- ============================================================ 5 -->
+<section>
+  <div class="head"><h2>5 · Rezultujući pomeraj Δ</h2><span class="ref">spec §3.3</span></div>
+  <p class="lead">Sva četiri parametra sabiraju se u jedan pomeraj po lumi.</p>
+  <p><code>Δ = 0.25 · Σ (v · w(Y'))</code>. Kriva pokazuje koliko se piksel pomera u zavisnosti od
+  toga koliko je svetao. Gde je Δ = 0, piksel se ne dira.</p>
+  <div class="ctl">
+    <label>blacks <input type="range" id="c-bl" min="-100" max="100" value="40" step="1"><span class="val" id="v-bl">+40</span></label>
+    <label>shadows <input type="range" id="c-sh" min="-100" max="100" value="0" step="1"><span class="val" id="v-sh">0</span></label>
+    <label>highlights <input type="range" id="c-hi" min="-100" max="100" value="-60" step="1"><span class="val" id="v-hi">−60</span></label>
+    <label>whites <input type="range" id="c-wh" min="-100" max="100" value="0" step="1"><span class="val" id="v-wh">0</span></label>
+  </div>
+  <div class="plotwrap"><svg id="p-delta" viewBox="0 0 620 300" role="img" aria-label="rezultujući pomeraj"></svg></div>
+</section>
+
+<!-- ============================================================ 6 -->
+<section>
+  <div class="head"><h2>6 · Tonska kriva, interpolacija i LUT</h2><span class="ref">spec §6 · notes §A1, §A2</span></div>
+  <p class="lead">Prevuci tačke mišem. Ovo je srce onoga što ti je bilo najnejasnije.</p>
+  <p>Plava kriva je monotona kubna interpolacija (Fritsch–Carlson) — ono što spec propisuje.
+  Narandžasta je pravolinijska, uključi je da vidiš <b>prelome</b> u kontrolnim tačkama koje
+  pravolinijska interpolacija ostavlja, a koji se u glatkom gradijentu vide kao traka.</p>
+  <div class="ctl">
+    <button id="k-medium">preset: FiveK „Medium Contrast"</button>
+    <button id="k-neutral">neutralno (dijagonala)</button>
+    <button id="k-extreme">agresivne tačke</button>
+    <label><input type="checkbox" id="k-linear"> prikaži pravolinijsku</label>
+    <label><input type="checkbox" id="k-lut"> prikaži LUT ćelije (N=32 radi vidljivosti)</label>
+  </div>
+  <div class="plotwrap"><svg id="p-curve" viewBox="0 0 620 340" role="img" aria-label="tonska kriva"></svg></div>
+  <div class="readout" id="r-curve"></div>
+</section>
+
+<!-- ============================================================ 7 -->
+<section>
+  <div class="head"><h2>7 · Ceo redosled operacija uživo</h2><span class="ref">spec §3, §4</span></div>
+  <p class="lead">Sintetička test slika kroz svih 11 koraka, tačno redom iz spec-a §4.</p>
+  <p>Gornja traka je sivi klin (dodiruje svaku LUT ćeliju), srednja prelaz nijansi, donja polja na
+  granicama opsega. To je predlog skupa iz <code>fixtures/images/</code>.</p>
+  <div class="grid2">
+    <div>
+      <p class="note" style="margin-top:0">original</p>
+      <canvas id="cv-src" width="480" height="240"></canvas>
+    </div>
+    <div>
+      <p class="note" style="margin-top:0">renderovano</p>
+      <canvas id="cv-dst" width="480" height="240"></canvas>
+    </div>
+  </div>
+  <div class="readout" id="r-state"></div>
+  <div class="ctl">
+    <label>temperature <input type="range" id="f-temperature" min="-100" max="100" value="0"><span class="val" id="fv-temperature">0</span></label>
+    <label>tint <input type="range" id="f-tint" min="-100" max="100" value="0"><span class="val" id="fv-tint">0</span></label>
+    <label>exposure <input type="range" id="f-exposure" min="-5" max="5" value="0" step="0.05"><span class="val" id="fv-exposure">0</span></label>
+  </div>
+  <div class="ctl">
+    <label>highlights <input type="range" id="f-highlights" min="-100" max="100" value="0"><span class="val" id="fv-highlights">0</span></label>
+    <label>shadows <input type="range" id="f-shadows" min="-100" max="100" value="0"><span class="val" id="fv-shadows">0</span></label>
+    <label>whites <input type="range" id="f-whites" min="-100" max="100" value="0"><span class="val" id="fv-whites">0</span></label>
+    <label>blacks <input type="range" id="f-blacks" min="-100" max="100" value="0"><span class="val" id="fv-blacks">0</span></label>
+  </div>
+  <div class="ctl">
+    <label>contrast <input type="range" id="f-contrast" min="-100" max="100" value="0"><span class="val" id="fv-contrast">0</span></label>
+    <label>saturation <input type="range" id="f-saturation" min="-100" max="100" value="0"><span class="val" id="fv-saturation">0</span></label>
+    <label>vibrance <input type="range" id="f-vibrance" min="-100" max="100" value="0"><span class="val" id="fv-vibrance">0</span></label>
+  </div>
+  <div class="ctl">
+    <button id="f-reset">sve na neutralno</button>
+    <button id="f-identity">provera identiteta (§4.1)</button>
+    <button id="f-warm">primer: warm_bright</button>
+  </div>
+  <div class="readout" id="r-pipeline"></div>
+  <p class="note"><b>Kriva iz sekcije 6 je deo recepta i ovde.</b> Na učitavanju stranice je
+  dijagonala, pa su obe slike identične — dok ne pomeriš slajder ili ne promeniš krivu gore.
+  Red „razlika original vs renderovano" iznad uvek pokazuje tačno stanje.</p>
+</section>
+
+<!-- ============================================================ 8 -->
+<section>
+  <div class="head"><h2>8 · Pravilo preskakanja</h2><span class="ref">spec §4.1</span></div>
+  <p class="lead">Koje se operacije trenutno izvršavaju, a koje preskaču.</p>
+  <p>Obrati pažnju na poslednji red: koraci 1 i 4 (dekodiranje i kodovanje) preskaču se
+  <b>zajedno</b>, i to samo ako su i balans bele i ekspozicija neutralni. Bez toga
+  <code>neutral.json</code> ne bi vraćao bit-identičan ulaz.</p>
+  <table class="tbl" id="t-skip"></table>
+</section>
+
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   FORMULE — doslovno iz docs/RENDERER_SPEC.md
+   ============================================================ */
+const clamp = (x, a, b) => Math.min(Math.max(x, a), b);
+
+// §2.1
+const srgbDecode = s => s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+const srgbEncode = l => l <= 0.0031308 ? 12.92 * l : 1.055 * Math.pow(l, 1 / 2.4) - 0.055;
+// §2.2
+const luma = (r, g, b) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
+// §7.1
+const smoothstep = (e0, e1, x) => { const t = clamp((x - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); };
+// §7.2
+const w_bl = y => 1 - smoothstep(0.00, 0.25, y);
+const w_sh = y => smoothstep(0.00, 0.25, y) * (1 - smoothstep(0.25, 0.60, y));
+const w_hi = y => smoothstep(0.40, 0.75, y) * (1 - smoothstep(0.75, 1.00, y));
+const w_wh = y => smoothstep(0.75, 1.00, y);
+// §3.4
+const contrastOp = (x, s) => x + s * (x * x * (3 - 2 * x) - x);
+// §8.3
+const K_WB = 0.5, K_REG = 0.25, EPS = 1e-6, N_LUT = 1024;
+
+// §6.2 — monotona kubna interpolacija
+function tangents(pts) {
+  const n = pts.length, d = [], m = [], fixed = [];
+  for (let i = 0; i < n - 1; i++) d.push((pts[i + 1][1] - pts[i][1]) / (pts[i + 1][0] - pts[i][0]));
+  m.push(d[0]);
+  for (let i = 1; i < n - 1; i++) m.push((d[i - 1] + d[i]) / 2);
+  m.push(d[n - 2]);
+  for (let i = 0; i < n - 1; i++) {
+    if (d[i] === 0) { m[i] = 0; m[i + 1] = 0; fixed.push(i); }
+    else {
+      const a = m[i] / d[i], b = m[i + 1] / d[i];
+      if (a * a + b * b > 9) {
+        const tau = 3 / Math.sqrt(a * a + b * b);
+        m[i] = tau * a * d[i]; m[i + 1] = tau * b * d[i]; fixed.push(i);
+      }
+    }
+  }
+  return { m, d, fixed };
+}
+function evalCurve(pts, m, x) {
+  const n = pts.length;
+  let i = n - 2;
+  for (let k = 0; k < n - 1; k++) if (x <= pts[k + 1][0]) { i = k; break; }
+  const h = pts[i + 1][0] - pts[i][0], t = (x - pts[i][0]) / h;
+  const t2 = t * t, t3 = t2 * t;
+  return (2 * t3 - 3 * t2 + 1) * pts[i][1]
+       + (t3 - 2 * t2 + t) * h * m[i]
+       + (-2 * t3 + 3 * t2) * pts[i + 1][1]
+       + (t3 - t2) * h * m[i + 1];
+}
+function evalLinear(pts, x) {
+  const n = pts.length;
+  let i = n - 2;
+  for (let k = 0; k < n - 1; k++) if (x <= pts[k + 1][0]) { i = k; break; }
+  const t = (x - pts[i][0]) / (pts[i + 1][0] - pts[i][0]);
+  return pts[i][1] + t * (pts[i + 1][1] - pts[i][1]);
+}
+// §6.3
+function buildLUT(pts, N = N_LUT) {
+  const { m } = tangents(pts), lut = new Float32Array(N);
+  for (let i = 0; i < N; i++) lut[i] = clamp(evalCurve(pts, m, i / (N - 1)), 0, 1);
+  return lut;
+}
+// §6.4
+function lutLookup(lut, x) {
+  const N = lut.length;
+  const t = clamp(x, 0, 1) * (N - 1);
+  const i = clamp(Math.floor(t), 0, N - 2);
+  const f = t - i;
+  return lut[i] * (1 - f) + lut[i + 1] * f;
+}
+
+/* ============================================================
+   CRTANJE
+   ============================================================ */
+const NS = "http://www.w3.org/2000/svg";
+const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+function Plot(svg, o) {
+  const W = svg.viewBox.baseVal.width, H = svg.viewBox.baseVal.height;
+  const M = { l: 46, r: 76, t: 14, b: 34 };
+  const pw = W - M.l - M.r, ph = H - M.t - M.b;
+  const yd = o.yDomain || [0, 1];
+  const X = x => M.l + x * pw;
+  const Y = y => M.t + ph - ((y - yd[0]) / (yd[1] - yd[0])) * ph;
+  return { svg, W, H, M, pw, ph, X, Y, yd,
+    clear() { while (svg.firstChild) svg.removeChild(svg.firstChild); },
+    frame(xLabel, yLabel) {
+      const grid = cssv('--grid'), axis = cssv('--axis'), muted = cssv('--muted');
+      for (let i = 0; i <= 4; i++) {
+        const yv = yd[0] + (yd[1] - yd[0]) * i / 4;
+        this.svg.appendChild(el('line', { x1: M.l, x2: M.l + pw, y1: Y(yv), y2: Y(yv), stroke: grid, 'stroke-width': 1 }));
+        const t = el('text', { x: M.l - 8, y: Y(yv) + 4, fill: muted, 'font-size': 10.5, 'text-anchor': 'end' });
+        t.textContent = yv.toFixed(2); this.svg.appendChild(t);
+      }
+      for (let i = 0; i <= 4; i++) {
+        const xv = i / 4;
+        this.svg.appendChild(el('line', { x1: X(xv), x2: X(xv), y1: M.t, y2: M.t + ph, stroke: grid, 'stroke-width': 1 }));
+        const t = el('text', { x: X(xv), y: M.t + ph + 16, fill: muted, 'font-size': 10.5, 'text-anchor': 'middle' });
+        t.textContent = xv.toFixed(2); this.svg.appendChild(t);
+      }
+      this.svg.appendChild(el('line', { x1: M.l, x2: M.l + pw, y1: Y(clamp(0, yd[0], yd[1])), y2: Y(clamp(0, yd[0], yd[1])), stroke: axis, 'stroke-width': 1.5 }));
+      if (xLabel) { const t = el('text', { x: M.l + pw / 2, y: H - 4, fill: muted, 'font-size': 10.5, 'text-anchor': 'middle' }); t.textContent = xLabel; this.svg.appendChild(t); }
+      if (yLabel) { const t = el('text', { x: 11, y: M.t + ph / 2, fill: muted, 'font-size': 10.5, 'text-anchor': 'middle', transform: `rotate(-90 11 ${M.t + ph / 2})` }); t.textContent = yLabel; this.svg.appendChild(t); }
+    },
+    curve(fn, color, opts = {}) {
+      let d = '', n = 240;
+      for (let i = 0; i <= n; i++) {
+        const x = i / n, y = fn(x);
+        if (!isFinite(y)) continue;
+        d += (d ? 'L' : 'M') + X(x).toFixed(2) + ' ' + Y(clamp(y, yd[0] - 1, yd[1] + 1)).toFixed(2);
+      }
+      const p = el('path', { d, fill: 'none', stroke: color, 'stroke-width': opts.width || 2,
+        'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+      if (opts.dash) p.setAttribute('stroke-dasharray', opts.dash);
+      if (opts.opacity) p.setAttribute('opacity', opts.opacity);
+      this.svg.appendChild(p);
+      if (opts.label) {
+        const yEnd = clamp(fn(1), yd[0], yd[1]);
+        const t = el('text', { x: M.l + pw + 7, y: Y(yEnd) + 3.5, fill: color, 'font-size': 11, 'font-weight': 600 });
+        t.textContent = opts.label; this.svg.appendChild(t);
+      }
+      return p;
+    },
+    labelAt(x, y, text, color) {
+      const t = el('text', { x: X(x), y: Y(y) - 8, fill: color, 'font-size': 11, 'font-weight': 600, 'text-anchor': 'middle' });
+      t.textContent = text; this.svg.appendChild(t);
+    },
+    dot(x, y, color, r = 4) {
+      this.svg.appendChild(el('circle', { cx: X(x), cy: Y(y), r: r + 1.5, fill: cssv('--surface') }));
+      this.svg.appendChild(el('circle', { cx: X(x), cy: Y(y), r, fill: color }));
+    },
+    hover(series, fmtX) {
+      const g = el('g', { opacity: 0 });
+      const vline = el('line', { y1: M.t, y2: M.t + ph, stroke: cssv('--muted'), 'stroke-width': 1, 'stroke-dasharray': '3 3' });
+      g.appendChild(vline);
+      const box = el('rect', { rx: 5, fill: cssv('--surface'), stroke: cssv('--border'), 'stroke-width': 1 });
+      g.appendChild(box);
+      const txts = series.map(() => { const t = el('text', { 'font-size': 10.5, 'font-family': 'ui-monospace, Consolas, monospace' }); g.appendChild(t); return t; });
+      const xt = el('text', { 'font-size': 10.5, 'font-weight': 600, fill: cssv('--ink'), 'font-family': 'ui-monospace, Consolas, monospace' });
+      g.appendChild(xt);
+      const dots = series.map(s => { const c = el('circle', { r: 3.5, fill: s.color }); g.appendChild(c); return c; });
+      this.svg.appendChild(g);
+      const move = ev => {
+        const pt = this.svg.getBoundingClientRect();
+        const px = (ev.clientX - pt.left) / pt.width * W;
+        const x = clamp((px - M.l) / pw, 0, 1);
+        vline.setAttribute('x1', X(x)); vline.setAttribute('x2', X(x));
+        const lines = series.map(s => s.name + ' ' + s.fn(x).toFixed(4));
+        const bw = Math.max(76, 7 * Math.max(...lines.map(l => l.length), 8) + 16);
+        const bh = 16 + lines.length * 14;
+        let bx = X(x) + 10; if (bx + bw > M.l + pw) bx = X(x) - bw - 10;
+        box.setAttribute('x', bx); box.setAttribute('y', M.t + 6);
+        box.setAttribute('width', bw); box.setAttribute('height', bh);
+        xt.setAttribute('x', bx + 8); xt.setAttribute('y', M.t + 20);
+        xt.textContent = (fmtX || (v => 'x ' + v.toFixed(3)))(x);
+        txts.forEach((t, i) => {
+          t.setAttribute('x', bx + 8); t.setAttribute('y', M.t + 34 + i * 14);
+          t.setAttribute('fill', series[i].color); t.textContent = lines[i];
+        });
+        dots.forEach((c, i) => {
+          const v = clamp(series[i].fn(x), yd[0], yd[1]);
+          c.setAttribute('cx', X(x)); c.setAttribute('cy', Y(v));
+        });
+        g.setAttribute('opacity', 1);
+      };
+      this.svg.addEventListener('pointermove', move);
+      this.svg.addEventListener('pointerleave', () => g.setAttribute('opacity', 0));
+    }
+  };
+}
+
+/* ============================================================
+   1 — sRGB
+   ============================================================ */
+function drawSrgb() {
+  const svg = document.getElementById('p-srgb');
+  const p = Plot(svg, {}); p.clear(); p.frame("vrednost u fajlu  S", "linearno svetlo  L");
+  p.curve(x => Math.pow(x, 2.2), cssv('--s2'), { label: '2,2' });
+  p.curve(srgbDecode, cssv('--s1'), { label: 'spec' });
+  p.hover([{ name: 'spec ', fn: srgbDecode, color: cssv('--s1') },
+           { name: '2,2  ', fn: x => Math.pow(x, 2.2), color: cssv('--s2') }], v => 'S ' + v.toFixed(3));
+  const a = srgbDecode(100 / 255), b = srgbDecode(200 / 255);
+  document.getElementById('r-srgb').innerHTML =
+    `Primer iz plana §4.2 — odnos svetline za S=100 i S=200:\n` +
+    `  po spec-u:        L(200)/L(100) = ${(b / a).toFixed(3)}\n` +
+    `  po aproksimaciji: 2^2.2         = ${Math.pow(2, 2.2).toFixed(3)}\n` +
+    `Razlika je <b>${(Math.abs(b / a - Math.pow(2, 2.2)) / (b / a) * 100).toFixed(1)}%</b>, sistematska i najveća u tamnim tonovima.`;
+}
+
+/* ============================================================
+   2 — smoothstep
+   ============================================================ */
+function drawSs() {
+  const svg = document.getElementById('p-ss');
+  const p = Plot(svg, {}); p.clear(); p.frame("x", "S(x)");
+  p.curve(x => x, cssv('--axis'), { dash: '4 4', width: 1.5 });
+  p.curve(x => x * x * (3 - 2 * x), cssv('--s1'), { label: 'S(x)' });
+  p.hover([{ name: 'S(x) ', fn: x => x * x * (3 - 2 * x), color: cssv('--s1') }]);
+}
+
+/* ============================================================
+   3 — kontrast
+   ============================================================ */
+function drawContrast() {
+  const s = +document.getElementById('c-contrast').value / 100;
+  document.getElementById('v-contrast').textContent = (s > 0 ? '+' : '') + Math.round(s * 100);
+  const svg = document.getElementById('p-contrast');
+  const p = Plot(svg, {}); p.clear(); p.frame("ulaz", "izlaz");
+  p.curve(x => x, cssv('--axis'), { dash: '4 4', width: 1.5 });
+  const f = x => contrastOp(x, s);
+  p.curve(f, cssv('--s1'), { label: 'kontrast' });
+  p.dot(0.5, f(0.5), cssv('--s1'), 3.5);
+  p.hover([{ name: 'izlaz ', fn: f, color: cssv('--s1') }]);
+  // monotonost i opseg — numerički
+  let mono = true, lo = 1, hi = 0, prev = -1;
+  for (let i = 0; i <= 2000; i++) { const y = f(i / 2000); if (y < prev - 1e-9) mono = false; prev = y; lo = Math.min(lo, y); hi = Math.max(hi, y); }
+  document.getElementById('r-contrast').innerHTML =
+    `sredina  f(0.5) = <b>${f(0.5).toFixed(4)}</b>   (uvek 0.5 — srednja siva se ne pomera)\n` +
+    `monotono: ${mono ? '<span class="ok">da</span>' : '<span class="bad">NE</span>'}` +
+    `    opseg izlaza: [${lo.toFixed(4)}, ${hi.toFixed(4)}]` +
+    (lo >= -1e-6 && hi <= 1 + 1e-6 ? '  <span class="ok">unutar [0,1]</span>' : '  <span class="bad">van [0,1]</span>');
+}
+
+/* ============================================================
+   4 — maske
+   ============================================================ */
+function drawMasks() {
+  const svg = document.getElementById('p-masks');
+  const p = Plot(svg, {}); p.clear(); p.frame("luma  Y'", "težina  w");
+  const C = [cssv('--s1'), cssv('--s2'), cssv('--s3'), cssv('--s4')];
+  p.curve(y => w_bl(y) + w_sh(y) + w_hi(y) + w_wh(y), cssv('--muted'), { width: 1.5, dash: '5 4' });
+  p.curve(w_bl, C[0], {}); p.curve(w_sh, C[1], {}); p.curve(w_hi, C[2], {}); p.curve(w_wh, C[3], {});
+  // direktne oznake (obavezne — kontrast aqua/yellow ispod 3:1 u light režimu)
+  p.labelAt(0.02, w_bl(0.02), 'blacks', C[0]);
+  p.labelAt(0.25, 1, 'shadows', C[1]);
+  p.labelAt(0.75, 1, 'highlights', C[2]);
+  p.labelAt(0.97, w_wh(0.97), 'whites', C[3]);
+  p.labelAt(0.5, 0.40, 'zbir', cssv('--muted'));
+  p.hover([{ name: 'blacks     ', fn: w_bl, color: C[0] }, { name: 'shadows    ', fn: w_sh, color: C[1] },
+           { name: 'highlights ', fn: w_hi, color: C[2] }, { name: 'whites     ', fn: w_wh, color: C[3] },
+           { name: 'zbir       ', fn: y => w_bl(y) + w_sh(y) + w_hi(y) + w_wh(y), color: cssv('--muted') }],
+          v => "Y' " + v.toFixed(3));
+  const rows = [0, 0.25, 0.5, 0.75, 1];
+  let h = '<tr><th>Y\'</th><th>w_bl</th><th>w_sh</th><th>w_hi</th><th>w_wh</th><th>zbir</th></tr>';
+  for (const y of rows) {
+    const v = [w_bl(y), w_sh(y), w_hi(y), w_wh(y)];
+    h += `<tr><td>${y.toFixed(2)}</td>` + v.map(x => `<td>${x.toFixed(4)}</td>`).join('') +
+         `<td>${v.reduce((a, b) => a + b, 0).toFixed(4)}</td></tr>`;
+  }
+  document.getElementById('t-masks').innerHTML = h;
+}
+
+/* ============================================================
+   5 — Δ
+   ============================================================ */
+function drawDelta() {
+  const g = id => +document.getElementById(id).value;
+  const bl = g('c-bl'), sh = g('c-sh'), hi = g('c-hi'), wh = g('c-wh');
+  const fmt = v => (v > 0 ? '+' : '') + v;
+  document.getElementById('v-bl').textContent = fmt(bl);
+  document.getElementById('v-sh').textContent = fmt(sh);
+  document.getElementById('v-hi').textContent = fmt(hi);
+  document.getElementById('v-wh').textContent = fmt(wh);
+  const f = y => K_REG * ((hi / 100) * w_hi(y) + (sh / 100) * w_sh(y) + (wh / 100) * w_wh(y) + (bl / 100) * w_bl(y));
+  const svg = document.getElementById('p-delta');
+  const p = Plot(svg, { yDomain: [-0.25, 0.25] }); p.clear(); p.frame("luma  Y'", "pomeraj  Δ");
+  p.curve(() => 0, cssv('--axis'), { dash: '4 4', width: 1.5 });
+  p.curve(f, cssv('--s1'), { label: 'Δ' });
+  p.hover([{ name: 'Δ ', fn: f, color: cssv('--s1') }], v => "Y' " + v.toFixed(3));
+}
+
+/* ============================================================
+   6 — kriva
+   ============================================================ */
+const PRESETS = {
+  neutral: [[0, 0], [1, 1]],
+  medium: [[0, 0], [32 / 255, 22 / 255], [64 / 255, 56 / 255], [128 / 255, 128 / 255], [192 / 255, 196 / 255], [1, 1]],
+  extreme: [[0, 0], [0.18, 0.02], [0.35, 0.62], [0.62, 0.66], [1, 1]]
+};
+// Početno stanje je NEUTRALNO namerno: na učitavanju stranice obe slike u sekciji 7
+// moraju biti identične. Presete iz sekcije 6 korisnik bira sam.
+let curvePts = PRESETS.neutral.map(p => p.slice());
+
+function drawCurve() {
+  const svg = document.getElementById('p-curve');
+  const showLin = document.getElementById('k-linear').checked;
+  const showLut = document.getElementById('k-lut').checked;
+  const p = Plot(svg, {}); p.clear(); p.frame("ulaz", "izlaz");
+  p.curve(x => x, cssv('--axis'), { dash: '4 4', width: 1.5 });
+  const { m, fixed } = tangents(curvePts);
+  if (showLut) {
+    const NV = 32, lutV = new Float32Array(NV);
+    for (let i = 0; i < NV; i++) lutV[i] = clamp(evalCurve(curvePts, m, i / (NV - 1)), 0, 1);
+    for (let i = 0; i < NV; i++) p.dot(i / (NV - 1), lutV[i], cssv('--muted'), 2.4);
+  }
+  if (showLin) p.curve(x => evalLinear(curvePts, x), cssv('--s2'), { label: 'pravolinijska', width: 2 });
+  p.curve(x => clamp(evalCurve(curvePts, m, x), 0, 1), cssv('--s1'), { label: 'spec' });
+  curvePts.forEach((pt, i) => p.dot(pt[0], pt[1], cssv('--s1'), 6));
+  // drag
+  const W = svg.viewBox.baseVal.width, M = p.M;
+  let drag = -1;
+  const toData = ev => {
+    const r = svg.getBoundingClientRect();
+    const px = (ev.clientX - r.left) / r.width * W;
+    const py = (ev.clientY - r.top) / r.height * svg.viewBox.baseVal.height;
+    return [clamp((px - M.l) / p.pw, 0, 1), clamp(1 - (py - M.t) / p.ph, 0, 1)];
+  };
+  svg.onpointerdown = ev => {
+    const [x, y] = toData(ev);
+    let best = -1, bd = 0.05;
+    curvePts.forEach((pt, i) => { const d = Math.hypot(pt[0] - x, pt[1] - y); if (d < bd) { bd = d; best = i; } });
+    if (best >= 0) { drag = best; svg.setPointerCapture(ev.pointerId); }
+  };
+  svg.onpointermove = ev => {
+    if (drag < 0) return;
+    const [x, y] = toData(ev);
+    const lo = drag === 0 ? 0 : curvePts[drag - 1][0] + 0.02;
+    const hi = drag === curvePts.length - 1 ? 1 : curvePts[drag + 1][0] - 0.02;
+    curvePts[drag] = [drag === 0 ? 0 : drag === curvePts.length - 1 ? 1 : clamp(x, lo, hi), y];
+    drawCurve(); drawPipeline();
+  };
+  svg.onpointerup = svg.onpointercancel = () => { drag = -1; };
+  // readout
+  const { d } = tangents(curvePts);
+  let mono = true, prev = -1;
+  for (let i = 0; i <= 2000; i++) { const y = evalCurve(curvePts, m, i / 2000); if (y < prev - 1e-9) mono = false; prev = y; }
+  const worst = [];
+  for (let i = 0; i < curvePts.length - 1; i++) {
+    if (d[i] === 0) { worst.push('—'); continue; }
+    const a = m[i] / d[i], b = m[i + 1] / d[i];
+    worst.push((a * a + b * b).toFixed(2));
+  }
+  document.getElementById('r-curve').innerHTML =
+    `kontrolnih tačaka: <b>${curvePts.length}</b>    LUT ćelija: <b>${N_LUT}</b>\n` +
+    `sekantni nagibi Δ: ${d.map(v => v.toFixed(3)).join('  ')}\n` +
+    `tangenti m:        ${m.map(v => v.toFixed(3)).join('  ')}\n` +
+    `α²+β² po segmentu: ${worst.join('  ')}   (prag 9 — iznad njega Fritsch–Carlson skalira)\n` +
+    `ispravka monotonosti primenjena na segmente: <b>${fixed.length ? fixed.join(', ') : 'nijedan'}</b>\n` +
+    `kriva monotona: ${mono ? '<span class="ok">da</span>' : '<span class="bad">NE</span>'}`;
+}
+
+/* ============================================================
+   7 — pipeline
+   ============================================================ */
+const IW = 480, IH = 240;
+let srcData = null;
+
+function buildSource() {
+  const d = new Uint8ClampedArray(IW * IH * 4);
+  const put = (x, y, r, g, b) => { const i = (y * IW + x) * 4; d[i] = r; d[i + 1] = g; d[i + 2] = b; d[i + 3] = 255; };
+  const hsl = (h, s, l) => {
+    const c = (1 - Math.abs(2 * l - 1)) * s, hp = h / 60, xx = c * (1 - Math.abs(hp % 2 - 1));
+    let r = 0, g = 0, b = 0;
+    if (hp < 1) [r, g, b] = [c, xx, 0]; else if (hp < 2) [r, g, b] = [xx, c, 0];
+    else if (hp < 3) [r, g, b] = [0, c, xx]; else if (hp < 4) [r, g, b] = [0, xx, c];
+    else if (hp < 5) [r, g, b] = [xx, 0, c]; else [r, g, b] = [c, 0, xx];
+    const mm = l - c / 2;
+    return [(r + mm) * 255, (g + mm) * 255, (b + mm) * 255];
+  };
+  for (let y = 0; y < IH; y++) {
+    for (let x = 0; x < IW; x++) {
+      if (y < 80) { const v = Math.round(x / (IW - 1) * 255); put(x, y, v, v, v); }
+      else if (y < 160) { const [r, g, b] = hsl(x / IW * 360, 0.85, 0.5); put(x, y, r, g, b); }
+      else {
+        const blocks = [[0, 0, 0], [8, 8, 8], [32, 32, 32], [128, 128, 128], [223, 223, 223], [247, 247, 247],
+                        [255, 255, 255], [220, 30, 30], [30, 190, 60], [40, 70, 220]];
+        const bi = Math.min(blocks.length - 1, Math.floor(x / IW * blocks.length));
+        put(x, y, blocks[bi][0], blocks[bi][1], blocks[bi][2]);
+      }
+    }
+  }
+  srcData = d;
+  document.getElementById('cv-src').getContext('2d').putImageData(new ImageData(d, IW, IH), 0, 0);
+}
+
+function recipe() {
+  const g = id => +document.getElementById('f-' + id).value;
+  return { temperature: g('temperature'), tint: g('tint'), exposure: g('exposure'),
+           highlights: g('highlights'), shadows: g('shadows'), whites: g('whites'), blacks: g('blacks'),
+           contrast: g('contrast'), saturation: g('saturation'), vibrance: g('vibrance'),
+           points: curvePts };
+}
+
+// §4 — redosled operacija, sa pravilom preskakanja §4.1
+function renderImage(src, rc) {
+  const out = new Uint8ClampedArray(src.length);
+  const wbSkip  = rc.temperature === 0 && rc.tint === 0;
+  const expSkip = rc.exposure === 0;
+  const regSkip = rc.highlights === 0 && rc.shadows === 0 && rc.whites === 0 && rc.blacks === 0;
+  const conSkip = rc.contrast === 0;
+  const curSkip = rc.points.length === 2 && rc.points[0][0] === 0 && rc.points[0][1] === 0 &&
+                  rc.points[1][0] === 1 && rc.points[1][1] === 1;
+  const satSkip = rc.saturation === 0 && rc.vibrance === 0;
+  const linSkip = wbSkip && expSkip;            // koraci 1 i 4 idu zajedno
+
+  let mR = 1, mG = 1, mB = 1;
+  if (!wbSkip) {
+    const t = rc.temperature / 100, u = rc.tint / 100;
+    mR = Math.pow(2, +K_WB * t); mG = Math.pow(2, -K_WB * u); mB = Math.pow(2, -K_WB * t);
+    const Ym = luma(mR, mG, mB); mR /= Ym; mG /= Ym; mB /= Ym;
+  }
+  const eK = expSkip ? 1 : Math.pow(2, rc.exposure);
+  const lut = curSkip ? null : buildLUT(rc.points);
+
+  for (let i = 0; i < src.length; i += 4) {
+    let r = src[i] / 255, g = src[i + 1] / 255, b = src[i + 2] / 255;
+    if (!linSkip) {
+      r = srgbDecode(r); g = srgbDecode(g); b = srgbDecode(b);          // 1
+      if (!wbSkip)  { r *= mR; g *= mG; b *= mB; }                      // 2
+      if (!expSkip) { r *= eK;  g *= eK;  b *= eK;  }                   // 3
+      r = srgbEncode(r); g = srgbEncode(g); b = srgbEncode(b);          // 4
+    }
+    if (!regSkip) {                                                     // 5
+      const Y = luma(r, g, b);
+      const D = K_REG * ((rc.highlights / 100) * w_hi(Y) + (rc.shadows / 100) * w_sh(Y)
+                       + (rc.whites / 100) * w_wh(Y) + (rc.blacks / 100) * w_bl(Y));
+      r += D; g += D; b += D;
+    }
+    if (!conSkip) {                                                     // 6
+      const s = rc.contrast / 100;
+      r = contrastOp(r, s); g = contrastOp(g, s); b = contrastOp(b, s);
+    }
+    if (!curSkip) { r = lutLookup(lut, r); g = lutLookup(lut, g); b = lutLookup(lut, b); }  // 7
+    if (!satSkip) {                                                     // 9
+      const Y = luma(r, g, b), mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+      const pp = (mx - mn) / Math.max(mx, EPS);
+      const gg = (rc.saturation / 100) + (rc.vibrance / 100) * (1 - pp);
+      r = Y + (r - Y) * (1 + gg); g = Y + (g - Y) * (1 + gg); b = Y + (b - Y) * (1 + gg);
+    }
+    out[i]     = Math.floor(clamp(r, 0, 1) * 255 + 0.5);                // 11 + §8.4
+    out[i + 1] = Math.floor(clamp(g, 0, 1) * 255 + 0.5);
+    out[i + 2] = Math.floor(clamp(b, 0, 1) * 255 + 0.5);
+    out[i + 3] = 255;
+  }
+  return out;
+}
+
+function drawPipeline() {
+  const rc = recipe();
+  ['temperature', 'tint', 'exposure', 'highlights', 'shadows', 'whites', 'blacks', 'contrast', 'saturation', 'vibrance']
+    .forEach(k => {
+      const v = rc[k];
+      document.getElementById('fv-' + k).textContent =
+        k === 'exposure' ? (v > 0 ? '+' : '') + v.toFixed(2) : (v > 0 ? '+' : '') + v;
+    });
+  const out = renderImage(srcData, rc);
+  document.getElementById('cv-dst').getContext('2d').putImageData(new ImageData(out, IW, IH), 0, 0);
+  drawSkipTable(rc);
+
+  // Uvek vidljivo stanje: da li je recept neutralan i koliko se bajtova zaista razlikuje.
+  // Bez ovoga se ne vidi da kriva iz sekcije 6 učestvuje u receptu.
+  let diff = 0, worst = 0;
+  for (let i = 0; i < srcData.length; i++) {
+    const d = Math.abs(out[i] - srcData[i]);
+    if (d) { diff++; if (d > worst) worst = d; }
+  }
+  const neutral = curveIsNeutral(rc) && FIELDS.every(k => rc[k] === 0);
+  document.getElementById('r-state').innerHTML =
+    `recept: ${neutral ? '<span class="ok">neutralan</span>' : '<b>nije neutralan</b>'}` +
+    `    kriva: ${curveIsNeutral(rc) ? 'dijagonala' : '<b>' + rc.points.length + ' tačaka</b>'}` +
+    `\nrazlika original vs renderovano: ` +
+    (diff === 0 ? '<span class="ok">0 bajtova — slike su identične</span>'
+                : `<b>${diff.toLocaleString('sr')}</b> bajtova, najveća <b>${worst}</b>`);
+}
+
+function curveIsNeutral(rc) {
+  return rc.points.length === 2 && rc.points[0][0] === 0 && rc.points[0][1] === 0 &&
+         rc.points[1][0] === 1 && rc.points[1][1] === 1;
+}
+
+function drawSkipTable(rc) {
+  const curSkip = rc.points.length === 2 && rc.points[0][0] === 0 && rc.points[0][1] === 0 &&
+                  rc.points[1][0] === 1 && rc.points[1][1] === 1;
+  const wbSkip = rc.temperature === 0 && rc.tint === 0, expSkip = rc.exposure === 0;
+  const rows = [
+    ['2 — balans bele', wbSkip],
+    ['3 — ekspozicija', expSkip],
+    ['5 — tonski regioni', rc.highlights === 0 && rc.shadows === 0 && rc.whites === 0 && rc.blacks === 0],
+    ['6 — kontrast', rc.contrast === 0],
+    ['7 — tonska kriva', curSkip],
+    ['9 — saturacija / vibrance', rc.saturation === 0 && rc.vibrance === 0],
+    ['1 i 4 — dekodiranje i kodovanje', wbSkip && expSkip]
+  ];
+  document.getElementById('t-skip').innerHTML =
+    '<tr><th>korak</th><th>stanje</th></tr>' +
+    rows.map(([n, s]) => `<tr><td>${n}</td><td>${s ? '<span class="ok">preskače se</span>' : 'izvršava se'}</td></tr>`).join('');
+}
+
+/* ============================================================
+   POVEZIVANJE
+   ============================================================ */
+function bind(id, fn) { const e = document.getElementById(id); e.addEventListener('input', fn); e.addEventListener('change', fn); }
+
+document.getElementById('c-reset').onclick = () => { document.getElementById('c-contrast').value = 0; drawContrast(); };
+bind('c-contrast', drawContrast);
+['c-bl', 'c-sh', 'c-hi', 'c-wh'].forEach(id => bind(id, drawDelta));
+['k-linear', 'k-lut'].forEach(id => bind(id, drawCurve));
+document.getElementById('k-medium').onclick = () => { curvePts = PRESETS.medium.map(p => p.slice()); drawCurve(); drawPipeline(); };
+document.getElementById('k-neutral').onclick = () => { curvePts = PRESETS.neutral.map(p => p.slice()); drawCurve(); drawPipeline(); };
+document.getElementById('k-extreme').onclick = () => { curvePts = PRESETS.extreme.map(p => p.slice()); drawCurve(); drawPipeline(); };
+
+const FIELDS = ['temperature', 'tint', 'exposure', 'highlights', 'shadows', 'whites', 'blacks', 'contrast', 'saturation', 'vibrance'];
+FIELDS.forEach(k => bind('f-' + k, drawPipeline));
+document.getElementById('f-reset').onclick = () => {
+  FIELDS.forEach(k => document.getElementById('f-' + k).value = 0);
+  curvePts = PRESETS.neutral.map(p => p.slice());
+  drawCurve(); drawPipeline();
+  document.getElementById('r-pipeline').textContent = '';
+};
+document.getElementById('f-warm').onclick = () => {
+  const v = { temperature: 22, tint: -6, exposure: 0.35, highlights: -30, shadows: 25, whites: 10, blacks: -12, contrast: 18, saturation: 8, vibrance: 20 };
+  FIELDS.forEach(k => document.getElementById('f-' + k).value = v[k]);
+  curvePts = PRESETS.medium.map(p => p.slice());
+  drawCurve(); drawPipeline();
+};
+document.getElementById('f-identity').onclick = () => {
+  const neutral = { temperature: 0, tint: 0, exposure: 0, highlights: 0, shadows: 0, whites: 0, blacks: 0,
+                    contrast: 0, saturation: 0, vibrance: 0, points: PRESETS.neutral };
+  const out = renderImage(srcData, neutral);
+  let diff = 0, worst = 0;
+  for (let i = 0; i < srcData.length; i++) { const d = Math.abs(out[i] - srcData[i]); if (d) { diff++; worst = Math.max(worst, d); } }
+  const el2 = document.getElementById('r-pipeline');
+  el2.innerHTML =
+    `Provera koristi <b>sopstveni</b> potpuno neutralan recept — svih 10 parametara na 0 i\n` +
+    `kriva na dijagonali — bez obzira na to kako slajderi trenutno stoje.\n\n` +
+    (diff === 0
+      ? `<span class="ok">bit-identično</span> — ${(srcData.length / 4).toLocaleString('sr')} piksela, 0 razlika.\n` +
+        `Nijedna aritmetička operacija nije izvršena: sve je preskočeno po §4.1.`
+      : `<span class="bad">razlika</span> — ${diff} bajtova se razlikuje, najveća ${worst}.\n` +
+        `To znači da pravilo preskakanja negde ne radi.`);
+};
+
+buildSource();
+drawSrgb(); drawSs(); drawContrast(); drawMasks(); drawDelta(); drawCurve(); drawPipeline();
+
+const mq = window.matchMedia('(prefers-color-scheme: dark)');
+mq.addEventListener('change', () => { drawSrgb(); drawSs(); drawContrast(); drawMasks(); drawDelta(); drawCurve(); });
+</script>
+</body>
+</html>
