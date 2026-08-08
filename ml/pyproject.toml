@@ -13,6 +13,10 @@ requires-python = ">=3.14"
 # concern, or the pipeline starts dragging a web framework along.
 dependencies = [
     "pydantic>=2.13,<3",
+    # The renderer is vectorised NumPy: the same code runs over a 512px image
+    # while fitting and over a full-resolution export. The pipeline needs it as
+    # much as the service does, so it belongs to the library, not the extra.
+    "numpy>=2.5,<3",
 ]
 
 [project.optional-dependencies]
