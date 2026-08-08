@@ -470,6 +470,35 @@ Domeni: `blacks` [0, 0.25] · `shadows` [0, 0.60] · `highlights` [0.40, 1.00] �
 `whites` [0.75, 1.00]. Preklapanje `shadows`/`highlights` na [0.40, 0.60] je malo sa obe
 strane i namerno — bez njega bi postojala svetlina koju nijedan regionalni slajder ne dohvata.
 
+### 7.3.1 Ponašanje iznad `Y' = 1` — obavezno za obe implementacije
+
+Luma sme da pređe 1,0 između koraka 4 i 11 (§5); ekspozicija to radi redovno. `smoothstep`
+**odseca**, pa iznad te granice maske imaju fiksne vrednosti:
+
+| `Y'` | `w_bl` | `w_sh` | `w_hi` | `w_wh` |
+|---|---|---|---|---|
+| 0.98 | 0.000 | 0.000 | 0.018 | 0.982 |
+| **≥ 1.00** | **0.000** | **0.000** | **0.000** | **1.000** |
+
+**Posledica:** piksel izbačen preko bele dohvata **samo `whites`**. `highlights` ga ne dira ma
+koliko bio negativan.
+
+To je namerno i **ne sme se „popravljati"**. `whites` po definiciji drži krajnji svetli kraj
+opsega, a piksel iznad bele jeste taj kraj. Implementacija koja bi produžila `highlights`
+prozor iznad 1,0 — ili izostavila odsecanje u `smoothstep`-u — razišla bi se sa drugom, a
+golden test bi to prijavio kao razliku bez objašnjenja.
+
+Napomena je ovde jer je **suprotna navici**: u većini editora je „Highlights" slajder za
+vraćanje presvetljenog, a „Whites" pomera belu tačku. Kod nas taj posao radi `whites`.
+
+Merenjem: piksel `0.6` uz `exposure = +2` završi na lumi `1.112`. Sa `highlights = −100`
+ostaje na `1.0`; sa `whites = −100` padne ispod `0.95`. Zaključano testovima
+`test_above_white_the_range_belongs_entirely_to_whites` i
+`test_above_white_only_whites_reaches_the_pixel_not_highlights`.
+
+Posledica za Fazu 2: ekspertski edit koji je vratio presvetljena svetla naše fitovanje može da
+izrazi samo kroz `whites` ili master krivu, što će se videti u raspodeli fitovanih vrednosti.
+
 ### 7.4 Priznata granica tačnosti
 
 Lightroomove maske su **sadržajno adaptivne** — gledaju lokalno okruženje piksela. Naše su
