@@ -119,8 +119,12 @@ G ← G · (m_G / Y_m)
 B ← B · (m_B / Y_m)
 ```
 
-**Konstanta:** `K_WB = 0.5`. Na `temperature = +100` daje `m_R/m_B = 2` — dvostruko više
+**Konstanta:** `K_WB = 1.5`. Na `temperature = +100` daje `m_R/m_B = 8` — osam puta više
 crvenog nego plavog pre normalizacije.
+
+Prvobitno je stajalo `0.5` (odnos 2). Sonda Faze 1b je pokazala da je to premalo: prelazak sa
+svetla sijalice na dnevno svetlo odnos 2 ne može da izrazi, pa je fitovanje kod slika sa jakom
+dominantom oblo zasićenost umesto da ispravi belu. **ADR-19**, sa merenjima.
 
 **Smer:** `temperature > 0` = toplije (više crvenog, manje plavog). `tint > 0` = ka magenti
 (manje zelenog; normalizacija time relativno podiže crveno i plavo).
@@ -531,7 +535,7 @@ budžet ΔE ni za šta. Sve formule u ovom dokumentu su izabrane tako da to ogra
 
 | Oznaka | Vrednost | Gde |
 |---|---|---|
-| `K_WB` | `0.5` | §3.1, jačina balansa bele |
+| `K_WB` | `1.5` | §3.1, jačina balansa bele — kalibrisano u 1b, ADR-19 |
 | `K_REG` | `0.25` | §3.3, jačina tonskih regiona |
 | `ε` | `1e-6` | §3.6, zaštita deljenja |
 | `N` | `1024` | §6.3, veličina LUT-a |

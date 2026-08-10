@@ -60,8 +60,11 @@ def test_white_balance_warms_towards_red_and_away_from_blue() -> None:
 
     assert warm[0] > warm[2], "positive temperature must favour red over blue"
     assert cool[0] < cool[2]
-    # Before normalisation the ratio is 2^(2 * K_WB) = 2 at the range limit.
-    assert float(warm[0] / warm[2]) == pytest.approx(2.0, abs=1e-5)
+
+    # At the range limit the red-to-blue ratio is 2^(2 * K_WB) = 8. It was 2 until
+    # the phase 1b probe showed that too narrow to express a tungsten-to-daylight
+    # correction, and the fit drained saturation instead (ADR-19).
+    assert float(warm[0] / warm[2]) == pytest.approx(8.0, abs=1e-4)
 
 
 def test_tint_moves_along_the_green_magenta_axis() -> None:

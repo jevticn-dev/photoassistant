@@ -284,7 +284,8 @@ const w_wh = y => smoothstep(0.75, 1.00, y);
 // §3.4
 const contrastOp = (x, s) => x + s * (x * x * (3 - 2 * x) - x);
 // §8.3
-const K_WB = 0.5, K_REG = 0.25, EPS = 1e-6, N_LUT = 1024;
+// K_WB podignut sa 0.5 na 1.5 posle sonde Faze 1b (ADR-19).
+const K_WB = 1.5, K_REG = 0.25, EPS = 1e-6, N_LUT = 1024;
 
 // §6.2 — monotona kubna interpolacija
 function tangents(pts) {

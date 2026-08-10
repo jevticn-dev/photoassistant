@@ -22,10 +22,19 @@ from photoassistant.renderer.color import luma, srgb_decode, srgb_encode
 from photoassistant.renderer.curve import apply_lut, build_lut, is_identity
 from photoassistant.schema import EditRecipe
 
-# Constants from spec §8.3. Chosen to give a usable range at the ends of each
-# scale, not calibrated against data — phase 1b measures whether they are right
-# and any correction goes through an ADR (see RENDERER_SPEC.md §10).
-K_WB = np.float32(0.5)
+# Constants from spec §8.3.
+#
+# K_WB was calibrated by the phase 1b probe and raised from 0.5 to 1.5 (ADR-19):
+# at 0.5 the ends of the range could only reach a red-to-blue ratio of 2, too
+# little for a tungsten-to-daylight shift, and the fit compensated by draining
+# saturation instead of correcting the cast. Widening helps exactly the images
+# that were pinned and leaves the rest unchanged; past 1.5 there is no further
+# gain.
+#
+# The rest are still the values chosen when the spec was written, and the probe
+# found no reason to move them — K_REG in particular measured as making no
+# difference at all.
+K_WB = np.float32(1.5)
 K_REG = np.float32(0.25)
 EPS = np.float32(1e-6)
 
