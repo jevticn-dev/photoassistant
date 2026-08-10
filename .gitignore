@@ -12,6 +12,10 @@ Dataset/
 !.env.example
 
 # --- Python -----------------------------------------------------------------
+# Scratch space for the phase 1b probe: downloaded expert TIFFs and the 512px
+# derivatives. Reproducible from pipeline/probe/, and several gigabytes.
+pipeline/.work/
+
 .venv/
 venv/
 __pycache__/

@@ -17,6 +17,18 @@ dependencies = [
     # while fitting and over a full-resolution export. The pipeline needs it as
     # much as the service does, so it belongs to the library, not the extra.
     "numpy>=2.5,<3",
+    # Decoding DNG to our own neutral starting point (ADR-4). Library, not dev:
+    # the offline pipeline installs only [project] dependencies, and it is the
+    # pipeline that needs this most.
+    "rawpy>=0.27,<0.28",
+    # Reading the 16-bit expert renditions. Pillow silently downconverts a
+    # 16-bit TIFF to 8-bit — no warning, no error, and 75% of pixels lose their
+    # low byte. See .claude/rules/pipeline.md.
+    "tifffile>=2026.7,<2027",
+    # Least-squares fitting of the eleven parameters against a before/after pair
+    # (plan §4.3). Library, because phase 2 runs the same loop over 25,000 edits
+    # from the pipeline, which installs only [project] dependencies.
+    "scipy>=1.18,<2",
 ]
 
 [project.optional-dependencies]

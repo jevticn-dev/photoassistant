@@ -1,0 +1,408 @@
+{
+  "expert": "c",
+  "count": 100,
+  "drawn_from": 5000,
+  "method": "every 50th entry of the sorted union of filesAdobe.txt and filesAdobeMIT.txt",
+  "photos": [
+    {
+      "basename": "a0001-jmac_DSC1459",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a0051-WP_CRW_3461",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a0101-kme_610",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a0151-JI2E3955",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a0201-MB_20030906_073",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a0251-DSC_0061-2",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a0301-IMG_4669",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a0351-MB_070908_006",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a0401-kme_189",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a0451-Ja_Pe-73",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a0501-_MG_7370",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a0551-DSC_0008",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a0601-07-11-26-at-12h45m09s-_MG_7055",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a0651-dgw_129",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a0701-jn_2007_12_10__BU_CRUISE_001",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a0751-kme_582",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a0801-07-08-11-at-16h32m03s-_MG_3277",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a0851-NKIM_MG_6583",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a0901-jn_2007_12_12__BU_CRUISE_066",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a0951-LSstone_060806_9608",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a1001-IMG_0584",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a1051-IMG_1488",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a1101-kme_432",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a1151-Ja_Pe-79",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a1201-WP_CRW_4844",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a1251-_DGW6263",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a1301-07-11-24-at-14h40m51s-_MG_6711",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a1351-jn_2007_05_14__770",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a1401-DSC_0034-1",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a1451-07-06-28-at-12h47m34s-_MG_1828",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a1501-_DSC7449",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a1551-IMG_4167",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a1601-IMG_4767",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a1651-kme_275",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a1701-jmac_DSC3938",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a1751-DSC_0008-2",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a1801-WP_CRW_0380",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a1851-IMG_3979",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a1901-_MG_0357",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a1951-CRW_0014",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2001-kme_272",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2051-LS051026_day_10_LL018",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2101-_DSC1809",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2151-Ja_Pe-21",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2201-050716_220126__I2E4382",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a2251-kme_062",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2301-IMG_3499",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a2351-WP_CRW_2780",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2401-LS_060724_8814",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2451-07-07-17-at-00h36m15s-_MG_2335",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a2501-MB_20030906_049",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2551-kme_057",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2601-050812_154948__MG_3818",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a2651-dgw_017",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2701-_DSC0057",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2751-jn_20081025_Kent_Shelter_005",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2801-MB_050809_018",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2851-kme_340",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a2901-_DSC0013-4",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a2951-jmac_MG_5613",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a3001-IMG_0895",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a3051-07-06-01-at-13h01m22-s_MG_1255",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a3101-jn_20081011_028",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a3151-_DSC2837",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a3201-kme_518",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a3251-_DSC1093",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a3301-IMG_5187",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a3351-KE_-1722",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a3401-20061111_122429__E6B5415",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a3451-IMG_1088",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a3501-dgw_154",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a3551-MB_080627_668",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a3601-kme_435",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a3651-kme_579",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a3701-Ja_Pe-55",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a3751-07-11-04-at-18h05m15s-_MG_4020",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a3801-jmacDSC_0380",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a3851-IMG_3430",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a3901-IMG_3788",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a3951-IMG_0100",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4001-jn_20070824_0168",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a4051-_DSC0018-3",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4101-IMG_5823",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a4151-dvf_026",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a4201-_DSC0120",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4251-DSC_0248",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4301-_DSC0054",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4351-Duggan_090428_8083",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4401-kme_0250",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4451-Duggan_080821_1263",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4501-DSC_0354",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4551-kme_0625",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4601-Duggan_090331_6495",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4651-_DGW0292",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4701-kme_0138",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4751-Duggan_080819_1030",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4801-_DGW0327",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4851-kme_274",
+      "licence": "adobe"
+    },
+    {
+      "basename": "a4901-DSC_0234",
+      "licence": "adobe-mit"
+    },
+    {
+      "basename": "a4951-_DGW0252",
+      "licence": "adobe-mit"
+    }
+  ]
+}

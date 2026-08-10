@@ -1,0 +1,5491 @@
+{
+  "photographs": 97,
+  "total_seconds": 7724.3,
+  "fits_per_photograph": 4,
+  "seconds_per_fit": 19.91,
+  "untouched": {
+    "mean": 13.365,
+    "median": 12.624,
+    "p90": 21.27,
+    "min": 1.85,
+    "max": 43.599
+  },
+  "sliders_from_theirs": {
+    "mean": 2.733,
+    "median": 2.647,
+    "p90": 4.174,
+    "min": 0.657,
+    "max": 5.922
+  },
+  "curve_from_theirs": {
+    "mean": 1.682,
+    "median": 1.587,
+    "p90": 2.578,
+    "min": 0.44,
+    "max": 3.882
+  },
+  "sliders_from_ours": {
+    "mean": 4.612,
+    "median": 4.406,
+    "p90": 6.835,
+    "min": 1.569,
+    "max": 9.654
+  },
+  "curve_from_ours": {
+    "mean": 4.005,
+    "median": 3.942,
+    "p90": 5.936,
+    "min": 1.252,
+    "max": 9.489
+  },
+  "share_of_difference_explained": {
+    "mean": 0.85,
+    "median": 0.865,
+    "p90": 0.941,
+    "min": 0.484,
+    "max": 0.966
+  },
+  "curve_gain_over_sliders": {
+    "mean": 0.373,
+    "median": 0.405,
+    "p90": 0.58,
+    "min": -0.001,
+    "max": 0.747
+  },
+  "decode_cost": {
+    "mean": 2.323,
+    "median": 2.088,
+    "p90": 4.284,
+    "min": -0.319,
+    "max": 7.43
+  },
+  "parameters_at_bounds": {
+    "whites": 5,
+    "blacks": 3
+  },
+  "parameter_values": {
+    "temperature": {
+      "mean": -5.811,
+      "median": -0.167,
+      "p90": 3.593,
+      "min": -83.742,
+      "max": 37.379
+    },
+    "tint": {
+      "mean": -0.759,
+      "median": -0.542,
+      "p90": 3.49,
+      "min": -18.327,
+      "max": 25.707
+    },
+    "exposure": {
+      "mean": 0.343,
+      "median": 0.371,
+      "p90": 0.915,
+      "min": -1.033,
+      "max": 1.541
+    },
+    "contrast": {
+      "mean": 6.15,
+      "median": 3.863,
+      "p90": 39.327,
+      "min": -40.126,
+      "max": 88.74
+    },
+    "highlights": {
+      "mean": 6.436,
+      "median": 5.378,
+      "p90": 38.139,
+      "min": -90.133,
+      "max": 94.545
+    },
+    "shadows": {
+      "mean": -12.097,
+      "median": -14.101,
+      "p90": 8.581,
+      "min": -41.633,
+      "max": 24.208
+    },
+    "whites": {
+      "mean": -0.566,
+      "median": -6.253,
+      "p90": 80.101,
+      "min": -99.404,
+      "max": 99.75
+    },
+    "blacks": {
+      "mean": -49.982,
+      "median": -48.055,
+      "p90": -20.592,
+      "min": -98.996,
+      "max": 13.036
+    },
+    "saturation": {
+      "mean": 32.486,
+      "median": 30.252,
+      "p90": 53.065,
+      "min": -11.218,
+      "max": 81.704
+    },
+    "vibrance": {
+      "mean": 26.385,
+      "median": 25.269,
+      "p90": 59.094,
+      "min": -35.087,
+      "max": 88.218
+    }
+  },
+  "photos": [
+    {
+      "basename": "a0001-jmac_DSC1459",
+      "untouched_from_ours": 12.751,
+      "untouched_from_theirs": 7.132,
+      "sliders_from_ours": 4.849,
+      "sliders_from_theirs": 1.807,
+      "curve_from_ours": 4.753,
+      "curve_from_theirs": 1.809,
+      "max_curve_from_theirs": 7.287,
+      "seconds": 46.76,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -18.172669912237403,
+          "tint": -7.275418069612889
+        },
+        "tone": {
+          "exposure": 0.07741589130147165,
+          "contrast": 43.95899700192988,
+          "highlights": -13.92132890492847,
+          "shadows": -3.5757527782613456,
+          "whites": 21.120872889041525,
+          "blacks": -26.826801710666675
+        },
+        "color": {
+          "saturation": 29.60867833009557,
+          "vibrance": 27.751580703549823
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.25878132814195953
+            ],
+            [
+              0.5,
+              0.5502352255179243
+            ],
+            [
+              0.75,
+              0.7953564315524273
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0051-WP_CRW_3461",
+      "untouched_from_ours": 6.132,
+      "untouched_from_theirs": 10.594,
+      "sliders_from_ours": 2.968,
+      "sliders_from_theirs": 1.751,
+      "curve_from_ours": 2.525,
+      "curve_from_theirs": 1.399,
+      "max_curve_from_theirs": 12.645,
+      "seconds": 30.42,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 14.230648454484415,
+          "tint": 14.057495576980175
+        },
+        "tone": {
+          "exposure": 0.8157762669308135,
+          "contrast": -1.2645774790228934,
+          "highlights": 13.33606512002212,
+          "shadows": -15.81303733711253,
+          "whites": -67.52113763227825,
+          "blacks": -44.25453135959982
+        },
+        "color": {
+          "saturation": 30.25242201138585,
+          "vibrance": 18.393325090652855
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.29884146413758467
+            ],
+            [
+              0.5,
+              0.536616898229513
+            ],
+            [
+              0.75,
+              0.7635998410380977
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0101-kme_610",
+      "untouched_from_ours": 7.938,
+      "untouched_from_theirs": 7.041,
+      "sliders_from_ours": 3.838,
+      "sliders_from_theirs": 1.821,
+      "curve_from_ours": 3.53,
+      "curve_from_theirs": 1.456,
+      "max_curve_from_theirs": 5.885,
+      "seconds": 66.18,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -1.5442269955763677,
+          "tint": -1.29293150737314
+        },
+        "tone": {
+          "exposure": 0.1504048589394274,
+          "contrast": 10.545629483498594,
+          "highlights": 8.12627239682402,
+          "shadows": -5.4429973847139745,
+          "whites": -0.7942813807829362,
+          "blacks": -19.5892358785643
+        },
+        "color": {
+          "saturation": 22.526509387371764,
+          "vibrance": 20.954521585281345
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.27793070223685823
+            ],
+            [
+              0.5,
+              0.5655773980746296
+            ],
+            [
+              0.75,
+              0.7998276025399633
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0151-JI2E3955",
+      "untouched_from_ours": 4.821,
+      "untouched_from_theirs": 5.306,
+      "sliders_from_ours": 3.435,
+      "sliders_from_theirs": 1.33,
+      "curve_from_ours": 3.381,
+      "curve_from_theirs": 1.051,
+      "max_curve_from_theirs": 19.524,
+      "seconds": 61.64,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 37.378924046466494,
+          "tint": 12.76966458967807
+        },
+        "tone": {
+          "exposure": 0.01058172409607345,
+          "contrast": -3.7531821026666163,
+          "highlights": -65.74864784748563,
+          "shadows": -19.363508764479878,
+          "whites": -17.07728992762583,
+          "blacks": -56.21688149820543
+        },
+        "color": {
+          "saturation": 32.362292466488356,
+          "vibrance": 1.0760960514430882
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.2799837628739859
+            ],
+            [
+              0.5,
+              0.5721662665228224
+            ],
+            [
+              0.75,
+              0.7331865685660979
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0201-MB_20030906_073",
+      "untouched_from_ours": 23.023,
+      "untouched_from_theirs": 25.94,
+      "sliders_from_ours": 4.847,
+      "sliders_from_theirs": 2.849,
+      "curve_from_ours": 4.146,
+      "curve_from_theirs": 2.058,
+      "max_curve_from_theirs": 6.513,
+      "seconds": 23.49,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -1.137185027698219,
+          "tint": 3.648204224352873
+        },
+        "tone": {
+          "exposure": 1.2022955275902945,
+          "contrast": 3.97594846867884,
+          "highlights": 14.130116005591093,
+          "shadows": -17.41635914860524,
+          "whites": 33.03044631791842,
+          "blacks": -37.11282306228746
+        },
+        "color": {
+          "saturation": 31.523673693339116,
+          "vibrance": 62.014127681052585
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.43522517753261014
+            ],
+            [
+              0.5,
+              0.7149757021274441
+            ],
+            [
+              0.75,
+              0.8856623732198141
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0251-DSC_0061-2",
+      "untouched_from_ours": 6.761,
+      "untouched_from_theirs": 9.449,
+      "sliders_from_ours": 5.823,
+      "sliders_from_theirs": 2.312,
+      "curve_from_ours": 5.707,
+      "curve_from_theirs": 1.968,
+      "max_curve_from_theirs": 17.608,
+      "seconds": 124.07,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -4.0732688814859825,
+          "tint": 0.423603707754882
+        },
+        "tone": {
+          "exposure": 0.8389027007166836,
+          "contrast": -30.052970936713447,
+          "highlights": 30.384632814258616,
+          "shadows": 8.882007526063767,
+          "whites": -8.130489072421353,
+          "blacks": -24.105619576120656
+        },
+        "color": {
+          "saturation": -11.217996134601666,
+          "vibrance": 57.05209967470874
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.16699922133374237
+            ],
+            [
+              0.5,
+              0.5339904029373931
+            ],
+            [
+              0.75,
+              0.7360040679481812
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0301-IMG_4669",
+      "untouched_from_ours": 4.617,
+      "untouched_from_theirs": 4.362,
+      "sliders_from_ours": 3.401,
+      "sliders_from_theirs": 3.094,
+      "curve_from_ours": 2.563,
+      "curve_from_theirs": 2.249,
+      "max_curve_from_theirs": 10.424,
+      "seconds": 213.31,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 1.1123642529955076,
+          "tint": 0.5889474544537276
+        },
+        "tone": {
+          "exposure": -0.27097141151357756,
+          "contrast": 14.44533705619062,
+          "highlights": 7.842971803435867,
+          "shadows": 24.207502098580548,
+          "whites": -11.299279042980404,
+          "blacks": 1.5978939882471326
+        },
+        "color": {
+          "saturation": 25.37354640470806,
+          "vibrance": 15.013189805981439
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.21762796526441905
+            ],
+            [
+              0.5,
+              0.5735933871914544
+            ],
+            [
+              0.75,
+              0.7882781120595702
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0351-MB_070908_006",
+      "untouched_from_ours": 10.969,
+      "untouched_from_theirs": 8.439,
+      "sliders_from_ours": 4.053,
+      "sliders_from_theirs": 3.538,
+      "curve_from_ours": 2.473,
+      "curve_from_theirs": 1.816,
+      "max_curve_from_theirs": 15.868,
+      "seconds": 124.27,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 7.219701870755986,
+          "tint": -3.844997284253139
+        },
+        "tone": {
+          "exposure": -0.11740081037072156,
+          "contrast": -19.799293596755312,
+          "highlights": -2.3794184223734485,
+          "shadows": -31.394333281093473,
+          "whites": 73.97553796936118,
+          "blacks": -64.63331057708614
+        },
+        "color": {
+          "saturation": 12.543886815220882,
+          "vibrance": 33.09710834151415
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.37876006224587794
+            ],
+            [
+              0.5,
+              0.6631841302455056
+            ],
+            [
+              0.75,
+              0.8377371760273524
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0401-kme_189",
+      "untouched_from_ours": 6.18,
+      "untouched_from_theirs": 3.606,
+      "sliders_from_ours": 4.353,
+      "sliders_from_theirs": 1.348,
+      "curve_from_ours": 4.153,
+      "curve_from_theirs": 1.051,
+      "max_curve_from_theirs": 16.89,
+      "seconds": 73.27,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -1.0211420104762357,
+          "tint": -0.1753897841322372
+        },
+        "tone": {
+          "exposure": -0.24300501933527613,
+          "contrast": -5.1473517980452685,
+          "highlights": -2.153230642938713,
+          "shadows": -11.23562398338181,
+          "whites": 4.110894973590563,
+          "blacks": -37.7514743002892
+        },
+        "color": {
+          "saturation": 25.950676825774483,
+          "vibrance": 12.26530692191365
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.29704756030534096
+            ],
+            [
+              0.5,
+              0.5845079715126726
+            ],
+            [
+              0.75,
+              0.7985678427868802
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0501-_MG_7370",
+      "untouched_from_ours": 9.65,
+      "untouched_from_theirs": 7.213,
+      "sliders_from_ours": 2.942,
+      "sliders_from_theirs": 1.381,
+      "curve_from_ours": 2.749,
+      "curve_from_theirs": 0.99,
+      "max_curve_from_theirs": 8.248,
+      "seconds": 152.44,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.07303586708259588,
+          "tint": -2.126277547376856
+        },
+        "tone": {
+          "exposure": -0.007708948697071467,
+          "contrast": 2.252388339418052,
+          "highlights": 3.2564329808662444,
+          "shadows": -3.005631762186043,
+          "whites": -27.707933258778176,
+          "blacks": -42.14832953896129
+        },
+        "color": {
+          "saturation": 21.076999332161403,
+          "vibrance": 36.41663146524664
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.2666613726667501
+            ],
+            [
+              0.5,
+              0.6325360857823956
+            ],
+            [
+              0.75,
+              0.8501231427653204
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0551-DSC_0008",
+      "untouched_from_ours": 11.731,
+      "untouched_from_theirs": 12.762,
+      "sliders_from_ours": 9.654,
+      "sliders_from_theirs": 2.707,
+      "curve_from_ours": 9.489,
+      "curve_from_theirs": 2.102,
+      "max_curve_from_theirs": 18.547,
+      "seconds": 137.35,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 3.888063094855044,
+          "tint": 8.515121046213235
+        },
+        "tone": {
+          "exposure": 0.13392443399948453,
+          "contrast": -40.12632720593405,
+          "highlights": 7.399125001873109,
+          "shadows": 4.44408683110067,
+          "whites": -12.41462977678421,
+          "blacks": -21.280779565951992
+        },
+        "color": {
+          "saturation": 22.83803419805552,
+          "vibrance": 30.91786651398486
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.25299479465480346
+            ],
+            [
+              0.5,
+              0.6780897223915519
+            ],
+            [
+              0.75,
+              0.8656523382981328
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0601-07-11-26-at-12h45m09s-_MG_7055",
+      "untouched_from_ours": 9.255,
+      "untouched_from_theirs": 7.418,
+      "sliders_from_ours": 3.889,
+      "sliders_from_theirs": 1.56,
+      "curve_from_ours": 3.763,
+      "curve_from_theirs": 1.267,
+      "max_curve_from_theirs": 15.048,
+      "seconds": 81.47,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.3590891395466802,
+          "tint": -0.5300328025859294
+        },
+        "tone": {
+          "exposure": 0.5001290609189375,
+          "contrast": 61.0844851920311,
+          "highlights": -37.002281492602506,
+          "shadows": -6.798896011430979,
+          "whites": -77.60053689838567,
+          "blacks": -66.44166031568102
+        },
+        "color": {
+          "saturation": 24.1520077380354,
+          "vibrance": 21.215020662595975
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.30909574907181964
+            ],
+            [
+              0.5,
+              0.6025544237334194
+            ],
+            [
+              0.75,
+              0.798525337974491
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0651-dgw_129",
+      "untouched_from_ours": 6.8,
+      "untouched_from_theirs": 3.97,
+      "sliders_from_ours": 2.262,
+      "sliders_from_theirs": 1.544,
+      "curve_from_ours": 2.116,
+      "curve_from_theirs": 0.804,
+      "max_curve_from_theirs": 7.628,
+      "seconds": 91.7,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.7019796938146078,
+          "tint": -0.6720276832888523
+        },
+        "tone": {
+          "exposure": -0.33296186427985974,
+          "contrast": -9.354454076520824,
+          "highlights": -29.36096000185497,
+          "shadows": -8.559984737044145,
+          "whites": 24.141667312362173,
+          "blacks": -36.8574482446763
+        },
+        "color": {
+          "saturation": 31.224206633255964,
+          "vibrance": 15.568880961535209
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.31268196448421476
+            ],
+            [
+              0.5,
+              0.5863746439722024
+            ],
+            [
+              0.75,
+              0.7730791058240589
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0701-jn_2007_12_10__BU_CRUISE_001",
+      "untouched_from_ours": 20.839,
+      "untouched_from_theirs": 20.248,
+      "sliders_from_ours": 4.896,
+      "sliders_from_theirs": 1.744,
+      "curve_from_ours": 4.415,
+      "curve_from_theirs": 1.061,
+      "max_curve_from_theirs": 16.259,
+      "seconds": 82.11,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -1.8396927918075816,
+          "tint": -1.8490288730405737
+        },
+        "tone": {
+          "exposure": 1.0555576514420637,
+          "contrast": 22.676035573679158,
+          "highlights": -22.62642248799276,
+          "shadows": -15.724976836575616,
+          "whites": -22.954444104492612,
+          "blacks": -46.24913518790103
+        },
+        "color": {
+          "saturation": 26.929056771780775,
+          "vibrance": 33.63613068221796
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3614814616667356
+            ],
+            [
+              0.5,
+              0.6568095188485292
+            ],
+            [
+              0.75,
+              0.8412848851085731
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0751-kme_582",
+      "untouched_from_ours": 38.101,
+      "untouched_from_theirs": 43.599,
+      "sliders_from_ours": 3.181,
+      "sliders_from_theirs": 2.144,
+      "curve_from_ours": 2.987,
+      "curve_from_theirs": 2.095,
+      "max_curve_from_theirs": 7.621,
+      "seconds": 18.84,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -1.4753856076179293,
+          "tint": 9.104666590686477
+        },
+        "tone": {
+          "exposure": 1.5414334511587502,
+          "contrast": 88.73960512475149,
+          "highlights": 76.51411239342909,
+          "shadows": -5.963113776394723,
+          "whites": -19.10670651367695,
+          "blacks": -69.14240892643923
+        },
+        "color": {
+          "saturation": 16.490663426743243,
+          "vibrance": 4.913280549534563
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.7115280508640786
+            ],
+            [
+              0.5,
+              0.9774706771421198
+            ],
+            [
+              0.75,
+              0.9851078069321249
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0801-07-08-11-at-16h32m03s-_MG_3277",
+      "untouched_from_ours": 16.391,
+      "untouched_from_theirs": 13.897,
+      "sliders_from_ours": 4.947,
+      "sliders_from_theirs": 3.258,
+      "curve_from_ours": 4.83,
+      "curve_from_theirs": 3.065,
+      "max_curve_from_theirs": 17.014,
+      "seconds": 42.22,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.4317784792357079,
+          "tint": 3.383716015456914
+        },
+        "tone": {
+          "exposure": 0.8386273649610945,
+          "contrast": 12.852142425726463,
+          "highlights": -13.003595941894073,
+          "shadows": -17.012148770692885,
+          "whites": -40.2523786332063,
+          "blacks": -79.09391033673143
+        },
+        "color": {
+          "saturation": 31.000277229721394,
+          "vibrance": 31.501764197680878
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.10690214169051797
+            ],
+            [
+              0.5,
+              0.47301690100151195
+            ],
+            [
+              0.75,
+              0.7711659548706149
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0851-NKIM_MG_6583",
+      "untouched_from_ours": 12.409,
+      "untouched_from_theirs": 12.624,
+      "sliders_from_ours": 4.982,
+      "sliders_from_theirs": 3.111,
+      "curve_from_ours": 4.602,
+      "curve_from_theirs": 2.57,
+      "max_curve_from_theirs": 14.225,
+      "seconds": 131.96,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -12.965843676925298,
+          "tint": -0.14141394794526058
+        },
+        "tone": {
+          "exposure": 0.3714603825942652,
+          "contrast": 60.85217203088427,
+          "highlights": -13.00235731815523,
+          "shadows": -4.547801054485424,
+          "whites": -4.277647412801081,
+          "blacks": -68.56529668142637
+        },
+        "color": {
+          "saturation": 50.36181553359792,
+          "vibrance": 47.66887171510102
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.2695573893653744
+            ],
+            [
+              0.5,
+              0.6408665616817384
+            ],
+            [
+              0.75,
+              0.8840070475303878
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0901-jn_2007_12_12__BU_CRUISE_066",
+      "untouched_from_ours": 15.122,
+      "untouched_from_theirs": 13.653,
+      "sliders_from_ours": 9.139,
+      "sliders_from_theirs": 5.257,
+      "curve_from_ours": 7.747,
+      "curve_from_theirs": 2.524,
+      "max_curve_from_theirs": 25.418,
+      "seconds": 94.91,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.0006568313603830513,
+          "tint": -0.8743601171694348
+        },
+        "tone": {
+          "exposure": 0.4787521123274899,
+          "contrast": -37.47267693114792,
+          "highlights": -29.21782735024972,
+          "shadows": 7.835039986826659,
+          "whites": -83.84394147005038,
+          "blacks": -24.384163117184123
+        },
+        "color": {
+          "saturation": 58.37629147228915,
+          "vibrance": 59.63206356744972
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.41718924911073385
+            ],
+            [
+              0.5,
+              0.6243249938516345
+            ],
+            [
+              0.75,
+              0.7764217885819024
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a0951-LSstone_060806_9608",
+      "untouched_from_ours": 9.593,
+      "untouched_from_theirs": 9.528,
+      "sliders_from_ours": 4.11,
+      "sliders_from_theirs": 3.887,
+      "curve_from_ours": 3.335,
+      "curve_from_theirs": 3.336,
+      "max_curve_from_theirs": 20.349,
+      "seconds": 166.72,
+      "at_bounds": [
+        "whites"
+      ],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -20.67517440177508,
+          "tint": 5.936019264781549
+        },
+        "tone": {
+          "exposure": -0.39570334755284675,
+          "contrast": 34.67415681104589,
+          "highlights": 22.543608745243937,
+          "shadows": 13.752836060746713,
+          "whites": 99.48159383771778,
+          "blacks": -56.319189278357875
+        },
+        "color": {
+          "saturation": 77.62192189034582,
+          "vibrance": -4.4111935759084275
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.2508313473723948
+            ],
+            [
+              0.5,
+              0.5107697487932099
+            ],
+            [
+              0.75,
+              0.7229860107709345
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1001-IMG_0584",
+      "untouched_from_ours": 20.844,
+      "untouched_from_theirs": 20.555,
+      "sliders_from_ours": 3.993,
+      "sliders_from_theirs": 2.638,
+      "curve_from_ours": 2.842,
+      "curve_from_theirs": 1.021,
+      "max_curve_from_theirs": 17.517,
+      "seconds": 19.84,
+      "at_bounds": [
+        "blacks"
+      ],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.0015010244106011235,
+          "tint": -0.43954589085821927
+        },
+        "tone": {
+          "exposure": 1.260602205680688,
+          "contrast": -8.795979451701772,
+          "highlights": 17.109562448870676,
+          "shadows": -4.181130134364079,
+          "whites": 64.05120133293052,
+          "blacks": -98.7090180584378
+        },
+        "color": {
+          "saturation": 32.23267174716135,
+          "vibrance": 26.003497844888624
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.058432134658669053
+            ],
+            [
+              0.5,
+              0.5113227312747342
+            ],
+            [
+              0.75,
+              0.7920708899337351
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1051-IMG_1488",
+      "untouched_from_ours": 10.392,
+      "untouched_from_theirs": 9.357,
+      "sliders_from_ours": 7.23,
+      "sliders_from_theirs": 4.581,
+      "curve_from_ours": 5.892,
+      "curve_from_theirs": 2.505,
+      "max_curve_from_theirs": 15.669,
+      "seconds": 115.84,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 1.6568402786244354,
+          "tint": -1.1757105893932647
+        },
+        "tone": {
+          "exposure": -0.06394043029881384,
+          "contrast": -7.699716300164241,
+          "highlights": 34.40039092964383,
+          "shadows": 11.193328718422892,
+          "whites": 12.595049593261741,
+          "blacks": -85.60457345016337
+        },
+        "color": {
+          "saturation": 17.746771765515305,
+          "vibrance": 57.80754143055594
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.09833914911267418
+            ],
+            [
+              0.5,
+              0.5667906493064977
+            ],
+            [
+              0.75,
+              0.7355097022884158
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1101-kme_432",
+      "untouched_from_ours": 14.062,
+      "untouched_from_theirs": 11.453,
+      "sliders_from_ours": 7.092,
+      "sliders_from_theirs": 3.627,
+      "curve_from_ours": 6.342,
+      "curve_from_theirs": 1.933,
+      "max_curve_from_theirs": 16.961,
+      "seconds": 136.17,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.6100766420877252,
+          "tint": -0.08952269378199453
+        },
+        "tone": {
+          "exposure": 0.41122450693750956,
+          "contrast": -35.35409556086873,
+          "highlights": -12.247241315388738,
+          "shadows": -8.6549824047635,
+          "whites": -86.20391205972072,
+          "blacks": -32.03239750553341
+        },
+        "color": {
+          "saturation": 46.692963164675966,
+          "vibrance": 27.865995768567903
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3227877671290379
+            ],
+            [
+              0.5,
+              0.6567064125382363
+            ],
+            [
+              0.75,
+              0.818130629983247
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1201-WP_CRW_4844",
+      "untouched_from_ours": 18.052,
+      "untouched_from_theirs": 21.077,
+      "sliders_from_ours": 3.531,
+      "sliders_from_theirs": 2.036,
+      "curve_from_ours": 3.04,
+      "curve_from_theirs": 0.796,
+      "max_curve_from_theirs": 21.98,
+      "seconds": 58.28,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -13.38743492123761,
+          "tint": 0.7601484382206668
+        },
+        "tone": {
+          "exposure": 0.8782022311395985,
+          "contrast": 3.1985300601243107,
+          "highlights": 45.543909895208614,
+          "shadows": -10.95052837815966,
+          "whites": 88.4958378049865,
+          "blacks": -39.780373485791124
+        },
+        "color": {
+          "saturation": 42.85568340176737,
+          "vibrance": -8.968427710855243
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.43763489040377634
+            ],
+            [
+              0.5,
+              0.711834776798548
+            ],
+            [
+              0.75,
+              0.876537742776041
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1251-_DGW6263",
+      "untouched_from_ours": 17.146,
+      "untouched_from_theirs": 13.962,
+      "sliders_from_ours": 4.438,
+      "sliders_from_theirs": 3.779,
+      "curve_from_ours": 3.186,
+      "curve_from_theirs": 1.85,
+      "max_curve_from_theirs": 10.435,
+      "seconds": 19.41,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.15024625564450028,
+          "tint": -2.745397341555632
+        },
+        "tone": {
+          "exposure": 0.21523984999441467,
+          "contrast": -4.516024566278892,
+          "highlights": 36.989459755356066,
+          "shadows": -26.007587305694557,
+          "whites": -44.22816666332706,
+          "blacks": -48.315152142700576
+        },
+        "color": {
+          "saturation": 13.51841051437948,
+          "vibrance": 43.31080435649038
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.44048110412554764
+            ],
+            [
+              0.5,
+              0.7357955891810084
+            ],
+            [
+              0.75,
+              0.85764090272024
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1301-07-11-24-at-14h40m51s-_MG_6711",
+      "untouched_from_ours": 16.722,
+      "untouched_from_theirs": 14.044,
+      "sliders_from_ours": 3.111,
+      "sliders_from_theirs": 1.666,
+      "curve_from_ours": 2.735,
+      "curve_from_theirs": 0.852,
+      "max_curve_from_theirs": 9.199,
+      "seconds": 93.87,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.07667881903162015,
+          "tint": -0.47896098819478666
+        },
+        "tone": {
+          "exposure": 0.25391232862427904,
+          "contrast": 3.863260750896479,
+          "highlights": -16.875293558124852,
+          "shadows": -27.23527263776876,
+          "whites": -14.067359717377261,
+          "blacks": -94.08535516516739
+        },
+        "color": {
+          "saturation": 39.504498915430624,
+          "vibrance": 39.080503266746376
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.40632839443177426
+            ],
+            [
+              0.5,
+              0.6979902726523812
+            ],
+            [
+              0.75,
+              0.8797153790362537
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1351-jn_2007_05_14__770",
+      "untouched_from_ours": 20.103,
+      "untouched_from_theirs": 19.883,
+      "sliders_from_ours": 5.656,
+      "sliders_from_theirs": 2.672,
+      "curve_from_ours": 4.91,
+      "curve_from_theirs": 1.406,
+      "max_curve_from_theirs": 16.669,
+      "seconds": 75.55,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 1.3816467714306975,
+          "tint": -1.361817514648063
+        },
+        "tone": {
+          "exposure": 0.2507772490422528,
+          "contrast": -24.259096852945657,
+          "highlights": -90.13318638000514,
+          "shadows": 7.23365365965761,
+          "whites": -76.97251687090998,
+          "blacks": -10.702909018231557
+        },
+        "color": {
+          "saturation": 13.085022461108903,
+          "vibrance": 41.329325422424326
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.729459695230457
+            ],
+            [
+              0.5,
+              0.9588122188673767
+            ],
+            [
+              0.75,
+              0.9655231497934084
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1401-DSC_0034-1",
+      "untouched_from_ours": 14.068,
+      "untouched_from_theirs": 22.826,
+      "sliders_from_ours": 4.667,
+      "sliders_from_theirs": 2.785,
+      "curve_from_ours": 4.579,
+      "curve_from_theirs": 2.589,
+      "max_curve_from_theirs": 8.434,
+      "seconds": 79.72,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 3.032940221131789,
+          "tint": -1.6393108877474996
+        },
+        "tone": {
+          "exposure": 1.279836512759771,
+          "contrast": -3.551154740699805,
+          "highlights": 13.315877142482844,
+          "shadows": -26.152683422782268,
+          "whites": -15.426075602769943,
+          "blacks": -57.155809831686234
+        },
+        "color": {
+          "saturation": 26.290177765184502,
+          "vibrance": 44.57629493024686
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.2960083623705448
+            ],
+            [
+              0.5,
+              0.650558180062754
+            ],
+            [
+              0.75,
+              0.9111256974425517
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1451-07-06-28-at-12h47m34s-_MG_1828",
+      "untouched_from_ours": 17.085,
+      "untouched_from_theirs": 15.105,
+      "sliders_from_ours": 2.858,
+      "sliders_from_theirs": 2.507,
+      "curve_from_ours": 2.305,
+      "curve_from_theirs": 1.125,
+      "max_curve_from_theirs": 9.375,
+      "seconds": 101.25,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 1.9864870587580757e-05,
+          "tint": -0.4096168607971862
+        },
+        "tone": {
+          "exposure": 0.8446921862980812,
+          "contrast": -10.555839952314658,
+          "highlights": -4.6134438453475175,
+          "shadows": -14.101358219699073,
+          "whites": 3.308999025755382,
+          "blacks": -41.5401100006341
+        },
+        "color": {
+          "saturation": 33.11622988417907,
+          "vibrance": 46.54603988763133
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.33864454773737807
+            ],
+            [
+              0.5,
+              0.6420683730145071
+            ],
+            [
+              0.75,
+              0.8308394363281711
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1501-_DSC7449",
+      "untouched_from_ours": 24.979,
+      "untouched_from_theirs": 21.581,
+      "sliders_from_ours": 4.981,
+      "sliders_from_theirs": 4.755,
+      "curve_from_ours": 4.241,
+      "curve_from_theirs": 3.607,
+      "max_curve_from_theirs": 18.834,
+      "seconds": 27.5,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -29.191979400594864,
+          "tint": -14.173150148233029
+        },
+        "tone": {
+          "exposure": 0.665595653192777,
+          "contrast": 39.109282274827954,
+          "highlights": 11.350305778450936,
+          "shadows": -4.416256833429385,
+          "whites": 74.58333728762436,
+          "blacks": -86.41704560132986
+        },
+        "color": {
+          "saturation": 46.15322856990491,
+          "vibrance": 20.875693075373054
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.33925009995289945
+            ],
+            [
+              0.5,
+              0.679711350845092
+            ],
+            [
+              0.75,
+              0.82693908200853
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1551-IMG_4167",
+      "untouched_from_ours": 4.496,
+      "untouched_from_theirs": 4.244,
+      "sliders_from_ours": 2.191,
+      "sliders_from_theirs": 1.618,
+      "curve_from_ours": 1.657,
+      "curve_from_theirs": 0.983,
+      "max_curve_from_theirs": 11.171,
+      "seconds": 89.8,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 3.186913627186187,
+          "tint": -2.996635957628501
+        },
+        "tone": {
+          "exposure": -0.17976952451536743,
+          "contrast": -13.120134437056608,
+          "highlights": 3.4319092397581894,
+          "shadows": -9.164448341748226,
+          "whites": -41.98925905181943,
+          "blacks": -21.016251428557446
+        },
+        "color": {
+          "saturation": 14.285782563243702,
+          "vibrance": 5.977722243268045
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.30323029551165503
+            ],
+            [
+              0.5,
+              0.5895345222653849
+            ],
+            [
+              0.75,
+              0.788385229208456
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1601-IMG_4767",
+      "untouched_from_ours": 12.583,
+      "untouched_from_theirs": 10.335,
+      "sliders_from_ours": 3.334,
+      "sliders_from_theirs": 3.014,
+      "curve_from_ours": 2.421,
+      "curve_from_theirs": 1.769,
+      "max_curve_from_theirs": 20.15,
+      "seconds": 38.9,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 2.0031949310184283,
+          "tint": 3.761205820239329
+        },
+        "tone": {
+          "exposure": 1.3238889464149821,
+          "contrast": 63.719416363389506,
+          "highlights": 61.961037913365104,
+          "shadows": -9.318632306531496,
+          "whites": -21.542214853630252,
+          "blacks": -30.93103745268865
+        },
+        "color": {
+          "saturation": 63.33003687931831,
+          "vibrance": 22.48033040854516
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.5832447076868146
+            ],
+            [
+              0.5,
+              0.746345062755494
+            ],
+            [
+              0.75,
+              0.8626437259489877
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1651-kme_275",
+      "untouched_from_ours": 18.354,
+      "untouched_from_theirs": 23.662,
+      "sliders_from_ours": 7.753,
+      "sliders_from_theirs": 5.922,
+      "curve_from_ours": 5.655,
+      "curve_from_theirs": 2.391,
+      "max_curve_from_theirs": 13.161,
+      "seconds": 36.7,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 3.395627071532287,
+          "tint": 1.074853516483516
+        },
+        "tone": {
+          "exposure": 0.8966691741139294,
+          "contrast": 14.682405647853939,
+          "highlights": 53.281599951625495,
+          "shadows": -34.66581925977306,
+          "whites": 60.8564755442386,
+          "blacks": -66.77308289850905
+        },
+        "color": {
+          "saturation": 24.793993167072482,
+          "vibrance": 31.311505859813703
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.5411820593708833
+            ],
+            [
+              0.5,
+              0.7242559696765073
+            ],
+            [
+              0.75,
+              0.8517377638030668
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1701-jmac_DSC3938",
+      "untouched_from_ours": 8.298,
+      "untouched_from_theirs": 13.435,
+      "sliders_from_ours": 4.623,
+      "sliders_from_theirs": 2.647,
+      "curve_from_ours": 4.167,
+      "curve_from_theirs": 1.231,
+      "max_curve_from_theirs": 16.16,
+      "seconds": 99.36,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.25755704231013266,
+          "tint": -1.1602483993115047
+        },
+        "tone": {
+          "exposure": 0.49626172667289187,
+          "contrast": 33.14441637409258,
+          "highlights": -2.623610775856007,
+          "shadows": -21.202137233722002,
+          "whites": -2.7870893651745687,
+          "blacks": -78.73100487254845
+        },
+        "color": {
+          "saturation": 26.62517540142259,
+          "vibrance": 20.428507141965273
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.37469687398693535
+            ],
+            [
+              0.5,
+              0.6807801386877055
+            ],
+            [
+              0.75,
+              0.826307282247955
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1751-DSC_0008-2",
+      "untouched_from_ours": 19.955,
+      "untouched_from_theirs": 27.623,
+      "sliders_from_ours": 4.083,
+      "sliders_from_theirs": 3.15,
+      "curve_from_ours": 3.279,
+      "curve_from_theirs": 2.089,
+      "max_curve_from_theirs": 15.647,
+      "seconds": 43.52,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 1.2036905621049345,
+          "tint": -1.39513789607646
+        },
+        "tone": {
+          "exposure": 1.056380526219018,
+          "contrast": 40.73480677209516,
+          "highlights": -26.143114269974316,
+          "shadows": -32.02040671191534,
+          "whites": -6.116676863813809,
+          "blacks": -76.02121262054938
+        },
+        "color": {
+          "saturation": 14.16190403089673,
+          "vibrance": 88.21822820935388
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.470953623408055
+            ],
+            [
+              0.5,
+              0.7571736661537907
+            ],
+            [
+              0.75,
+              0.895222816870653
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1801-WP_CRW_0380",
+      "untouched_from_ours": 23.68,
+      "untouched_from_theirs": 27.733,
+      "sliders_from_ours": 5.542,
+      "sliders_from_theirs": 3.14,
+      "curve_from_ours": 5.252,
+      "curve_from_theirs": 2.521,
+      "max_curve_from_theirs": 29.021,
+      "seconds": 68.47,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -83.66009635008103,
+          "tint": -10.453720666800885
+        },
+        "tone": {
+          "exposure": 0.5616760878439306,
+          "contrast": 11.45588049248233,
+          "highlights": -8.163360135361195,
+          "shadows": -12.249698276447736,
+          "whites": 93.2735569288696,
+          "blacks": -39.02800627539189
+        },
+        "color": {
+          "saturation": 41.81735830601677,
+          "vibrance": -13.452118645835744
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.47040386097063863
+            ],
+            [
+              0.5,
+              0.7853284181710372
+            ],
+            [
+              0.75,
+              0.8996629800305539
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1851-IMG_3979",
+      "untouched_from_ours": 13.86,
+      "untouched_from_theirs": 13.401,
+      "sliders_from_ours": 3.558,
+      "sliders_from_theirs": 2.771,
+      "curve_from_ours": 3.03,
+      "curve_from_theirs": 2.135,
+      "max_curve_from_theirs": 10.524,
+      "seconds": 42.44,
+      "at_bounds": [
+        "whites"
+      ],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 7.9690712639100925,
+          "tint": 2.2343839486235395
+        },
+        "tone": {
+          "exposure": 0.2701996868938764,
+          "contrast": 13.783458715799046,
+          "highlights": -2.9368685063519835,
+          "shadows": -20.719048335674927,
+          "whites": -99.40436624430542,
+          "blacks": -37.20026720918746
+        },
+        "color": {
+          "saturation": 24.763957616461827,
+          "vibrance": 59.004511229501375
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3673701366025591
+            ],
+            [
+              0.5,
+              0.637738927971653
+            ],
+            [
+              0.75,
+              0.8197434560518086
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1901-_MG_0357",
+      "untouched_from_ours": 11.866,
+      "untouched_from_theirs": 12.299,
+      "sliders_from_ours": 3.067,
+      "sliders_from_theirs": 2.899,
+      "curve_from_ours": 2.616,
+      "curve_from_theirs": 1.968,
+      "max_curve_from_theirs": 17.453,
+      "seconds": 97.95,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -70.97251049353808,
+          "tint": 25.706775478265797
+        },
+        "tone": {
+          "exposure": 0.4155967165663017,
+          "contrast": -20.70691201517406,
+          "highlights": -9.110001644125457,
+          "shadows": -20.153790371008242,
+          "whites": 64.31646659916971,
+          "blacks": -37.622707802858145
+        },
+        "color": {
+          "saturation": 51.5258716263182,
+          "vibrance": 2.862040304178002
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3083403584679803
+            ],
+            [
+              0.5,
+              0.5816572952854635
+            ],
+            [
+              0.75,
+              0.8147180186698042
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a1951-CRW_0014",
+      "untouched_from_ours": 12.844,
+      "untouched_from_theirs": 16.658,
+      "sliders_from_ours": 5.302,
+      "sliders_from_theirs": 2.042,
+      "curve_from_ours": 5.219,
+      "curve_from_theirs": 0.847,
+      "max_curve_from_theirs": 15.77,
+      "seconds": 36.41,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.11722739767464656,
+          "tint": -0.3283941935497909
+        },
+        "tone": {
+          "exposure": 0.6079404804046284,
+          "contrast": 7.841702707058578,
+          "highlights": 19.898522591436233,
+          "shadows": -24.261391939533027,
+          "whites": -61.04647656300977,
+          "blacks": -92.87329808304786
+        },
+        "color": {
+          "saturation": 36.65960818679577,
+          "vibrance": 32.57692761666123
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.40289510607838225
+            ],
+            [
+              0.5,
+              0.6551011704493701
+            ],
+            [
+              0.75,
+              0.8363083468413967
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2001-kme_272",
+      "untouched_from_ours": 8.007,
+      "untouched_from_theirs": 12.941,
+      "sliders_from_ours": 5.754,
+      "sliders_from_theirs": 1.917,
+      "curve_from_ours": 5.389,
+      "curve_from_theirs": 1.161,
+      "max_curve_from_theirs": 25.68,
+      "seconds": 53.05,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.0435504332662519,
+          "tint": -0.5579186695687516
+        },
+        "tone": {
+          "exposure": 0.5808230749979943,
+          "contrast": 39.65442174261647,
+          "highlights": -1.7166449669152213,
+          "shadows": -20.10850814619625,
+          "whites": 47.696311348199046,
+          "blacks": -97.52287498677946
+        },
+        "color": {
+          "saturation": 46.55879275210218,
+          "vibrance": 37.102116379773605
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3329924207909686
+            ],
+            [
+              0.5,
+              0.6002677660178464
+            ],
+            [
+              0.75,
+              0.783963886539679
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2051-LS051026_day_10_LL018",
+      "untouched_from_ours": 13.417,
+      "untouched_from_theirs": 12.133,
+      "sliders_from_ours": 3.017,
+      "sliders_from_theirs": 3.347,
+      "curve_from_ours": 1.728,
+      "curve_from_theirs": 1.308,
+      "max_curve_from_theirs": 6.095,
+      "seconds": 37.61,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -24.398829707878424,
+          "tint": -3.14650037458201
+        },
+        "tone": {
+          "exposure": 0.2803527776435482,
+          "contrast": 37.61133135649303,
+          "highlights": 22.135477967743665,
+          "shadows": -21.747737478560868,
+          "whites": 15.525368002157212,
+          "blacks": -82.55757850757807
+        },
+        "color": {
+          "saturation": 47.824061664942995,
+          "vibrance": 25.26928860846418
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.4143059074722769
+            ],
+            [
+              0.5,
+              0.6649525679612507
+            ],
+            [
+              0.75,
+              0.8196261476975315
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2101-_DSC1809",
+      "untouched_from_ours": 14.579,
+      "untouched_from_theirs": 11.437,
+      "sliders_from_ours": 4.575,
+      "sliders_from_theirs": 3.744,
+      "curve_from_ours": 3.942,
+      "curve_from_theirs": 1.672,
+      "max_curve_from_theirs": 13.869,
+      "seconds": 109.15,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.7693153763335338,
+          "tint": -1.0654213541152349
+        },
+        "tone": {
+          "exposure": 0.25898029617413554,
+          "contrast": 0.08171980333624322,
+          "highlights": -2.805056522025785,
+          "shadows": -0.25567336607983254,
+          "whites": -6.25256264865157,
+          "blacks": -19.955255382643085
+        },
+        "color": {
+          "saturation": 81.70384831967881,
+          "vibrance": 85.71107818067668
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.39475404830652444
+            ],
+            [
+              0.5,
+              0.6148973532692349
+            ],
+            [
+              0.75,
+              0.793894045548108
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2151-Ja_Pe-21",
+      "untouched_from_ours": 14.733,
+      "untouched_from_theirs": 17.411,
+      "sliders_from_ours": 7.714,
+      "sliders_from_theirs": 2.796,
+      "curve_from_ours": 7.449,
+      "curve_from_theirs": 1.514,
+      "max_curve_from_theirs": 17.606,
+      "seconds": 30.72,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -9.176883686265223,
+          "tint": -4.034335391271187
+        },
+        "tone": {
+          "exposure": 0.8271740907191037,
+          "contrast": -15.737403959626176,
+          "highlights": -9.191303937046774,
+          "shadows": 5.90019524450473,
+          "whites": -34.98095217968302,
+          "blacks": -97.84105305001525
+        },
+        "color": {
+          "saturation": 10.554339819567375,
+          "vibrance": 13.140304644348907
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.13387255590351058
+            ],
+            [
+              0.5,
+              0.6075710447080904
+            ],
+            [
+              0.75,
+              0.7877944277387972
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2201-050716_220126__I2E4382",
+      "untouched_from_ours": 13.979,
+      "untouched_from_theirs": 12.286,
+      "sliders_from_ours": 4.831,
+      "sliders_from_theirs": 2.687,
+      "curve_from_ours": 4.572,
+      "curve_from_theirs": 1.612,
+      "max_curve_from_theirs": 15.143,
+      "seconds": 32.6,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 7.161858931970233,
+          "tint": -0.6741676793041851
+        },
+        "tone": {
+          "exposure": 0.5665269551374487,
+          "contrast": -1.8939523418539523,
+          "highlights": -32.66190686981246,
+          "shadows": 8.380399578360667,
+          "whites": 62.31950107731347,
+          "blacks": -21.555392898532926
+        },
+        "color": {
+          "saturation": 52.00206719247299,
+          "vibrance": 53.919685363067856
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3894362927170308
+            ],
+            [
+              0.5,
+              0.7897587490651465
+            ],
+            [
+              0.75,
+              0.8915460845264007
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2251-kme_062",
+      "untouched_from_ours": 19.009,
+      "untouched_from_theirs": 18.654,
+      "sliders_from_ours": 1.821,
+      "sliders_from_theirs": 1.082,
+      "curve_from_ours": 1.721,
+      "curve_from_theirs": 0.708,
+      "max_curve_from_theirs": 6.59,
+      "seconds": 61.21,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 9.342503146355016,
+          "tint": -1.9580427558939355
+        },
+        "tone": {
+          "exposure": 0.8000886103872213,
+          "contrast": 13.011507752672241,
+          "highlights": 5.378191227018416,
+          "shadows": -23.24435652993839,
+          "whites": -35.756178567493556,
+          "blacks": -48.693528297340286
+        },
+        "color": {
+          "saturation": 41.01659573625614,
+          "vibrance": 24.643130117776057
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.36892178297387684
+            ],
+            [
+              0.5,
+              0.6396660927131054
+            ],
+            [
+              0.75,
+              0.7535179990267785
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2301-IMG_3499",
+      "untouched_from_ours": 12.272,
+      "untouched_from_theirs": 12.047,
+      "sliders_from_ours": 2.702,
+      "sliders_from_theirs": 2.627,
+      "curve_from_ours": 1.252,
+      "curve_from_theirs": 0.864,
+      "max_curve_from_theirs": 14.067,
+      "seconds": 88.74,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 1.2657382168498619,
+          "tint": -7.662190664422348
+        },
+        "tone": {
+          "exposure": -0.17315902457421928,
+          "contrast": 5.011457053464352,
+          "highlights": 16.585407626601675,
+          "shadows": -40.17566919655105,
+          "whites": 1.5537345123055037,
+          "blacks": -65.1620402783138
+        },
+        "color": {
+          "saturation": 15.883784699942563,
+          "vibrance": 10.46997113084492
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.5665737878087588
+            ],
+            [
+              0.5,
+              0.773022853013765
+            ],
+            [
+              0.75,
+              0.8757978814335844
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2351-WP_CRW_2780",
+      "untouched_from_ours": 7.787,
+      "untouched_from_theirs": 8.912,
+      "sliders_from_ours": 4.803,
+      "sliders_from_theirs": 2.485,
+      "curve_from_ours": 4.395,
+      "curve_from_theirs": 1.252,
+      "max_curve_from_theirs": 14.723,
+      "seconds": 81.55,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -1.931088545592256,
+          "tint": -2.978640963017272
+        },
+        "tone": {
+          "exposure": -0.5485011671643867,
+          "contrast": -11.085043691796825,
+          "highlights": -13.342268749753167,
+          "shadows": -21.21270197119028,
+          "whites": 48.24781983307824,
+          "blacks": -50.16232154469069
+        },
+        "color": {
+          "saturation": 78.11476198158616,
+          "vibrance": -31.30964847588415
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.4524119176709867
+            ],
+            [
+              0.5,
+              0.7822302816149379
+            ],
+            [
+              0.75,
+              0.891017634494504
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2401-LS_060724_8814",
+      "untouched_from_ours": 24.503,
+      "untouched_from_theirs": 21.168,
+      "sliders_from_ours": 3.206,
+      "sliders_from_theirs": 2.535,
+      "curve_from_ours": 1.834,
+      "curve_from_theirs": 1.413,
+      "max_curve_from_theirs": 14.281,
+      "seconds": 92.71,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -17.13526697245386,
+          "tint": -0.17124589746976326
+        },
+        "tone": {
+          "exposure": 0.8410566725312362,
+          "contrast": 8.250893824325301,
+          "highlights": 7.764251840071208,
+          "shadows": -6.299935131569212,
+          "whites": -73.2454029668099,
+          "blacks": -30.730339082604885
+        },
+        "color": {
+          "saturation": 63.25946390381889,
+          "vibrance": 53.445803390695744
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.39414567263826317
+            ],
+            [
+              0.5,
+              0.6589966067185352
+            ],
+            [
+              0.75,
+              0.8134365426780378
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2451-07-07-17-at-00h36m15s-_MG_2335",
+      "untouched_from_ours": 11.515,
+      "untouched_from_theirs": 9.321,
+      "sliders_from_ours": 5.089,
+      "sliders_from_theirs": 3.523,
+      "curve_from_ours": 4.17,
+      "curve_from_theirs": 2.049,
+      "max_curve_from_theirs": 25.411,
+      "seconds": 28.82,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 33.26226105468317,
+          "tint": -3.5808673223770398
+        },
+        "tone": {
+          "exposure": 0.1697739359931501,
+          "contrast": -5.62408225496206,
+          "highlights": 39.864227869432476,
+          "shadows": -16.504001326531032,
+          "whites": 62.60683544235452,
+          "blacks": -29.815650388143204
+        },
+        "color": {
+          "saturation": 48.89167240711741,
+          "vibrance": 43.132972450504894
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3744931458561302
+            ],
+            [
+              0.5,
+              0.6209257634562798
+            ],
+            [
+              0.75,
+              0.7834176118195845
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2501-MB_20030906_049",
+      "untouched_from_ours": 7.494,
+      "untouched_from_theirs": 7.601,
+      "sliders_from_ours": 5.605,
+      "sliders_from_theirs": 3.475,
+      "curve_from_ours": 4.965,
+      "curve_from_theirs": 1.787,
+      "max_curve_from_theirs": 15.027,
+      "seconds": 115.35,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.11033221557951225,
+          "tint": -0.5494239914508527
+        },
+        "tone": {
+          "exposure": -0.409372691664629,
+          "contrast": 2.729270516515938,
+          "highlights": -1.26197821504262,
+          "shadows": -18.09111526900476,
+          "whites": 37.41402575776027,
+          "blacks": -50.2435241199531
+        },
+        "color": {
+          "saturation": 35.16917929252604,
+          "vibrance": 14.852281473479433
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.407590384222065
+            ],
+            [
+              0.5,
+              0.6946386954830026
+            ],
+            [
+              0.75,
+              0.8445419813873494
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2551-kme_057",
+      "untouched_from_ours": 18.855,
+      "untouched_from_theirs": 18.875,
+      "sliders_from_ours": 6.461,
+      "sliders_from_theirs": 3.549,
+      "curve_from_ours": 5.87,
+      "curve_from_theirs": 2.828,
+      "max_curve_from_theirs": 17.365,
+      "seconds": 32.42,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.2344691959014677,
+          "tint": -2.711638997246804
+        },
+        "tone": {
+          "exposure": 0.8079933187634403,
+          "contrast": 4.091321837223043,
+          "highlights": -20.723346459349848,
+          "shadows": 17.735925388690983,
+          "whites": -22.467954080305258,
+          "blacks": -61.16069520783613
+        },
+        "color": {
+          "saturation": 39.23231071778617,
+          "vibrance": 59.22729785912089
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.1945160909661682
+            ],
+            [
+              0.5,
+              0.6138253774351087
+            ],
+            [
+              0.75,
+              0.8403750618356493
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2601-050812_154948__MG_3818",
+      "untouched_from_ours": 10.063,
+      "untouched_from_theirs": 6.925,
+      "sliders_from_ours": 4.153,
+      "sliders_from_theirs": 2.118,
+      "curve_from_ours": 3.674,
+      "curve_from_theirs": 1.587,
+      "max_curve_from_theirs": 14.004,
+      "seconds": 128.39,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.8639591005893291,
+          "tint": -0.837032397797189
+        },
+        "tone": {
+          "exposure": 0.02386120217821453,
+          "contrast": 13.331099583714145,
+          "highlights": -2.36049772211116,
+          "shadows": 4.630382944269332,
+          "whites": 23.787349274847845,
+          "blacks": -64.11547489023526
+        },
+        "color": {
+          "saturation": 47.91780687796774,
+          "vibrance": 24.038500484287756
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.14056012052926423
+            ],
+            [
+              0.5,
+              0.5398732339022577
+            ],
+            [
+              0.75,
+              0.7954336735300698
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2651-dgw_017",
+      "untouched_from_ours": 15.874,
+      "untouched_from_theirs": 11.778,
+      "sliders_from_ours": 4.435,
+      "sliders_from_theirs": 2.613,
+      "curve_from_ours": 3.537,
+      "curve_from_theirs": 1.399,
+      "max_curve_from_theirs": 11.257,
+      "seconds": 76.83,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -21.22438985782747,
+          "tint": 2.2214642404431726
+        },
+        "tone": {
+          "exposure": 0.22025506204778422,
+          "contrast": -26.994056668794126,
+          "highlights": -17.341950371423984,
+          "shadows": -41.632654731471284,
+          "whites": 16.17932483327423,
+          "blacks": -76.66087448243937
+        },
+        "color": {
+          "saturation": 34.28800724703681,
+          "vibrance": 46.35686875698912
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.37082575554893255
+            ],
+            [
+              0.5,
+              0.6880248646538225
+            ],
+            [
+              0.75,
+              0.8643665976462735
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2701-_DSC0057",
+      "untouched_from_ours": 5.006,
+      "untouched_from_theirs": 7.502,
+      "sliders_from_ours": 3.338,
+      "sliders_from_theirs": 1.818,
+      "curve_from_ours": 3.321,
+      "curve_from_theirs": 0.925,
+      "max_curve_from_theirs": 4.507,
+      "seconds": 155.12,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.5729098621789832,
+          "tint": -0.35081687327161726
+        },
+        "tone": {
+          "exposure": -0.12365063005533566,
+          "contrast": 4.715152708802481,
+          "highlights": 14.982300649237935,
+          "shadows": -5.52606919078027,
+          "whites": -86.31535250256985,
+          "blacks": -35.500429780459015
+        },
+        "color": {
+          "saturation": 47.64970783022722,
+          "vibrance": 42.57980837752102
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.32607146522192154
+            ],
+            [
+              0.5,
+              0.6357486312113773
+            ],
+            [
+              0.75,
+              0.838086119199524
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2751-jn_20081025_Kent_Shelter_005",
+      "untouched_from_ours": 13.369,
+      "untouched_from_theirs": 12.46,
+      "sliders_from_ours": 5.801,
+      "sliders_from_theirs": 2.402,
+      "curve_from_ours": 5.556,
+      "curve_from_theirs": 1.187,
+      "max_curve_from_theirs": 11.558,
+      "seconds": 43.22,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.1563201072458058,
+          "tint": -1.1367420342094092
+        },
+        "tone": {
+          "exposure": 0.45544621017290077,
+          "contrast": 5.912661749591986,
+          "highlights": 25.106877284756106,
+          "shadows": -13.794196378574206,
+          "whites": -1.078807715020263,
+          "blacks": -32.36767791357627
+        },
+        "color": {
+          "saturation": 24.849454285526715,
+          "vibrance": 38.16281199699044
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3929794688091102
+            ],
+            [
+              0.5,
+              0.6636559237190547
+            ],
+            [
+              0.75,
+              0.8181930205229508
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2801-MB_050809_018",
+      "untouched_from_ours": 6.303,
+      "untouched_from_theirs": 4.574,
+      "sliders_from_ours": 3.375,
+      "sliders_from_theirs": 1.367,
+      "curve_from_ours": 3.331,
+      "curve_from_theirs": 1.196,
+      "max_curve_from_theirs": 8.427,
+      "seconds": 126.47,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 2.233930771827878,
+          "tint": -0.23026883519705457
+        },
+        "tone": {
+          "exposure": 0.15187348119326421,
+          "contrast": -27.027661452447905,
+          "highlights": -4.1324331266911996,
+          "shadows": -3.7651457066829828,
+          "whites": -52.48557181337018,
+          "blacks": -25.643931790193175
+        },
+        "color": {
+          "saturation": 42.068156751801396,
+          "vibrance": 51.3836776000157
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.2504661155234423
+            ],
+            [
+              0.5,
+              0.5305201415700993
+            ],
+            [
+              0.75,
+              0.7613416540437725
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2851-kme_340",
+      "untouched_from_ours": 12.246,
+      "untouched_from_theirs": 19.262,
+      "sliders_from_ours": 5.602,
+      "sliders_from_theirs": 3.073,
+      "curve_from_ours": 4.933,
+      "curve_from_theirs": 1.48,
+      "max_curve_from_theirs": 20.338,
+      "seconds": 49.11,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -3.373844991874771,
+          "tint": -4.402292657901696
+        },
+        "tone": {
+          "exposure": 0.5055358287961191,
+          "contrast": 4.283583510048103,
+          "highlights": 1.8823757862261852,
+          "shadows": -38.86777878176117,
+          "whites": -55.768436392741094,
+          "blacks": -72.39722027936169
+        },
+        "color": {
+          "saturation": 54.512944972372736,
+          "vibrance": 67.04971513130606
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.42624670359080197
+            ],
+            [
+              0.5,
+              0.7046279643461968
+            ],
+            [
+              0.75,
+              0.8401541748542312
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2901-_DSC0013-4",
+      "untouched_from_ours": 9.267,
+      "untouched_from_theirs": 9.232,
+      "sliders_from_ours": 5.64,
+      "sliders_from_theirs": 3.088,
+      "curve_from_ours": 4.942,
+      "curve_from_theirs": 1.594,
+      "max_curve_from_theirs": 19.257,
+      "seconds": 95.24,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.16430425613453956,
+          "tint": -1.1752276171417084
+        },
+        "tone": {
+          "exposure": -0.3824700819059177,
+          "contrast": 8.466244063976681,
+          "highlights": 32.28776524149181,
+          "shadows": -27.323357904208173,
+          "whites": -19.764973390695406,
+          "blacks": -49.09033889217443
+        },
+        "color": {
+          "saturation": 45.20065108676496,
+          "vibrance": 28.70066206426987
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.5178731989685217
+            ],
+            [
+              0.5,
+              0.7961419154841676
+            ],
+            [
+              0.75,
+              0.8739625245880062
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a2951-jmac_MG_5613",
+      "untouched_from_ours": 10.904,
+      "untouched_from_theirs": 8.427,
+      "sliders_from_ours": 3.286,
+      "sliders_from_theirs": 1.242,
+      "curve_from_ours": 3.164,
+      "curve_from_theirs": 0.818,
+      "max_curve_from_theirs": 8.354,
+      "seconds": 118.52,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.5585946823045232,
+          "tint": -0.18466364200900742
+        },
+        "tone": {
+          "exposure": 0.5998117869104653,
+          "contrast": 88.3280117267225,
+          "highlights": -1.8785379763837082,
+          "shadows": -15.289907322574761,
+          "whites": -33.38551270875772,
+          "blacks": -66.32936772542362
+        },
+        "color": {
+          "saturation": 18.22223716374067,
+          "vibrance": 8.984171337707986
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.2990663449470554
+            ],
+            [
+              0.5,
+              0.539459632806947
+            ],
+            [
+              0.75,
+              0.7277961526132894
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3001-IMG_0895",
+      "untouched_from_ours": 3.809,
+      "untouched_from_theirs": 3.581,
+      "sliders_from_ours": 1.949,
+      "sliders_from_theirs": 1.47,
+      "curve_from_ours": 1.493,
+      "curve_from_theirs": 0.596,
+      "max_curve_from_theirs": 9.11,
+      "seconds": 186.36,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.2820478709507792,
+          "tint": -0.13991459098766362
+        },
+        "tone": {
+          "exposure": -0.5726824505188217,
+          "contrast": 4.431461474004523,
+          "highlights": 22.905136381370472,
+          "shadows": -28.529880239610865,
+          "whites": 84.01301636828126,
+          "blacks": -86.04082848760768
+        },
+        "color": {
+          "saturation": 52.09918737018889,
+          "vibrance": 36.63750151277542
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.38950113428412064
+            ],
+            [
+              0.5,
+              0.6322771390408368
+            ],
+            [
+              0.75,
+              0.8460248889084656
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3051-07-06-01-at-13h01m22-s_MG_1255",
+      "untouched_from_ours": 3.627,
+      "untouched_from_theirs": 1.85,
+      "sliders_from_ours": 1.901,
+      "sliders_from_theirs": 0.788,
+      "curve_from_ours": 1.7,
+      "curve_from_theirs": 0.44,
+      "max_curve_from_theirs": 6.813,
+      "seconds": 67.58,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.2645936754601915,
+          "tint": -0.15793048543253588
+        },
+        "tone": {
+          "exposure": -0.3853447542156492,
+          "contrast": -0.6930136508801362,
+          "highlights": -5.9013552493112655,
+          "shadows": -17.522875928353358,
+          "whites": -10.879610254981602,
+          "blacks": -54.5588067579864
+        },
+        "color": {
+          "saturation": 25.755451901171504,
+          "vibrance": 19.428235457694623
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3122225472679675
+            ],
+            [
+              0.5,
+              0.5694030069138787
+            ],
+            [
+              0.75,
+              0.7654020412813438
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3101-jn_20081011_028",
+      "untouched_from_ours": 11.068,
+      "untouched_from_theirs": 10.161,
+      "sliders_from_ours": 4.176,
+      "sliders_from_theirs": 1.035,
+      "curve_from_ours": 3.956,
+      "curve_from_theirs": 0.792,
+      "max_curve_from_theirs": 13.032,
+      "seconds": 47.83,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.11553537040136161,
+          "tint": -0.002770345146425636
+        },
+        "tone": {
+          "exposure": -0.10957025389857872,
+          "contrast": -10.945437899135865,
+          "highlights": 10.31056446585833,
+          "shadows": -9.319247329011787,
+          "whites": 44.281592621430114,
+          "blacks": -21.984802952565186
+        },
+        "color": {
+          "saturation": 6.18461737479232,
+          "vibrance": 12.639485581619866
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3894578617421516
+            ],
+            [
+              0.5,
+              0.7076580304289094
+            ],
+            [
+              0.75,
+              0.8568045281234565
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3151-_DSC2837",
+      "untouched_from_ours": 6.783,
+      "untouched_from_theirs": 5.187,
+      "sliders_from_ours": 2.746,
+      "sliders_from_theirs": 1.434,
+      "curve_from_ours": 2.601,
+      "curve_from_theirs": 0.848,
+      "max_curve_from_theirs": 12.816,
+      "seconds": 145.23,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.20192624835045173,
+          "tint": -1.535758051057125
+        },
+        "tone": {
+          "exposure": 0.34040039945911377,
+          "contrast": -17.22492455127585,
+          "highlights": -1.0451634211575218,
+          "shadows": -19.285260879349806,
+          "whites": 47.29293693072694,
+          "blacks": -31.466313262100197
+        },
+        "color": {
+          "saturation": 7.922205215605989,
+          "vibrance": 20.469521225462316
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3507145778379756
+            ],
+            [
+              0.5,
+              0.6556038043303825
+            ],
+            [
+              0.75,
+              0.8316032873717085
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3201-kme_518",
+      "untouched_from_ours": 12.569,
+      "untouched_from_theirs": 12.254,
+      "sliders_from_ours": 4.611,
+      "sliders_from_theirs": 1.664,
+      "curve_from_ours": 4.45,
+      "curve_from_theirs": 1.492,
+      "max_curve_from_theirs": 28.619,
+      "seconds": 36.32,
+      "at_bounds": [
+        "whites"
+      ],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -73.11812372561542,
+          "tint": 5.337978087231184
+        },
+        "tone": {
+          "exposure": 0.18188337500068177,
+          "contrast": 11.188540447074006,
+          "highlights": -1.493864218200572,
+          "shadows": 6.003118462694037,
+          "whites": 99.74990886598835,
+          "blacks": -15.07384684018837
+        },
+        "color": {
+          "saturation": 29.94212483924582,
+          "vibrance": 5.236068501666006
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3162638320770164
+            ],
+            [
+              0.5,
+              0.6317526562215605
+            ],
+            [
+              0.75,
+              0.8168813820259517
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3251-_DSC1093",
+      "untouched_from_ours": 15.393,
+      "untouched_from_theirs": 12.982,
+      "sliders_from_ours": 5.613,
+      "sliders_from_theirs": 4.172,
+      "curve_from_ours": 5.28,
+      "curve_from_theirs": 3.505,
+      "max_curve_from_theirs": 18.561,
+      "seconds": 73.63,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -39.994445030419314,
+          "tint": 11.324449083098443
+        },
+        "tone": {
+          "exposure": -0.22262112044739268,
+          "contrast": -3.1817256267034653,
+          "highlights": -31.321178492156726,
+          "shadows": -10.157799123608216,
+          "whites": 91.37174776940765,
+          "blacks": -40.5642357794428
+        },
+        "color": {
+          "saturation": 26.788995076900353,
+          "vibrance": -33.15774273896963
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.2878933856979726
+            ],
+            [
+              0.5,
+              0.5906032587856607
+            ],
+            [
+              0.75,
+              0.812989622209244
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3301-IMG_5187",
+      "untouched_from_ours": 13.632,
+      "untouched_from_theirs": 13.323,
+      "sliders_from_ours": 1.569,
+      "sliders_from_theirs": 0.657,
+      "curve_from_ours": 1.687,
+      "curve_from_theirs": 0.456,
+      "max_curve_from_theirs": 5.946,
+      "seconds": 37.75,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.8556613102796312,
+          "tint": -0.22514329547266074
+        },
+        "tone": {
+          "exposure": 0.928217892198408,
+          "contrast": -15.951070254589267,
+          "highlights": 10.016608611851414,
+          "shadows": -16.97508972613948,
+          "whites": 73.3984842357986,
+          "blacks": -31.29512324658045
+        },
+        "color": {
+          "saturation": 9.739868975563382,
+          "vibrance": 19.324192191346057
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.2815737902257982
+            ],
+            [
+              0.5,
+              0.5727061171462557
+            ],
+            [
+              0.75,
+              0.8370874890542673
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3351-KE_-1722",
+      "untouched_from_ours": 5.883,
+      "untouched_from_theirs": 10.488,
+      "sliders_from_ours": 3.541,
+      "sliders_from_theirs": 2.391,
+      "curve_from_ours": 2.989,
+      "curve_from_theirs": 1.59,
+      "max_curve_from_theirs": 20.007,
+      "seconds": 77.67,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -2.8670392204523982,
+          "tint": -1.5035379312882033
+        },
+        "tone": {
+          "exposure": 0.5149209418688494,
+          "contrast": 13.274959197976713,
+          "highlights": 8.814142966224528,
+          "shadows": -20.127032807101877,
+          "whites": -77.5731387169193,
+          "blacks": -64.11336823616027
+        },
+        "color": {
+          "saturation": 39.267165325583164,
+          "vibrance": 35.759132570932756
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.32782118208640476
+            ],
+            [
+              0.5,
+              0.55299122760869
+            ],
+            [
+              0.75,
+              0.7473237347125198
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3401-20061111_122429__E6B5415",
+      "untouched_from_ours": 21.456,
+      "untouched_from_theirs": 18.105,
+      "sliders_from_ours": 5.42,
+      "sliders_from_theirs": 2.234,
+      "curve_from_ours": 4.954,
+      "curve_from_theirs": 1.644,
+      "max_curve_from_theirs": 7.562,
+      "seconds": 21.28,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.9941334731816674,
+          "tint": -1.4095911714330178
+        },
+        "tone": {
+          "exposure": 0.81294753244296,
+          "contrast": 2.7969697961471085,
+          "highlights": 5.635795397509489,
+          "shadows": -15.53409447954868,
+          "whites": -14.4393599409474,
+          "blacks": -58.67314341904047
+        },
+        "color": {
+          "saturation": 38.4216295303048,
+          "vibrance": 34.77466321412469
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.33592193244921836
+            ],
+            [
+              0.5,
+              0.6279886604360656
+            ],
+            [
+              0.75,
+              0.8313877714910728
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3451-IMG_1088",
+      "untouched_from_ours": 8.321,
+      "untouched_from_theirs": 7.863,
+      "sliders_from_ours": 3.177,
+      "sliders_from_theirs": 2.112,
+      "curve_from_ours": 2.427,
+      "curve_from_theirs": 1.105,
+      "max_curve_from_theirs": 8.095,
+      "seconds": 110.82,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.14781306069976652,
+          "tint": 0.4461204233199788
+        },
+        "tone": {
+          "exposure": -0.21132604030814073,
+          "contrast": -20.340313372779214,
+          "highlights": 13.544392529143046,
+          "shadows": -6.289729218061968,
+          "whites": 6.3980901803420265,
+          "blacks": -19.54243255227904
+        },
+        "color": {
+          "saturation": 44.2344837072261,
+          "vibrance": 0.35985227094460587
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3540835547711406
+            ],
+            [
+              0.5,
+              0.623225668759515
+            ],
+            [
+              0.75,
+              0.8252570337583687
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3501-dgw_154",
+      "untouched_from_ours": 10.027,
+      "untouched_from_theirs": 7.259,
+      "sliders_from_ours": 3.569,
+      "sliders_from_theirs": 2.412,
+      "curve_from_ours": 2.725,
+      "curve_from_theirs": 1.433,
+      "max_curve_from_theirs": 12.756,
+      "seconds": 62.84,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.8921837444376808,
+          "tint": 0.4514602970891123
+        },
+        "tone": {
+          "exposure": -0.07953353979462946,
+          "contrast": 13.017782355441526,
+          "highlights": 16.367999384390693,
+          "shadows": -36.87262097967998,
+          "whites": -9.924540091540583,
+          "blacks": -65.81257004348106
+        },
+        "color": {
+          "saturation": 24.35153773867084,
+          "vibrance": -2.346998120841099
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.42534182078466765
+            ],
+            [
+              0.5,
+              0.7001100693265565
+            ],
+            [
+              0.75,
+              0.8299139797028208
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3551-MB_080627_668",
+      "untouched_from_ours": 6.198,
+      "untouched_from_theirs": 4.69,
+      "sliders_from_ours": 2.637,
+      "sliders_from_theirs": 3.155,
+      "curve_from_ours": 1.501,
+      "curve_from_theirs": 1.55,
+      "max_curve_from_theirs": 8.501,
+      "seconds": 123.98,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.6130048700755629,
+          "tint": 0.01604794370094506
+        },
+        "tone": {
+          "exposure": -0.27690755838017733,
+          "contrast": 23.41453171527384,
+          "highlights": -21.705669359267397,
+          "shadows": -21.692278005185702,
+          "whites": -12.996817853937909,
+          "blacks": -62.70159404861738
+        },
+        "color": {
+          "saturation": 19.608085931157646,
+          "vibrance": -8.142189910812146
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3686929448276422
+            ],
+            [
+              0.5,
+              0.6512689038342931
+            ],
+            [
+              0.75,
+              0.8427125103179652
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3601-kme_435",
+      "untouched_from_ours": 16.164,
+      "untouched_from_theirs": 12.611,
+      "sliders_from_ours": 5.791,
+      "sliders_from_theirs": 2.269,
+      "curve_from_ours": 5.587,
+      "curve_from_theirs": 1.384,
+      "max_curve_from_theirs": 13.348,
+      "seconds": 95.59,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.9856085552999513,
+          "tint": -0.26598332974283895
+        },
+        "tone": {
+          "exposure": 0.1995110876980659,
+          "contrast": -12.530584396063176,
+          "highlights": -4.258534678238159,
+          "shadows": -36.70103714479444,
+          "whites": 7.465088944301581,
+          "blacks": -96.37438843275308
+        },
+        "color": {
+          "saturation": 40.302919583404545,
+          "vibrance": 19.326609062046725
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3780937534742707
+            ],
+            [
+              0.5,
+              0.683979382808442
+            ],
+            [
+              0.75,
+              0.8759424150959394
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3651-kme_579",
+      "untouched_from_ours": 13.35,
+      "untouched_from_theirs": 18.701,
+      "sliders_from_ours": 6.515,
+      "sliders_from_theirs": 3.025,
+      "curve_from_ours": 6.002,
+      "curve_from_theirs": 1.801,
+      "max_curve_from_theirs": 15.394,
+      "seconds": 38.89,
+      "at_bounds": [
+        "blacks"
+      ],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -4.057620667660057,
+          "tint": -1.7481483122311543
+        },
+        "tone": {
+          "exposure": 0.5437074637616895,
+          "contrast": 74.30399983803173,
+          "highlights": 20.447553630410773,
+          "shadows": -32.018154371422,
+          "whites": -80.02084060727145,
+          "blacks": -98.99635603784004
+        },
+        "color": {
+          "saturation": 21.16636207442012,
+          "vibrance": 17.153298627758538
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.5105906162954723
+            ],
+            [
+              0.5,
+              0.7920889751247928
+            ],
+            [
+              0.75,
+              0.8971895977950479
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3751-07-11-04-at-18h05m15s-_MG_4020",
+      "untouched_from_ours": 14.729,
+      "untouched_from_theirs": 13.712,
+      "sliders_from_ours": 5.983,
+      "sliders_from_theirs": 4.58,
+      "curve_from_ours": 4.394,
+      "curve_from_theirs": 1.814,
+      "max_curve_from_theirs": 13.166,
+      "seconds": 57.86,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -38.52006275062215,
+          "tint": -18.326601673850494
+        },
+        "tone": {
+          "exposure": -0.35429828453721235,
+          "contrast": -23.427482649307642,
+          "highlights": 53.96392534238906,
+          "shadows": -19.26475174718702,
+          "whites": -88.31029917760799,
+          "blacks": -29.573836954232014
+        },
+        "color": {
+          "saturation": 12.103858776483715,
+          "vibrance": 36.439674786740696
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.48863571970999053
+            ],
+            [
+              0.5,
+              0.7743294091403337
+            ],
+            [
+              0.75,
+              0.9013175880157611
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3801-jmacDSC_0380",
+      "untouched_from_ours": 7.823,
+      "untouched_from_theirs": 9.292,
+      "sliders_from_ours": 3.374,
+      "sliders_from_theirs": 2.108,
+      "curve_from_ours": 2.991,
+      "curve_from_theirs": 1.239,
+      "max_curve_from_theirs": 19.116,
+      "seconds": 132.85,
+      "at_bounds": [
+        "blacks"
+      ],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.00013287223543634416,
+          "tint": -0.4826691991523079
+        },
+        "tone": {
+          "exposure": 0.6314315359553226,
+          "contrast": -9.549150506203407,
+          "highlights": 0.38794647523425374,
+          "shadows": 6.2839609328198165,
+          "whites": -9.778012897961842,
+          "blacks": -98.87781942262961
+        },
+        "color": {
+          "saturation": 37.58559316360069,
+          "vibrance": 39.62453230584816
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.12512132260096467
+            ],
+            [
+              0.5,
+              0.5624862071975216
+            ],
+            [
+              0.75,
+              0.8350089281050539
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3851-IMG_3430",
+      "untouched_from_ours": 28.351,
+      "untouched_from_theirs": 27.721,
+      "sliders_from_ours": 8.647,
+      "sliders_from_theirs": 4.176,
+      "curve_from_ours": 8.283,
+      "curve_from_theirs": 3.3,
+      "max_curve_from_theirs": 19.634,
+      "seconds": 62.19,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -83.74196047424694,
+          "tint": -0.8456477382361277
+        },
+        "tone": {
+          "exposure": 1.015816747601805,
+          "contrast": 12.641149504825355,
+          "highlights": 58.170766962207225,
+          "shadows": 22.933124413490198,
+          "whites": -3.297885740233249,
+          "blacks": -48.054716314023715
+        },
+        "color": {
+          "saturation": 19.828876751262527,
+          "vibrance": 4.535079201237008
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.1391738683048949
+            ],
+            [
+              0.5,
+              0.6589103507029178
+            ],
+            [
+              0.75,
+              0.8203626553094474
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3901-IMG_3788",
+      "untouched_from_ours": 16.492,
+      "untouched_from_theirs": 15.486,
+      "sliders_from_ours": 3.812,
+      "sliders_from_theirs": 3.113,
+      "curve_from_ours": 2.2,
+      "curve_from_theirs": 1.734,
+      "max_curve_from_theirs": 5.269,
+      "seconds": 28.43,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -3.979719757235406,
+          "tint": 1.00911016699105
+        },
+        "tone": {
+          "exposure": 1.0099023209100806,
+          "contrast": 53.372112132816255,
+          "highlights": 30.578491087040653,
+          "shadows": 13.878246035596419,
+          "whites": -59.619839300122315,
+          "blacks": 13.036394914540015
+        },
+        "color": {
+          "saturation": -1.3678104897170342,
+          "vibrance": -17.509077152476152
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.050681025765754395
+            ],
+            [
+              0.5,
+              0.4673673252690966
+            ],
+            [
+              0.75,
+              0.7513375098859314
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a3951-IMG_0100",
+      "untouched_from_ours": 16.321,
+      "untouched_from_theirs": 16.393,
+      "sliders_from_ours": 6.261,
+      "sliders_from_theirs": 4.422,
+      "curve_from_ours": 5.887,
+      "curve_from_theirs": 3.882,
+      "max_curve_from_theirs": 26.44,
+      "seconds": 30.57,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -67.86793213128047,
+          "tint": -18.169431732314838
+        },
+        "tone": {
+          "exposure": 0.025376817280158784,
+          "contrast": 26.06024129542593,
+          "highlights": 16.958322970833215,
+          "shadows": -24.52543345421819,
+          "whites": 78.82172198527748,
+          "blacks": -36.55122087608855
+        },
+        "color": {
+          "saturation": 14.421100022037361,
+          "vibrance": -19.161680547440596
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.41966283649830133
+            ],
+            [
+              0.5,
+              0.7219272899452454
+            ],
+            [
+              0.75,
+              0.830009504614715
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4001-jn_20070824_0168",
+      "untouched_from_ours": 13.367,
+      "untouched_from_theirs": 15.537,
+      "sliders_from_ours": 5.966,
+      "sliders_from_theirs": 4.95,
+      "curve_from_ours": 4.815,
+      "curve_from_theirs": 2.095,
+      "max_curve_from_theirs": 12.59,
+      "seconds": 74.4,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 1.7696108046641092,
+          "tint": -0.738352406863214
+        },
+        "tone": {
+          "exposure": 0.3852294715731449,
+          "contrast": 5.073484707364221,
+          "highlights": 10.57994508368873,
+          "shadows": 14.708105727540651,
+          "whites": -85.53302694132793,
+          "blacks": -92.46697215217104
+        },
+        "color": {
+          "saturation": 31.43858477334601,
+          "vibrance": 20.046010950651077
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.25862415194938143
+            ],
+            [
+              0.5,
+              0.7295373300756174
+            ],
+            [
+              0.75,
+              0.8819748401661355
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4051-_DSC0018-3",
+      "untouched_from_ours": 12.843,
+      "untouched_from_theirs": 17.558,
+      "sliders_from_ours": 7.055,
+      "sliders_from_theirs": 3.313,
+      "curve_from_ours": 6.621,
+      "curve_from_theirs": 1.764,
+      "max_curve_from_theirs": 15.603,
+      "seconds": 39.93,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.7737895328029176,
+          "tint": -0.17001178160730598
+        },
+        "tone": {
+          "exposure": 0.1447786965750863,
+          "contrast": -1.35510446105964,
+          "highlights": 46.44031742256436,
+          "shadows": -35.03303862514754,
+          "whites": -39.92124694531996,
+          "blacks": -77.00657489277995
+        },
+        "color": {
+          "saturation": 22.296310396724024,
+          "vibrance": 25.867209606384666
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.5257311004734192
+            ],
+            [
+              0.5,
+              0.8044765751362324
+            ],
+            [
+              0.75,
+              0.9298476159550918
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4101-IMG_5823",
+      "untouched_from_ours": 16.931,
+      "untouched_from_theirs": 14.748,
+      "sliders_from_ours": 2.755,
+      "sliders_from_theirs": 1.893,
+      "curve_from_ours": 2.519,
+      "curve_from_theirs": 1.404,
+      "max_curve_from_theirs": 10.604,
+      "seconds": 65.2,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.8544341883238117,
+          "tint": -0.3599968140607461
+        },
+        "tone": {
+          "exposure": 0.5806300755707946,
+          "contrast": 23.96640354845747,
+          "highlights": -13.610247824442547,
+          "shadows": -8.080337718963191,
+          "whites": -29.137970242333445,
+          "blacks": -24.102275759436864
+        },
+        "color": {
+          "saturation": 43.50260776256536,
+          "vibrance": 51.582995243177045
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.363484166762677
+            ],
+            [
+              0.5,
+              0.6544317353715414
+            ],
+            [
+              0.75,
+              0.8396930048521282
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4151-dvf_026",
+      "untouched_from_ours": 17.583,
+      "untouched_from_theirs": 15.629,
+      "sliders_from_ours": 4.142,
+      "sliders_from_theirs": 2.484,
+      "curve_from_ours": 3.377,
+      "curve_from_theirs": 1.657,
+      "max_curve_from_theirs": 24.79,
+      "seconds": 103.77,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.10224093556564864,
+          "tint": 0.17103437045418438
+        },
+        "tone": {
+          "exposure": 0.6457032954782387,
+          "contrast": -0.43791221165460487,
+          "highlights": -24.5714328054438,
+          "shadows": 7.49926924227951,
+          "whites": -45.350190684866995,
+          "blacks": -41.93897763554535
+        },
+        "color": {
+          "saturation": 28.245136162724428,
+          "vibrance": -6.869354568488369
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3430511820070407
+            ],
+            [
+              0.5,
+              0.7494368893923861
+            ],
+            [
+              0.75,
+              0.8857446157686117
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4201-_DSC0120",
+      "untouched_from_ours": 9.261,
+      "untouched_from_theirs": 10.777,
+      "sliders_from_ours": 6.689,
+      "sliders_from_theirs": 4.826,
+      "curve_from_ours": 6.546,
+      "curve_from_theirs": 3.084,
+      "max_curve_from_theirs": 23.429,
+      "seconds": 103.81,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 6.221846127494645,
+          "tint": 1.834735359578073
+        },
+        "tone": {
+          "exposure": -1.0331550400243328,
+          "contrast": -33.19206410383549,
+          "highlights": 34.690357624215636,
+          "shadows": -18.681282753547233,
+          "whites": 89.73809256525153,
+          "blacks": -14.258475382789296
+        },
+        "color": {
+          "saturation": 57.2036892894377,
+          "vibrance": 87.80457219606328
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.4859141563221298
+            ],
+            [
+              0.5,
+              0.8054906576917122
+            ],
+            [
+              0.75,
+              0.8931308819477417
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4251-DSC_0248",
+      "untouched_from_ours": 15.879,
+      "untouched_from_theirs": 16.395,
+      "sliders_from_ours": 9.544,
+      "sliders_from_theirs": 2.349,
+      "curve_from_ours": 9.348,
+      "curve_from_theirs": 1.918,
+      "max_curve_from_theirs": 15.845,
+      "seconds": 34.11,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -2.1168146928585654,
+          "tint": -0.7500049262877171
+        },
+        "tone": {
+          "exposure": 0.8642776246236311,
+          "contrast": 25.470622060152483,
+          "highlights": 17.222303719267526,
+          "shadows": -6.983099942164967,
+          "whites": 3.7705530542810095,
+          "blacks": -21.83081876664251
+        },
+        "color": {
+          "saturation": 14.844316660117762,
+          "vibrance": 34.85807026184049
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.45093948868601125
+            ],
+            [
+              0.5,
+              0.7161211016635383
+            ],
+            [
+              0.75,
+              0.8389070199306612
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4301-_DSC0054",
+      "untouched_from_ours": 10.973,
+      "untouched_from_theirs": 7.155,
+      "sliders_from_ours": 8.312,
+      "sliders_from_theirs": 3.855,
+      "curve_from_ours": 8.121,
+      "curve_from_theirs": 2.046,
+      "max_curve_from_theirs": 22.436,
+      "seconds": 100.23,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.9055024612230776,
+          "tint": -0.5347191304509924
+        },
+        "tone": {
+          "exposure": -0.6873241716845948,
+          "contrast": 0.07210697520740782,
+          "highlights": 14.244687078194834,
+          "shadows": -21.509559448302404,
+          "whites": 36.791963328660806,
+          "blacks": -37.06930038342137
+        },
+        "color": {
+          "saturation": 23.426862296698694,
+          "vibrance": 66.24486596174187
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.4164216175280226
+            ],
+            [
+              0.5,
+              0.6910188283757772
+            ],
+            [
+              0.75,
+              0.8378109305362889
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4351-Duggan_090428_8083",
+      "untouched_from_ours": 20.366,
+      "untouched_from_theirs": 18.031,
+      "sliders_from_ours": 2.656,
+      "sliders_from_theirs": 1.882,
+      "curve_from_ours": 1.904,
+      "curve_from_theirs": 0.965,
+      "max_curve_from_theirs": 8.425,
+      "seconds": 68.27,
+      "at_bounds": [
+        "whites"
+      ],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.13941386140994624,
+          "tint": -0.3809093759498855
+        },
+        "tone": {
+          "exposure": 0.6812130868020245,
+          "contrast": 19.37051206306231,
+          "highlights": 40.68801041842639,
+          "shadows": -20.87580438864346,
+          "whites": 99.0,
+          "blacks": -57.02120568234286
+        },
+        "color": {
+          "saturation": 39.90563375086396,
+          "vibrance": 69.27663495704209
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3928804953404023
+            ],
+            [
+              0.5,
+              0.688791454473867
+            ],
+            [
+              0.75,
+              0.856444264531241
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4401-kme_0250",
+      "untouched_from_ours": 14.58,
+      "untouched_from_theirs": 11.564,
+      "sliders_from_ours": 5.856,
+      "sliders_from_theirs": 4.248,
+      "curve_from_ours": 4.707,
+      "curve_from_theirs": 2.236,
+      "max_curve_from_theirs": 14.959,
+      "seconds": 85.57,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -3.4070851591606095,
+          "tint": -2.231075948983981
+        },
+        "tone": {
+          "exposure": 0.2570738367103447,
+          "contrast": 38.230226482803275,
+          "highlights": -5.029229304302907,
+          "shadows": -9.296096103804825,
+          "whites": -89.97700419819465,
+          "blacks": -55.52363202305985
+        },
+        "color": {
+          "saturation": 70.89173951879985,
+          "vibrance": 61.74509725218207
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3758345388808901
+            ],
+            [
+              0.5,
+              0.6241708436197964
+            ],
+            [
+              0.75,
+              0.760392599772487
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4451-Duggan_080821_1263",
+      "untouched_from_ours": 6.717,
+      "untouched_from_theirs": 7.516,
+      "sliders_from_ours": 4.406,
+      "sliders_from_theirs": 3.135,
+      "curve_from_ours": 3.107,
+      "curve_from_theirs": 1.748,
+      "max_curve_from_theirs": 12.832,
+      "seconds": 169.59,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 1.2540393470142654,
+          "tint": 0.8893403925967645
+        },
+        "tone": {
+          "exposure": -0.421243204728918,
+          "contrast": -15.952535381462315,
+          "highlights": -41.04798989063235,
+          "shadows": -30.461934462982864,
+          "whites": 86.07069863931197,
+          "blacks": -70.92662689935948
+        },
+        "color": {
+          "saturation": 35.853818147587994,
+          "vibrance": -35.08733961401848
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3222844906843423
+            ],
+            [
+              0.5,
+              0.5262664253268623
+            ],
+            [
+              0.75,
+              0.6970833065832488
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4501-DSC_0354",
+      "untouched_from_ours": 16.416,
+      "untouched_from_theirs": 19.261,
+      "sliders_from_ours": 4.394,
+      "sliders_from_theirs": 2.317,
+      "curve_from_ours": 4.347,
+      "curve_from_theirs": 1.371,
+      "max_curve_from_theirs": 8.76,
+      "seconds": 32.06,
+      "at_bounds": [
+        "whites"
+      ],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -4.401096367753825,
+          "tint": -7.984474408558614
+        },
+        "tone": {
+          "exposure": 0.6074398458515098,
+          "contrast": -12.93103215053964,
+          "highlights": 94.544858489891,
+          "shadows": 11.952873622537995,
+          "whites": -99.30084220484969,
+          "blacks": -95.57835246745465
+        },
+        "color": {
+          "saturation": 10.498155671254468,
+          "vibrance": 6.9982321301642445
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.1275811773335584
+            ],
+            [
+              0.5,
+              0.8480178724263612
+            ],
+            [
+              0.75,
+              0.8706377639808077
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4551-kme_0625",
+      "untouched_from_ours": 18.579,
+      "untouched_from_theirs": 21.423,
+      "sliders_from_ours": 3.595,
+      "sliders_from_theirs": 2.299,
+      "curve_from_ours": 2.919,
+      "curve_from_theirs": 1.189,
+      "max_curve_from_theirs": 10.554,
+      "seconds": 105.85,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.47033646883162755,
+          "tint": -1.5474509687668867
+        },
+        "tone": {
+          "exposure": 0.9061898019654124,
+          "contrast": 10.407187936060781,
+          "highlights": 31.588101712051692,
+          "shadows": -8.671764614177954,
+          "whites": -45.556356725372446,
+          "blacks": -38.003971619606205
+        },
+        "color": {
+          "saturation": 19.054987877143954,
+          "vibrance": 14.892630300112083
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.4142485053397144
+            ],
+            [
+              0.5,
+              0.7270784362684211
+            ],
+            [
+              0.75,
+              0.8769371378568096
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4601-Duggan_090331_6495",
+      "untouched_from_ours": 9.446,
+      "untouched_from_theirs": 7.569,
+      "sliders_from_ours": 3.37,
+      "sliders_from_theirs": 3.052,
+      "curve_from_ours": 1.484,
+      "curve_from_theirs": 0.773,
+      "max_curve_from_theirs": 8.322,
+      "seconds": 187.4,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -0.1672174938193174,
+          "tint": -0.24795456876475389
+        },
+        "tone": {
+          "exposure": 0.22518539456571518,
+          "contrast": 12.110208821129673,
+          "highlights": -7.99387868135963,
+          "shadows": -6.705951567264938,
+          "whites": -49.049733358182,
+          "blacks": -47.89090793759409
+        },
+        "color": {
+          "saturation": 59.20079931523748,
+          "vibrance": 5.154265332727972
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.3673112546340108
+            ],
+            [
+              0.5,
+              0.6612248427499358
+            ],
+            [
+              0.75,
+              0.8129851526458715
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4651-_DGW0292",
+      "untouched_from_ours": 18.526,
+      "untouched_from_theirs": 15.912,
+      "sliders_from_ours": 3.876,
+      "sliders_from_theirs": 3.989,
+      "curve_from_ours": 2.814,
+      "curve_from_theirs": 2.461,
+      "max_curve_from_theirs": 15.813,
+      "seconds": 62.71,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -7.174636520617396,
+          "tint": -5.0353626512052685
+        },
+        "tone": {
+          "exposure": 0.5707049531716892,
+          "contrast": -26.312796456576002,
+          "highlights": 33.13115807578303,
+          "shadows": -15.459020452137647,
+          "whites": 39.84329840418875,
+          "blacks": -22.268007919029788
+        },
+        "color": {
+          "saturation": 12.49784825290888,
+          "vibrance": 24.12404264353997
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.4178126419194623
+            ],
+            [
+              0.5,
+              0.6798931158748736
+            ],
+            [
+              0.75,
+              0.827043069049972
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4701-kme_0138",
+      "untouched_from_ours": 9.784,
+      "untouched_from_theirs": 13.26,
+      "sliders_from_ours": 4.775,
+      "sliders_from_theirs": 2.562,
+      "curve_from_ours": 4.283,
+      "curve_from_theirs": 1.42,
+      "max_curve_from_theirs": 11.015,
+      "seconds": 135.71,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -1.8807379050077726,
+          "tint": 0.7341665166779147
+        },
+        "tone": {
+          "exposure": 0.23860800954574818,
+          "contrast": 14.33960458539539,
+          "highlights": 13.934788283857555,
+          "shadows": -28.803996457255554,
+          "whites": 14.387493036374776,
+          "blacks": -82.35770337584863
+        },
+        "color": {
+          "saturation": 44.01579585022859,
+          "vibrance": 29.789740549295885
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.4107251699606108
+            ],
+            [
+              0.5,
+              0.6528829815898404
+            ],
+            [
+              0.75,
+              0.8003373588328286
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4751-Duggan_080819_1030",
+      "untouched_from_ours": 17.287,
+      "untouched_from_theirs": 14.612,
+      "sliders_from_ours": 4.913,
+      "sliders_from_theirs": 3.375,
+      "curve_from_ours": 3.982,
+      "curve_from_theirs": 2.493,
+      "max_curve_from_theirs": 18.663,
+      "seconds": 43.25,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -1.6711866943814837,
+          "tint": -2.664924098234688
+        },
+        "tone": {
+          "exposure": 0.5716788786109341,
+          "contrast": -26.290589849572317,
+          "highlights": 34.93527708411539,
+          "shadows": 16.029612709066225,
+          "whites": -6.726988169250518,
+          "blacks": -0.41859602845629884
+        },
+        "color": {
+          "saturation": 45.23346552461555,
+          "vibrance": 30.208378091731404
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.2547486786287029
+            ],
+            [
+              0.5,
+              0.5793013573205394
+            ],
+            [
+              0.75,
+              0.7711182475573293
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4801-_DGW0327",
+      "untouched_from_ours": 17.956,
+      "untouched_from_theirs": 15.002,
+      "sliders_from_ours": 3.914,
+      "sliders_from_theirs": 3.521,
+      "curve_from_ours": 2.412,
+      "curve_from_theirs": 2.731,
+      "max_curve_from_theirs": 17.151,
+      "seconds": 39.74,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -42.483917938855306,
+          "tint": -6.644468803668765
+        },
+        "tone": {
+          "exposure": 0.14913139507172646,
+          "contrast": 1.1663611794440931,
+          "highlights": -0.6513970053627833,
+          "shadows": -22.12292171430759,
+          "whites": 31.843210187809657,
+          "blacks": -51.99305409790891
+        },
+        "color": {
+          "saturation": 20.23306420350807,
+          "vibrance": 10.641408736695363
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.4022913661171873
+            ],
+            [
+              0.5,
+              0.6824123682836771
+            ],
+            [
+              0.75,
+              0.8358502301185877
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4851-kme_274",
+      "untouched_from_ours": 8.528,
+      "untouched_from_theirs": 12.756,
+      "sliders_from_ours": 5.344,
+      "sliders_from_theirs": 3.355,
+      "curve_from_ours": 4.199,
+      "curve_from_theirs": 2.013,
+      "max_curve_from_theirs": 16.398,
+      "seconds": 34.49,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -19.34302427001977,
+          "tint": -18.182728494015155
+        },
+        "tone": {
+          "exposure": 0.3735388335044618,
+          "contrast": -22.7550749499552,
+          "highlights": -3.798753776066381,
+          "shadows": -26.53204779168644,
+          "whites": -30.225271092283023,
+          "blacks": -51.13680865633652
+        },
+        "color": {
+          "saturation": 20.29360979575595,
+          "vibrance": -5.412739546575905
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.41641083448441557
+            ],
+            [
+              0.5,
+              0.7020914742559505
+            ],
+            [
+              0.75,
+              0.8451581260984513
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4901-DSC_0234",
+      "untouched_from_ours": 11.56,
+      "untouched_from_theirs": 8.264,
+      "sliders_from_ours": 5.515,
+      "sliders_from_theirs": 1.508,
+      "curve_from_ours": 5.385,
+      "curve_from_theirs": 1.425,
+      "max_curve_from_theirs": 16.237,
+      "seconds": 77.69,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 22.593945249723728,
+          "tint": -0.5417987757276107
+        },
+        "tone": {
+          "exposure": -0.13242082635464814,
+          "contrast": 22.821425372934918,
+          "highlights": -9.172843084002173,
+          "shadows": -11.362705747890756,
+          "whites": 68.0110706317174,
+          "blacks": -35.611955107994625
+        },
+        "color": {
+          "saturation": 22.418511903625696,
+          "vibrance": 11.494581654339378
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.2811759092912792
+            ],
+            [
+              0.5,
+              0.5343021559965744
+            ],
+            [
+              0.75,
+              0.7899128301630136
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "basename": "a4951-_DGW0252",
+      "untouched_from_ours": 26.593,
+      "untouched_from_theirs": 22.853,
+      "sliders_from_ours": 3.218,
+      "sliders_from_theirs": 2.8,
+      "curve_from_ours": 2.075,
+      "curve_from_theirs": 1.071,
+      "max_curve_from_theirs": 15.277,
+      "seconds": 47.55,
+      "at_bounds": [],
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.6955306108759527,
+          "tint": -2.1313361356582776
+        },
+        "tone": {
+          "exposure": 0.852808937040645,
+          "contrast": -17.06975025694159,
+          "highlights": 17.623637745848306,
+          "shadows": -16.388013267882823,
+          "whites": 82.02088590433048,
+          "blacks": -12.176436582084595
+        },
+        "color": {
+          "saturation": 18.700859240975905,
+          "vibrance": 25.267795599428084
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.44989777872299713
+            ],
+            [
+              0.5,
+              0.7263375155106162
+            ],
+            [
+              0.75,
+              0.8695312261650869
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
