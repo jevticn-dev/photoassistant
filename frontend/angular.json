@@ -73,7 +73,19 @@
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:unit-test"
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "runnerConfig": true,
+            "exclude": ["**/*.browser.spec.ts"]
+          }
+        },
+        "test-browser": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "runnerConfig": true,
+            "browsers": ["chromium"],
+            "include": ["**/*.browser.spec.ts"]
+          }
         }
       }
     }

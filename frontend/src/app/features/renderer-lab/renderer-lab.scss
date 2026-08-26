@@ -1,0 +1,73 @@
+// Plain SCSS, no component library — that choice is still open and is not one to
+// make in passing on a development page (.claude/rules/frontend.md).
+
+.lab {
+  padding: 1rem;
+
+  &__intro {
+    max-width: 60ch;
+  }
+
+  &__failure {
+    color: #b00020;
+  }
+
+  &__layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+
+  &__preview canvas {
+    // The canvas is the image's own size in pixels; this only scales what is
+    // shown. A checkerboard is pointless here — the renderer writes opaque
+    // pixels — but a border makes the edges of a dark image visible.
+    display: block;
+    width: 512px;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+    image-rendering: auto;
+  }
+
+  &__file {
+    display: block;
+    margin-top: 0.75rem;
+  }
+
+  &__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 22rem;
+  }
+
+  &__slider {
+    display: grid;
+    grid-template-columns: 7rem 1fr 3.5rem;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__value {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__state {
+    margin: 0.5rem 0 0;
+    font-size: 0.9rem;
+    color: #555;
+  }
+
+  &__recipe {
+    margin-top: 1.5rem;
+
+    pre {
+      background: #f4f4f4;
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+  }
+}
