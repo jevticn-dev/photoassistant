@@ -41,8 +41,16 @@ Granicu čuva `boundary.spec.ts`, po ugledu na `LayerDependencyTests` u backendu
 | `renderer.browser.spec.ts` | chromium | **namere** iz spec §3, kroz stvarni GPU              |
 
 ```bash
-npm --prefix frontend test            # jsdom, bez browsera
+npm --prefix frontend test              # jsdom, bez browsera
 npm --prefix frontend run test:browser  # chromium kroz Playwright
+npm --prefix frontend run golden        # renderuje sve kombinacije za golden test
+```
+
+Golden test saglasnosti ide u dva koraka, jer ΔE postoji samo u Pythonu:
+
+```bash
+npm --prefix frontend run golden                        # browser upisuje PNG-ove
+uv run --project ml --extra service pytest ml/tests/golden   # Python meri ΔE
 ```
 
 Dve komande zato što `*.browser.spec.ts` traži pravi WebGL2 kontekst, a ostalo ne. jsdom
