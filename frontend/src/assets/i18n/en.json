@@ -28,6 +28,37 @@
     "title": "Projects",
     "empty": "No projects yet. Upload a photograph to begin."
   },
+  "renderer": {
+    "lab": {
+      "title": "Renderer test page",
+      "intro": "Every parameter of edit schema v1, applied by the WebGL2 renderer. A development aid, not part of the product.",
+      "canvas": "Rendered preview",
+      "openImage": "Open an image",
+      "recipe": "Recipe",
+      "reset": "Reset to neutral",
+      "neutral": "Neutral recipe: the output is the input, bit for bit.",
+      "edited": "Edited.",
+      "failure": "The renderer refused:",
+      "params": {
+        "temperature": "Temperature",
+        "tint": "Tint",
+        "exposure": "Exposure",
+        "contrast": "Contrast",
+        "highlights": "Highlights",
+        "shadows": "Shadows",
+        "whites": "Whites",
+        "blacks": "Blacks",
+        "saturation": "Saturation",
+        "vibrance": "Vibrance",
+        "toneCurve": "Tone curve"
+      },
+      "curves": {
+        "neutral": "Linear",
+        "mediumContrast": "Medium contrast",
+        "faded": "Faded"
+      }
+    }
+  },
   "common": {
     "loading": "Loading…",
     "retry": "Try again"

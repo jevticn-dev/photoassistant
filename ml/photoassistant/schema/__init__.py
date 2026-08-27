@@ -14,3 +14,29 @@ re-serialising must produce identical JSON.
 Hard rule: extensions are **additive only** and require an ADR. A record written
 as ``schema: 1`` has to stay readable forever.
 """
+
+from photoassistant.schema.model import (
+    MIN_POINT_SPACING,
+    SCHEMA_VERSION,
+    Color,
+    EditRecipe,
+    Tone,
+    ToneCurve,
+    WhiteBalance,
+    from_json,
+    load,
+    to_json,
+)
+
+__all__ = [
+    "MIN_POINT_SPACING",
+    "SCHEMA_VERSION",
+    "Color",
+    "EditRecipe",
+    "Tone",
+    "ToneCurve",
+    "WhiteBalance",
+    "from_json",
+    "load",
+    "to_json",
+]

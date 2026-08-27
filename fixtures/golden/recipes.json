@@ -1,0 +1,1996 @@
+{
+  "recipes": [
+    {
+      "name": "neutral",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {},
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "fixture_curve_only",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 0.0,
+          "tint": 0.0
+        },
+        "tone": {
+          "exposure": 0.0,
+          "contrast": 0.0,
+          "highlights": 0.0,
+          "shadows": 0.0,
+          "whites": 0.0,
+          "blacks": 0.0
+        },
+        "color": {
+          "saturation": 0.0,
+          "vibrance": 0.0
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.08
+            ],
+            [
+              0.25,
+              0.28
+            ],
+            [
+              0.75,
+              0.8
+            ],
+            [
+              1.0,
+              0.95
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "fixture_extreme",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 100.0,
+          "tint": -100.0
+        },
+        "tone": {
+          "exposure": 1.0,
+          "contrast": 100.0,
+          "highlights": -100.0,
+          "shadows": 100.0,
+          "whites": -100.0,
+          "blacks": 100.0
+        },
+        "color": {
+          "saturation": 100.0,
+          "vibrance": 100.0
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.18,
+              0.02
+            ],
+            [
+              0.35,
+              0.62
+            ],
+            [
+              0.62,
+              0.66
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "fixture_warm_bright",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 22.0,
+          "tint": -6.0
+        },
+        "tone": {
+          "exposure": 0.35,
+          "contrast": 18.0,
+          "highlights": -30.0,
+          "shadows": 25.0,
+          "whites": 10.0,
+          "blacks": -12.0
+        },
+        "color": {
+          "saturation": 8.0,
+          "vibrance": 20.0
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.12549,
+              0.086275
+            ],
+            [
+              0.25098,
+              0.219608
+            ],
+            [
+              0.501961,
+              0.501961
+            ],
+            [
+              0.752941,
+              0.768627
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "temperature_max",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 100.0
+        },
+        "tone": {},
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "temperature_min",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -100.0
+        },
+        "tone": {},
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "tint_max",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "tint": 100.0
+        },
+        "tone": {},
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "tint_min",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "tint": -100.0
+        },
+        "tone": {},
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "exposure_max",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "exposure": 5.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "exposure_min",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "exposure": -5.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "contrast_max",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "contrast": 100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "contrast_min",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "contrast": -100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "highlights_max",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "highlights": 100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "highlights_min",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "highlights": -100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "shadows_max",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "shadows": 100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "shadows_min",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "shadows": -100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "whites_max",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "whites": 100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "whites_min",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "whites": -100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "blacks_max",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "blacks": 100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "blacks_min",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "blacks": -100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "saturation_max",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {},
+        "color": {
+          "saturation": 100.0
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "saturation_min",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {},
+        "color": {
+          "saturation": -100.0
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "vibrance_max",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {},
+        "color": {
+          "vibrance": 100.0
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "vibrance_min",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {},
+        "color": {
+          "vibrance": -100.0
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "curve_medium_contrast",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {},
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.12549019607843137,
+              0.08627450980392157
+            ],
+            [
+              0.25098039215686274,
+              0.2196078431372549
+            ],
+            [
+              0.5019607843137255,
+              0.5019607843137255
+            ],
+            [
+              0.7529411764705882,
+              0.7686274509803922
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "curve_faded",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {},
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.08
+            ],
+            [
+              0.25,
+              0.28
+            ],
+            [
+              0.75,
+              0.8
+            ],
+            [
+              1.0,
+              0.95
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "curve_steep_middle",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {},
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.45,
+              0.1
+            ],
+            [
+              0.55,
+              0.9
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "adr20_cyan",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 70.0
+        },
+        "tone": {
+          "contrast": 45.0,
+          "blacks": -60.0
+        },
+        "color": {
+          "vibrance": 60.0
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "adr20_white_to_black",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "exposure": 2.0,
+          "contrast": 100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "adr20_hue_flip",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {},
+        "color": {
+          "saturation": -100.0,
+          "vibrance": -100.0
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "banding_combination",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "tint": -63.5
+        },
+        "tone": {
+          "highlights": 58.7,
+          "whites": -62.7
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "blown_then_recovered",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "exposure": 2.0,
+          "whites": -100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "blown_then_highlights",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "exposure": 2.0,
+          "highlights": -100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "crushed_then_lifted",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "exposure": -2.0,
+          "blacks": 100.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "steep_curve_over_blown",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {},
+        "tone": {
+          "exposure": 1.5,
+          "contrast": 60.0
+        },
+        "color": {},
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.45,
+              0.1
+            ],
+            [
+              0.55,
+              0.9
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_00",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 5.105,
+          "tint": -69.764
+        },
+        "tone": {
+          "exposure": 1.21,
+          "contrast": -18.69,
+          "highlights": 1.506,
+          "shadows": -24.006,
+          "whites": -18.768,
+          "blacks": 26.403
+        },
+        "color": {
+          "saturation": -63.273,
+          "vibrance": -65.345
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.12549019607843137,
+              0.08627450980392157
+            ],
+            [
+              0.25098039215686274,
+              0.2196078431372549
+            ],
+            [
+              0.5019607843137255,
+              0.5019607843137255
+            ],
+            [
+              0.7529411764705882,
+              0.7686274509803922
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_01",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -88.517,
+          "tint": -90.836
+        },
+        "tone": {
+          "exposure": 3.643,
+          "contrast": -62.192,
+          "highlights": 38.049,
+          "shadows": 54.38,
+          "whites": 77.825,
+          "blacks": 29.024
+        },
+        "color": {
+          "saturation": 61.709,
+          "vibrance": -91.314
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.08
+            ],
+            [
+              0.25,
+              0.28
+            ],
+            [
+              0.75,
+              0.8
+            ],
+            [
+              1.0,
+              0.95
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_02",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 26.65,
+          "tint": -13.217
+        },
+        "tone": {
+          "exposure": -2.191,
+          "contrast": 88.013,
+          "highlights": 71.491,
+          "shadows": -63.431,
+          "whites": 57.281,
+          "blacks": 16.56
+        },
+        "color": {
+          "saturation": 81.922,
+          "vibrance": 50.866
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.08
+            ],
+            [
+              0.25,
+              0.28
+            ],
+            [
+              0.75,
+              0.8
+            ],
+            [
+              1.0,
+              0.95
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_03",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 48.728,
+          "tint": 79.054
+        },
+        "tone": {
+          "exposure": 2.486,
+          "contrast": 19.21,
+          "highlights": 33.239,
+          "shadows": -22.74,
+          "whites": 49.689,
+          "blacks": 42.718
+        },
+        "color": {
+          "saturation": 0.169,
+          "vibrance": -2.835
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.12549019607843137,
+              0.08627450980392157
+            ],
+            [
+              0.25098039215686274,
+              0.2196078431372549
+            ],
+            [
+              0.5019607843137255,
+              0.5019607843137255
+            ],
+            [
+              0.7529411764705882,
+              0.7686274509803922
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_04",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 58.972,
+          "tint": -21.763
+        },
+        "tone": {
+          "exposure": -0.859,
+          "contrast": 46.805,
+          "highlights": -99.402,
+          "shadows": -30.746,
+          "whites": 39.113,
+          "blacks": 89.475
+        },
+        "color": {
+          "saturation": 56.27,
+          "vibrance": 32.769
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.12549019607843137,
+              0.08627450980392157
+            ],
+            [
+              0.25098039215686274,
+              0.2196078431372549
+            ],
+            [
+              0.5019607843137255,
+              0.5019607843137255
+            ],
+            [
+              0.7529411764705882,
+              0.7686274509803922
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_05",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 26.182,
+          "tint": 39.059
+        },
+        "tone": {
+          "exposure": 4.084,
+          "contrast": -1.61,
+          "highlights": -11.555,
+          "shadows": 4.842,
+          "whites": 27.786,
+          "blacks": -1.823
+        },
+        "color": {
+          "saturation": 8.186,
+          "vibrance": 6.655
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.08
+            ],
+            [
+              0.25,
+              0.28
+            ],
+            [
+              0.75,
+              0.8
+            ],
+            [
+              1.0,
+              0.95
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_06",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 31.522,
+          "tint": -12.301
+        },
+        "tone": {
+          "exposure": -0.261,
+          "contrast": 54.086,
+          "highlights": 11.623,
+          "shadows": 64.484,
+          "whites": -92.846,
+          "blacks": -43.664
+        },
+        "color": {
+          "saturation": 53.342,
+          "vibrance": 92.323
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.12549019607843137,
+              0.08627450980392157
+            ],
+            [
+              0.25098039215686274,
+              0.2196078431372549
+            ],
+            [
+              0.5019607843137255,
+              0.5019607843137255
+            ],
+            [
+              0.7529411764705882,
+              0.7686274509803922
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_07",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -24.392,
+          "tint": -70.081
+        },
+        "tone": {
+          "exposure": -2.319,
+          "contrast": 1.117,
+          "highlights": -53.397,
+          "shadows": 73.835,
+          "whites": 48.605,
+          "blacks": 41.178
+        },
+        "color": {
+          "saturation": 14.962,
+          "vibrance": 19.863
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_08",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 9.675,
+          "tint": 71.876
+        },
+        "tone": {
+          "exposure": -1.585,
+          "contrast": -91.048,
+          "highlights": -11.67,
+          "shadows": -0.552,
+          "whites": 37.247,
+          "blacks": 73.405
+        },
+        "color": {
+          "saturation": 50.718,
+          "vibrance": 82.55
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.45,
+              0.1
+            ],
+            [
+              0.55,
+              0.9
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_09",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 50.843,
+          "tint": 42.363
+        },
+        "tone": {
+          "exposure": 1.906,
+          "contrast": 48.902,
+          "highlights": 80.86,
+          "shadows": -36.391,
+          "whites": -49.118,
+          "blacks": -55.051
+        },
+        "color": {
+          "saturation": -72.516,
+          "vibrance": -0.561
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.12549019607843137,
+              0.08627450980392157
+            ],
+            [
+              0.25098039215686274,
+              0.2196078431372549
+            ],
+            [
+              0.5019607843137255,
+              0.5019607843137255
+            ],
+            [
+              0.7529411764705882,
+              0.7686274509803922
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_10",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 15.67,
+          "tint": -54.008
+        },
+        "tone": {
+          "exposure": -2.81,
+          "contrast": -77.369,
+          "highlights": -2.446,
+          "shadows": 26.679,
+          "whites": 27.141,
+          "blacks": -80.645
+        },
+        "color": {
+          "saturation": 41.024,
+          "vibrance": -36.717
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_11",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 74.732,
+          "tint": -6.545
+        },
+        "tone": {
+          "exposure": -3.114,
+          "contrast": -37.897,
+          "highlights": 48.272,
+          "shadows": 23.747,
+          "whites": -7.477,
+          "blacks": 54.688
+        },
+        "color": {
+          "saturation": 69.493,
+          "vibrance": -98.23
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.12549019607843137,
+              0.08627450980392157
+            ],
+            [
+              0.25098039215686274,
+              0.2196078431372549
+            ],
+            [
+              0.5019607843137255,
+              0.5019607843137255
+            ],
+            [
+              0.7529411764705882,
+              0.7686274509803922
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_12",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 61.095,
+          "tint": -60.44
+        },
+        "tone": {
+          "exposure": 2.128,
+          "contrast": 95.476,
+          "highlights": 81.876,
+          "shadows": -64.618,
+          "whites": 38.034,
+          "blacks": 41.969
+        },
+        "color": {
+          "saturation": -97.612,
+          "vibrance": 31.548
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.08
+            ],
+            [
+              0.25,
+              0.28
+            ],
+            [
+              0.75,
+              0.8
+            ],
+            [
+              1.0,
+              0.95
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_13",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -54.162,
+          "tint": -8.454
+        },
+        "tone": {
+          "exposure": 4.84,
+          "contrast": -42.579,
+          "highlights": -67.221,
+          "shadows": 11.935,
+          "whites": -40.238,
+          "blacks": -63.549
+        },
+        "color": {
+          "saturation": 51.425,
+          "vibrance": -12.679
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.12549019607843137,
+              0.08627450980392157
+            ],
+            [
+              0.25098039215686274,
+              0.2196078431372549
+            ],
+            [
+              0.5019607843137255,
+              0.5019607843137255
+            ],
+            [
+              0.7529411764705882,
+              0.7686274509803922
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_14",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -30.312,
+          "tint": 86.069
+        },
+        "tone": {
+          "exposure": 4.896,
+          "contrast": -71.599,
+          "highlights": 7.153,
+          "shadows": 11.182,
+          "whites": -81.553,
+          "blacks": 20.784
+        },
+        "color": {
+          "saturation": 49.54,
+          "vibrance": 70.29
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.45,
+              0.1
+            ],
+            [
+              0.55,
+              0.9
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_15",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -83.357,
+          "tint": 53.69
+        },
+        "tone": {
+          "exposure": -4.116,
+          "contrast": 22.286,
+          "highlights": -23.065,
+          "shadows": -78.533,
+          "whites": -29.106,
+          "blacks": -94.331
+        },
+        "color": {
+          "saturation": -60.957,
+          "vibrance": 34.262
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_16",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -28.616,
+          "tint": 91.306
+        },
+        "tone": {
+          "exposure": 3.706,
+          "contrast": 54.872,
+          "highlights": 36.506,
+          "shadows": 79.466,
+          "whites": 77.09,
+          "blacks": 39.327
+        },
+        "color": {
+          "saturation": -73.061,
+          "vibrance": 99.562
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.45,
+              0.1
+            ],
+            [
+              0.55,
+              0.9
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_17",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 73.341,
+          "tint": 82.537
+        },
+        "tone": {
+          "exposure": 1.083,
+          "contrast": 10.26,
+          "highlights": 2.447,
+          "shadows": 54.812,
+          "whites": -96.203,
+          "blacks": -28.894
+        },
+        "color": {
+          "saturation": 13.814,
+          "vibrance": -55.379
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.12549019607843137,
+              0.08627450980392157
+            ],
+            [
+              0.25098039215686274,
+              0.2196078431372549
+            ],
+            [
+              0.5019607843137255,
+              0.5019607843137255
+            ],
+            [
+              0.7529411764705882,
+              0.7686274509803922
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_18",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 13.435,
+          "tint": 57.958
+        },
+        "tone": {
+          "exposure": 3.889,
+          "contrast": 73.734,
+          "highlights": 64.772,
+          "shadows": 82.784,
+          "whites": 95.37,
+          "blacks": -49.025
+        },
+        "color": {
+          "saturation": -58.684,
+          "vibrance": 90.083
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.08
+            ],
+            [
+              0.25,
+              0.28
+            ],
+            [
+              0.75,
+              0.8
+            ],
+            [
+              1.0,
+              0.95
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_19",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 14.88,
+          "tint": -78.928
+        },
+        "tone": {
+          "exposure": -2.619,
+          "contrast": 54.434,
+          "highlights": 91.872,
+          "shadows": -71.978,
+          "whites": -55.596,
+          "blacks": 72.725
+        },
+        "color": {
+          "saturation": -40.107,
+          "vibrance": 0.75
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.08
+            ],
+            [
+              0.25,
+              0.28
+            ],
+            [
+              0.75,
+              0.8
+            ],
+            [
+              1.0,
+              0.95
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_20",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -14.1,
+          "tint": 7.146
+        },
+        "tone": {
+          "exposure": 1.649,
+          "contrast": 35.626,
+          "highlights": -38.246,
+          "shadows": -1.055,
+          "whites": -68.488,
+          "blacks": 50.286
+        },
+        "color": {
+          "saturation": -13.944,
+          "vibrance": 71.772
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.12549019607843137,
+              0.08627450980392157
+            ],
+            [
+              0.25098039215686274,
+              0.2196078431372549
+            ],
+            [
+              0.5019607843137255,
+              0.5019607843137255
+            ],
+            [
+              0.7529411764705882,
+              0.7686274509803922
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_21",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": 3.418,
+          "tint": -91.916
+        },
+        "tone": {
+          "exposure": -1.989,
+          "contrast": 99.134,
+          "highlights": -34.266,
+          "shadows": -58.358,
+          "whites": 34.233,
+          "blacks": 22.101
+        },
+        "color": {
+          "saturation": -69.913,
+          "vibrance": -90.06
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.12549019607843137,
+              0.08627450980392157
+            ],
+            [
+              0.25098039215686274,
+              0.2196078431372549
+            ],
+            [
+              0.5019607843137255,
+              0.5019607843137255
+            ],
+            [
+              0.7529411764705882,
+              0.7686274509803922
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_22",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -28.01,
+          "tint": 27.357
+        },
+        "tone": {
+          "exposure": -1.585,
+          "contrast": 45.38,
+          "highlights": 43.326,
+          "shadows": -99.868,
+          "whites": 48.469,
+          "blacks": -77.678
+        },
+        "color": {
+          "saturation": 6.143,
+          "vibrance": -24.643
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.45,
+              0.1
+            ],
+            [
+              0.55,
+              0.9
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "seeded_23",
+      "recipe": {
+        "schema": 1,
+        "white_balance": {
+          "temperature": -20.35,
+          "tint": 29.394
+        },
+        "tone": {
+          "exposure": 1.535,
+          "contrast": -50.642,
+          "highlights": -5.13,
+          "shadows": 65.264,
+          "whites": 68.046,
+          "blacks": -53.535
+        },
+        "color": {
+          "saturation": 35.961,
+          "vibrance": 67.957
+        },
+        "tone_curve": {
+          "points": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.12549019607843137,
+              0.08627450980392157
+            ],
+            [
+              0.25098039215686274,
+              0.2196078431372549
+            ],
+            [
+              0.5019607843137255,
+              0.5019607843137255
+            ],
+            [
+              0.7529411764705882,
+              0.7686274509803922
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

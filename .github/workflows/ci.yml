@@ -93,7 +93,10 @@ jobs:
         run: uv sync --project ml --extra service --frozen
 
       - name: Lint
-        run: uv run --project ml --extra service ruff check ml
+        # `fixtures` and `pipeline` too: the test-image generator and the offline
+        # scripts are committed Python, so they are held to the same standard as
+        # the library.
+        run: uv run --project ml --extra service ruff check ml fixtures pipeline
 
       - name: Test
         run: uv run --project ml --extra service pytest ml/tests
@@ -144,3 +147,51 @@ jobs:
 
       - name: Test
         run: npm test
+
+  golden:
+    name: Golden test (renderer agreement)
+    runs-on: ubuntu-latest
+
+    # Its own job because it is the only thing here that needs both toolchains:
+    # the browser produces the pixels and Python measures them. Bolting it onto
+    # the frontend job would mean installing uv there, and onto the ML job a
+    # browser — either way one job grows a dependency it has no other use for.
+    # Separate also keeps it off the critical path of an ordinary frontend change.
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - uses: astral-sh/setup-uv@v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: ml/uv.lock
+
+      - name: Install dependencies
+        run: |
+          npm --prefix frontend ci
+          uv sync --project ml --extra service --frozen
+
+      - name: Install Chromium
+        # The browser is downloaded separately from the npm package and cached by
+        # its own version, so this costs a download once per Playwright bump.
+        run: npm --prefix frontend exec -- playwright install --with-deps chromium
+
+      - name: Assert the WebGL2 renderer against the specification
+        # The shader cannot be tested without a browser: jsdom has no WebGL at
+        # all, and headless-gl implements WebGL 1.0, which cannot compile GLSL ES
+        # 3.00. These assert the intent sentences of RENDERER_SPEC §3.
+        run: npm --prefix frontend run test:browser
+
+      - name: Render every combination through WebGL2
+        run: npm --prefix frontend run golden
+
+      - name: Compare against NumPy
+        # CIEDE2000 exists once, in Python, so this side does the measuring.
+        # Thresholds are RENDERER_SPEC §8.5: mean ΔE < 1, worst pixel < 3.
+        run: uv run --project ml --extra service pytest ml/tests/golden

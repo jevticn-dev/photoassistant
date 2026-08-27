@@ -18,4 +18,36 @@ system behaves identically for an edit made in any other tool.
 The residual is **measured and reported**, not hidden — our tone region masks are
 simpler than Lightroom's, so reproduction is not always exact. The distribution
 of that residual across 25,000 edits is one of the evaluation metrics.
+
+**Started early, in phase 1b** (ADR-16): the feasibility probe needs the same
+loop over a sample of 100 to find out whether the renderer can reconstruct an
+expert edit at all, before the second implementation is built on the assumption
+that it can. What phase 2 adds is the production side — catalogue parsing, the
+manifest, restartability, and the analytic initialisation.
 """
+
+from photoassistant.fitting.least_squares import (
+    CURVE_NEUTRAL,
+    CURVE_X,
+    SCALARS,
+    STARTS,
+    FitResult,
+    curve_points,
+    fit,
+    measure,
+    recipe_from_vector,
+    vector_from_recipe,
+)
+
+__all__ = [
+    "CURVE_NEUTRAL",
+    "CURVE_X",
+    "SCALARS",
+    "STARTS",
+    "FitResult",
+    "curve_points",
+    "fit",
+    "measure",
+    "recipe_from_vector",
+    "vector_from_recipe",
+]

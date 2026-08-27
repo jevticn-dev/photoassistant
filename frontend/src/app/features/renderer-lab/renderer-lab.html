@@ -1,0 +1,66 @@
+<!--
+  Every visible string goes through the translate pipe, without exception —
+  including aria-label and title attributes. A development page is no exception
+  either: the rule is what keeps a later Serbian localisation a matter of one
+  JSON file rather than a sweep through the templates.
+-->
+<section class="lab">
+  <h1>{{ 'renderer.lab.title' | translate }}</h1>
+  <p class="lab__intro">{{ 'renderer.lab.intro' | translate }}</p>
+
+  @if (failure(); as message) {
+    <p class="lab__failure" role="alert">{{ 'renderer.lab.failure' | translate }} {{ message }}</p>
+  }
+
+  <div class="lab__layout">
+    <div class="lab__preview">
+      <canvas #canvas [attr.aria-label]="'renderer.lab.canvas' | translate"></canvas>
+
+      <label class="lab__file">
+        <span>{{ 'renderer.lab.openImage' | translate }}</span>
+        <input type="file" accept="image/*" (change)="openFile($event)" />
+      </label>
+    </div>
+
+    <form class="lab__controls" (submit)="$event.preventDefault()">
+      @for (slider of sliders; track slider.key) {
+        <label class="lab__slider">
+          <span class="lab__name">{{ 'renderer.lab.params.' + slider.key | translate }}</span>
+          <input
+            type="range"
+            [min]="slider.min"
+            [max]="slider.max"
+            [step]="slider.step"
+            [value]="values()[slider.key]"
+            (input)="setValue(slider.key, $event)"
+          />
+          <output class="lab__value">{{ values()[slider.key] }}</output>
+        </label>
+      }
+
+      <label class="lab__slider">
+        <span class="lab__name">{{ 'renderer.lab.params.toneCurve' | translate }}</span>
+        <select [value]="curveName()" (change)="setCurve($event)">
+          @for (name of curveNames; track name) {
+            <option [value]="name">{{ 'renderer.lab.curves.' + name | translate }}</option>
+          }
+        </select>
+      </label>
+
+      <button type="button" (click)="reset()">{{ 'renderer.lab.reset' | translate }}</button>
+
+      <p class="lab__state">
+        @if (isNeutral()) {
+          {{ 'renderer.lab.neutral' | translate }}
+        } @else {
+          {{ 'renderer.lab.edited' | translate }}
+        }
+      </p>
+    </form>
+  </div>
+
+  <details class="lab__recipe">
+    <summary>{{ 'renderer.lab.recipe' | translate }}</summary>
+    <pre>{{ recipeJson() }}</pre>
+  </details>
+</section>

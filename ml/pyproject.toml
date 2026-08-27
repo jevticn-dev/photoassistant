@@ -13,6 +13,22 @@ requires-python = ">=3.14"
 # concern, or the pipeline starts dragging a web framework along.
 dependencies = [
     "pydantic>=2.13,<3",
+    # The renderer is vectorised NumPy: the same code runs over a 512px image
+    # while fitting and over a full-resolution export. The pipeline needs it as
+    # much as the service does, so it belongs to the library, not the extra.
+    "numpy>=2.5,<3",
+    # Decoding DNG to our own neutral starting point (ADR-4). Library, not dev:
+    # the offline pipeline installs only [project] dependencies, and it is the
+    # pipeline that needs this most.
+    "rawpy>=0.27,<0.28",
+    # Reading the 16-bit expert renditions. Pillow silently downconverts a
+    # 16-bit TIFF to 8-bit — no warning, no error, and 75% of pixels lose their
+    # low byte. See .claude/rules/pipeline.md.
+    "tifffile>=2026.7,<2027",
+    # Least-squares fitting of the eleven parameters against a before/after pair
+    # (plan §4.3). Library, because phase 2 runs the same loop over 25,000 edits
+    # from the pipeline, which installs only [project] dependencies.
+    "scipy>=1.18,<2",
 ]
 
 [project.optional-dependencies]
@@ -38,6 +54,19 @@ dev = [
     # deprecated the httpx backend and warns on every test run.
     "httpx2>=2.9,<3",
     "ruff>=0.16,<0.17",
+    # Reading and writing the PNG fixtures: the generator in
+    # fixtures/images/generate.py and the renderer tests that load them. The
+    # library itself takes float arrays and never touches a file, so this stays
+    # out of [project] dependencies.
+    "pillow>=12.3,<13",
+    # Property-based testing of the renderer (test_renderer_properties.py).
+    # Example-based tests only ever check the combinations someone thought to
+    # write down; three real defects in the renderer survived 191 of them
+    # because no test happened to move the right four sliders at once. This
+    # generates the combinations instead, and shrinks a failure to the smallest
+    # recipe that still reproduces it. Test-only: never imported by the library,
+    # so it stays out of both [project] dependencies and the service extra.
+    "hypothesis>=6.145,<7",
 ]
 
 [build-system]
