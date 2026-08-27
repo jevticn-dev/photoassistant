@@ -16,6 +16,7 @@ as ``schema: 1`` has to stay readable forever.
 """
 
 from photoassistant.schema.model import (
+    MIN_POINT_SPACING,
     SCHEMA_VERSION,
     Color,
     EditRecipe,
@@ -28,6 +29,7 @@ from photoassistant.schema.model import (
 )
 
 __all__ = [
+    "MIN_POINT_SPACING",
     "SCHEMA_VERSION",
     "Color",
     "EditRecipe",

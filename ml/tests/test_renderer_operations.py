@@ -1,4 +1,4 @@
-"""One test per parameter: does the operation do what its Namera sentence promises?
+"""One test per parameter: does the operation do what its stated intent promises?
 
 ``RENDERER_SPEC.md`` §3 opens every parameter with a one-sentence statement of
 intent, and the rule there is that **the intent is authoritative** — if formula
@@ -46,7 +46,7 @@ def recipe(**values: float) -> EditRecipe:
 
 
 def test_white_balance_does_not_change_brightness() -> None:
-    """Namera: shift the colour balance, leave overall brightness to exposure."""
+    """Intent: shift the colour balance, leave overall brightness to exposure."""
     for temperature, tint in ((100.0, 0.0), (-100.0, 0.0), (0.0, 100.0), (60.0, -40.0)):
         multipliers = white_balance_multipliers(temperature, tint)
         weights = np.array([0.2126, 0.7152, 0.0722], dtype=np.float32)
@@ -82,7 +82,7 @@ def test_neutral_white_balance_is_the_identity() -> None:
 
 
 def test_one_stop_is_twice_the_light() -> None:
-    """Namera: +1 means double the light, as on a camera."""
+    """Intent: +1 means double the light, as on a camera."""
     before = np.array([[[0.2, 0.2, 0.2]]], dtype=np.float32)
 
     after = render(before, recipe(exposure=1.0))
@@ -106,7 +106,7 @@ def test_exposure_leaves_the_colour_ratios_alone() -> None:
 
 
 def test_blacks_lifts_the_dark_end_and_leaves_the_rest() -> None:
-    """Namera: brighten or darken only part of the range, midtones largely untouched."""
+    """Intent: brighten or darken only part of the range, midtones largely untouched."""
     wedge = np.linspace(0.0, 1.0, 256, dtype=np.float32)
     image = np.repeat(wedge[:, np.newaxis], 3, axis=1)[np.newaxis, ...]
 
@@ -148,7 +148,7 @@ def test_the_shift_is_the_same_on_every_channel() -> None:
 
 
 def test_contrast_leaves_mid_grey_where_it_is() -> None:
-    """Namera: pull the ends apart around mid grey, which itself does not move."""
+    """Intent: pull the ends apart around mid grey, which itself does not move."""
     for amount in (-100.0, -40.0, 40.0, 100.0):
         out = apply_contrast(np.float32(0.5), amount)
         assert float(out) == pytest.approx(0.5, abs=1e-6)
@@ -189,7 +189,7 @@ def test_zero_contrast_is_exactly_the_identity() -> None:
 
 
 def test_full_negative_saturation_removes_all_colour() -> None:
-    """Namera: saturation acts on every colour equally; -100 leaves grey."""
+    """Intent: saturation acts on every colour equally; -100 leaves grey."""
     coloured = np.array([[[0.8, 0.2, 0.4]]], dtype=np.float32)
 
     out = apply_saturation(coloured, recipe(saturation=-100.0))
@@ -205,7 +205,7 @@ def test_saturation_leaves_a_grey_pixel_alone() -> None:
 
 
 def test_vibrance_spares_what_is_already_saturated() -> None:
-    """Namera: vibrance acts harder on pale colour than on vivid colour.
+    """Intent: vibrance acts harder on pale colour than on vivid colour.
 
     This is the only behavioural difference between vibrance and saturation, and
     it is why the fixture set needs a saturation ramp — an image of grey and

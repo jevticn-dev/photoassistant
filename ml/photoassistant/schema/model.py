@@ -26,6 +26,12 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 SCHEMA_VERSION = 1
 
+# Smallest gap allowed between two curve control points on the x axis
+# (``RENDERER_SPEC.md`` §6.1). One step of the 1024-entry table: two points
+# closer than that describe detail the table cannot represent, and the slope
+# between them is what overflows.
+MIN_POINT_SPACING = 1.0 / 1023.0
+
 # Every parameter but exposure is normalised to the same symmetric interval, so
 # that the editor and the fitting loop treat them uniformly (edit_schema §3).
 Normalised = Annotated[float, Field(ge=-100.0, le=100.0)]
@@ -90,6 +96,16 @@ class ToneCurve(_Strict):
 
         if any(b <= a for a, b in pairwise(xs)):
             raise ValueError(f"x values must increase strictly, got {xs}")
+
+        if any(b - a < MIN_POINT_SPACING for a, b in pairwise(xs)):
+            # Strictly increasing is not enough. Two points a denormal apart are
+            # still "increasing", and the secant slope between them overflows to
+            # infinity — the interpolation then returns NaN for every pixel of
+            # the image, not just near those points. Found by the property tests,
+            # which generated exactly that (ADR-20).
+            raise ValueError(
+                f"x values must be at least {MIN_POINT_SPACING} apart, got {xs}"
+            )
 
         return points
 

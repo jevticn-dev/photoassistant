@@ -59,13 +59,20 @@ def tangents(points: NDArray[np.float64]) -> NDArray[np.float64]:
             m[i + 1] = 0.0
             continue
 
-        alpha = m[i] / secants[i]
-        beta = m[i + 1] / secants[i]
-        magnitude = alpha * alpha + beta * beta
-        if magnitude > _MONOTONICITY_RADIUS_SQUARED:
-            scale = 3.0 / np.sqrt(magnitude)
-            m[i] = scale * alpha * secants[i]
-            m[i + 1] = scale * beta * secants[i]
+        # Written without dividing by the secant, which is the same arithmetic
+        # said differently. With a = m[i]/Δ and b = m[i+1]/Δ, the condition
+        # a² + b² > 9 is exactly m[i]² + m[i+1]² > 9Δ², and the correction
+        # m[i] ← (3/√(a²+b²))·a·Δ reduces to m[i] ← (3|Δ|/√(m[i]²+m[i+1]²))·m[i].
+        #
+        # Identical in exact arithmetic, and safe in finite arithmetic: §6.1 now
+        # bounds the spacing in x, but nothing bounds it in y, so a segment whose
+        # endpoints are a denormal apart gives a secant near zero and the division
+        # overflowed. Found by the property tests (ADR-20).
+        magnitude = m[i] * m[i] + m[i + 1] * m[i + 1]
+        if magnitude > _MONOTONICITY_RADIUS_SQUARED * secants[i] * secants[i]:
+            scale = 3.0 * abs(secants[i]) / np.sqrt(magnitude)
+            m[i] = scale * m[i]
+            m[i + 1] = scale * m[i + 1]
 
     return m
 

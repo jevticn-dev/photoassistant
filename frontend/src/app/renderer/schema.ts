@@ -33,6 +33,19 @@ const NORMALISED_LIMIT = 100;
 /** Exposure is in stops and keeps physical meaning: +1 is twice the light. */
 const EXPOSURE_LIMIT = 5;
 
+/**
+ * Smallest gap allowed between two curve control points on the x axis
+ * (`RENDERER_SPEC.md` §6.1, added by ADR-20).
+ *
+ * One step of the 1024-entry table. "Strictly increasing" is not enough: two
+ * points a denormal apart still increase, and the secant slope between them
+ * overflows to infinity, which turns **every pixel of the image** into NaN. Two
+ * points closer than one table step also describe detail the table cannot
+ * represent, so the threshold is the table's own resolution rather than an
+ * arbitrary epsilon.
+ */
+export const MIN_POINT_SPACING = 1 / 1023;
+
 export interface WhiteBalance {
   readonly temperature: number;
   readonly tint: number;
@@ -224,6 +237,13 @@ function parseToneCurve(value: unknown): ToneCurve {
     if (points[i][0] <= points[i - 1][0]) {
       throw new EditSchemaError(
         `x values must increase strictly, got ${points.map(([x]) => x).join(', ')}`,
+      );
+    }
+    if (points[i][0] - points[i - 1][0] < MIN_POINT_SPACING) {
+      throw new EditSchemaError(
+        `x values must be at least ${MIN_POINT_SPACING} apart, got ${points
+          .map(([x]) => x)
+          .join(', ')}`,
       );
     }
   }

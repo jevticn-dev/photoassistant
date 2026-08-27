@@ -3,8 +3,8 @@
  * rule.
  *
  * The multiplier assertions are the same ones as
- * `ml/tests/test_renderer_operations.py`, because they assert the same *Namera*
- * sentence from `RENDERER_SPEC.md` §3.1 — and §3 says the intent is
+ * `ml/tests/test_renderer_operations.py`, because they assert the same statement
+ * of intent from `RENDERER_SPEC.md` §3.1 — and §3 says the intent is
  * authoritative, so both implementations have to be held to it, not to each
  * other's formula.
  *
@@ -47,7 +47,7 @@ function recipe(values: Partial<Record<string, number>>): EditRecipe {
 
 describe('white balance (spec §3.1)', () => {
   it('does not change brightness', () => {
-    // Namera: shift the colour balance, leave overall brightness to exposure.
+    // Intent: shift the colour balance, leave overall brightness to exposure.
     for (const [temperature, tint] of [
       [100, 0],
       [-100, 0],

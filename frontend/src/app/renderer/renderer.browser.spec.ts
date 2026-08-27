@@ -2,8 +2,8 @@
  * The WebGL2 renderer, asserted through the GPU it actually runs on.
  *
  * `RENDERER_SPEC.md` §3 opens every parameter with a one-sentence statement of
- * intent — *Namera* — and the rule there is that **the intent is authoritative**:
- * if formula and intent disagree, the formula is wrong.
+ * intent, and the rule there is that **the intent is authoritative**: if formula
+ * and intent disagree, the formula is wrong.
  * `ml/tests/test_renderer_operations.py` asserts those sentences against the
  * NumPy implementation; this file asserts the same sentences against the shader.
  * Two implementations checked against each other's output would agree on a
@@ -208,7 +208,7 @@ describe('identity (spec §4.1 and §8.5)', () => {
 
 describe('white balance (spec §3.1)', () => {
   it('does not change the brightness of neutral grey', () => {
-    // Namera: shift the colour balance, leave overall brightness to exposure.
+    // Intent: shift the colour balance, leave overall brightness to exposure.
     const grey = imageOf([[0.5, 0.5, 0.5]]);
     const before = linearLuminance(render(grey, NEUTRAL_RECIPE)[0]);
 
@@ -249,7 +249,7 @@ describe('white balance (spec §3.1)', () => {
 
 describe('exposure (spec §3.2)', () => {
   it('makes one stop twice the light', () => {
-    // Namera: +1 means double the light, as one stop on a camera does.
+    // Intent: +1 means double the light, as one stop on a camera does.
     const before = imageOf([[0.2, 0.2, 0.2]]);
 
     const [after] = render(before, recipe({ exposure: 1 }));
@@ -273,7 +273,7 @@ describe('exposure (spec §3.2)', () => {
 
 describe('tone regions (spec §3.3)', () => {
   it('lifts the dark end with blacks and leaves the rest', () => {
-    // Namera: brighten or darken only part of the range, midtones untouched.
+    // Intent: brighten or darken only part of the range, midtones untouched.
     const wedge = greyWedge();
     const before = render(wedge, NEUTRAL_RECIPE);
     const after = render(wedge, recipe({ blacks: 100 }));
@@ -344,7 +344,7 @@ describe('above white (spec §7.3.1)', () => {
 
 describe('contrast (spec §3.4)', () => {
   it('leaves mid grey where it is', () => {
-    // Namera: pull the ends apart around mid grey, which itself does not move.
+    // Intent: pull the ends apart around mid grey, which itself does not move.
     const grey = imageOf([[0.5, 0.5, 0.5]]);
     const before = render(grey, NEUTRAL_RECIPE)[0][0];
 
@@ -403,7 +403,7 @@ describe('the tone curve (spec §3.5 and §6)', () => {
   ];
 
   it('applies the same table to all three channels', () => {
-    // Namera: an arbitrary mapping of brightness, applied alike to every
+    // Intent: an arbitrary mapping of brightness, applied alike to every
     // channel, so grey stays grey and the colour balance does not move.
     const image = imageOf([
       [0.1, 0.1, 0.1],
@@ -457,7 +457,7 @@ describe('the tone curve (spec §3.5 and §6)', () => {
 
 describe('saturation and vibrance (spec §3.6)', () => {
   it('removes all colour at saturation -100', () => {
-    // Namera: saturation acts on every colour equally; -100 leaves grey.
+    // Intent: saturation acts on every colour equally; -100 leaves grey.
     const coloured: [number, number, number] = [0.8, 0.2, 0.4];
 
     const [out] = render(imageOf([coloured]), recipe({ saturation: -100 }));
@@ -479,7 +479,7 @@ describe('saturation and vibrance (spec §3.6)', () => {
   });
 
   it('spares with vibrance what is already saturated', () => {
-    // Namera: vibrance acts harder on pale colour than on vivid colour. This is
+    // Intent: vibrance acts harder on pale colour than on vivid colour. This is
     // the only behavioural difference between vibrance and saturation, and it is
     // why the fixture set needs a saturation ramp.
     const pale: [number, number, number] = [0.6, 0.5, 0.45];
@@ -540,5 +540,78 @@ describe('the implementation layer', () => {
     expect(() =>
       renderer.setImage({ data: new Uint8Array(4), width: limit + 1, height: 1 }),
     ).toThrow(/caps textures at/);
+  });
+});
+
+// ------------------------------------------------------------------ ADR-20
+
+describe('the defects ADR-20 repairs (regression)', () => {
+  // Four defects, none of which the 191 example-based tests on the Python side
+  // caught, and none of which the golden test would catch either — both
+  // implementations translated the same under-specified formulas and so agreed
+  // on the same wrong answer. They are pinned on this side as well because a
+  // shader is where a repair is easiest to lose: the arithmetic is written out a
+  // second time, in a different language, and nothing but this would notice.
+  //
+  // The Python half is `ml/tests/test_renderer_regressions.py`, deliberately
+  // asserting the same cases.
+
+  it('does not turn the dark end cyan under blacks and vibrance', () => {
+    // Found by eye, on this page, the first day it existed. The saturation
+    // measure is declared to be in [0, 1] and reached 32,903, because a negative
+    // blacks pushes every channel below zero and the guard against dividing by
+    // zero collapses the divisor.
+    const out = render(
+      greyWedge(),
+      recipe({ temperature: 70, contrast: 45, blacks: -60, vibrance: 60 }),
+    );
+
+    for (let level = 0; level < 24; level++) {
+      const spread = Math.max(...out[level]) - Math.min(...out[level]);
+      expect(spread, `level ${level} went cyan`).toBeLessThan(60 / 255);
+    }
+  });
+
+  it('does not turn white into black under exposure and contrast', () => {
+    // The worse defect, and the one no one saw: S(x) = x²(3 − 2x) is proven in
+    // range only "for input from [0, 1]", and exposure +5 leaves white at 4.42,
+    // where it returns −114.
+    for (const [exposure, contrast] of [
+      [2, 100],
+      [5, 100],
+      [1, 75],
+    ]) {
+      const out = render(greyWedge(), recipe({ exposure, contrast }));
+
+      let highest = 0;
+      for (const pixel of out) {
+        const value = Math.max(...pixel);
+        expect(
+          value,
+          `exposure ${exposure} with contrast ${contrast} reverses brightness`,
+        ).toBeGreaterThanOrEqual(highest - STEP);
+        highest = Math.max(highest, value);
+      }
+    }
+  });
+
+  it('removes colour rather than inverting it', () => {
+    // The gain passes −1 with both controls negative, the multiplier turns
+    // negative, and the pixel is mirrored through its own luma: a warm colour
+    // comes out cool.
+    const warm: [number, number, number] = [0.75, 0.5, 0.25];
+
+    for (const [saturation, vibrance] of [
+      [-100, -100],
+      [-100, -5],
+      [-90, -35],
+    ]) {
+      const [out] = render(imageOf([warm]), recipe({ saturation, vibrance }));
+
+      expect(
+        out[0],
+        `saturation ${saturation} with vibrance ${vibrance} inverted the hue`,
+      ).toBeGreaterThanOrEqual(out[2] - STEP);
+    }
   });
 });

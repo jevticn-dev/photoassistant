@@ -88,10 +88,19 @@ def apply_contrast(image: NDArray[np.float32], contrast: float) -> NDArray[np.fl
     Written as a polynomial rather than the usual sigmoid on purpose: a sigmoid
     needs ``asin``, whose last bits differ between NumPy and GLSL, and would spend
     the ΔE budget for nothing. Monotone for every s in [-1, 1] and stays in range.
+
+    The shaping is applied to the part of the value inside [0, 1] and the excess
+    is carried through untouched (ADR-20). Inside the range this is the original
+    expression unchanged. Outside it, contrast becomes the identity — which is the
+    only honest answer, since an S-curve about mid grey has nothing to say about a
+    value above white. Without that, ``x²(3 − 2x)`` is a cubic that dives once x
+    passes 1.5: exposure +5 leaves white at 4.42, where the shaping returns −114,
+    and contrast +100 turned a blown highlight into pure black.
     """
     s = np.float32(contrast) / np.float32(100.0)
     x = image
-    shaped = x * x * (np.float32(3.0) - np.float32(2.0) * x)
+    inside = np.clip(x, np.float32(0.0), np.float32(1.0))
+    shaped = inside * inside * (np.float32(3.0) - np.float32(2.0) * inside) + (x - inside)
     return (x + s * (shaped - x)).astype(np.float32)
 
 
@@ -105,11 +114,28 @@ def apply_saturation(image: NDArray[np.float32], recipe: EditRecipe) -> NDArray[
     y = luma(image)[..., np.newaxis]
     highest = image.max(axis=-1, keepdims=True)
     lowest = image.min(axis=-1, keepdims=True)
-    saturation_of_pixel = (highest - lowest) / np.maximum(highest, EPS)
 
-    gain = np.float32(recipe.color.saturation / 100.0) + np.float32(
-        recipe.color.vibrance / 100.0
-    ) * (np.float32(1.0) - saturation_of_pixel)
+    # Clipped to the range the spec already claims for it (ADR-20). The guard
+    # against dividing by zero is only correct while `highest` is non-negative,
+    # and §5 lets a value go below zero: a negative `blacks` sends all three
+    # channels under, the divisor collapses to EPS, and this measure — declared
+    # to be in [0, 1] — reached 32,903, which drove the gain far negative and
+    # threw the pixel onto a saturated corner of the cube.
+    saturation_of_pixel = np.clip(
+        (highest - lowest) / np.maximum(highest, EPS), np.float32(0.0), np.float32(1.0)
+    )
+
+    # Floored at -1, which is "all colour removed" (ADR-20). Below that the
+    # multiplier `1 + gain` turns negative and the pixel is mirrored through its
+    # own luma rather than collapsed onto it — a warm colour comes out cool.
+    # Weakening colour cannot mean inverting it: §3.6 says -100 leaves grey, and
+    # grey is the end of the road.
+    gain = np.maximum(
+        np.float32(recipe.color.saturation / 100.0)
+        + np.float32(recipe.color.vibrance / 100.0)
+        * (np.float32(1.0) - saturation_of_pixel),
+        np.float32(-1.0),
+    )
 
     return (y + (image - y) * (np.float32(1.0) + gain)).astype(np.float32)
 

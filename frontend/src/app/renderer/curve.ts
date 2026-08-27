@@ -66,13 +66,20 @@ export function tangents(points: CurvePoints): Float64Array {
       continue;
     }
 
-    const alpha = m[i] / secants[i];
-    const beta = m[i + 1] / secants[i];
-    const magnitude = alpha * alpha + beta * beta;
-    if (magnitude > MONOTONICITY_RADIUS_SQUARED) {
-      const scale = 3 / Math.sqrt(magnitude);
-      m[i] = scale * alpha * secants[i];
-      m[i + 1] = scale * beta * secants[i];
+    // Written without dividing by the secant, which is the same arithmetic said
+    // differently. With a = m[i]/Δ and b = m[i+1]/Δ, the condition a² + b² > 9 is
+    // exactly m[i]² + m[i+1]² > 9Δ², and the correction reduces to
+    // m[i] ← (3|Δ|/√(m[i]² + m[i+1]²))·m[i].
+    //
+    // Identical in exact arithmetic, and safe in finite arithmetic: §6.1 bounds
+    // the spacing in x but nothing bounds it in y, so a segment whose endpoints
+    // are a denormal apart gives a secant near zero and the division overflowed
+    // (ADR-20). Both implementations use this form, so they still agree.
+    const magnitude = m[i] * m[i] + m[i + 1] * m[i + 1];
+    if (magnitude > MONOTONICITY_RADIUS_SQUARED * secants[i] * secants[i]) {
+      const scale = (3 * Math.abs(secants[i])) / Math.sqrt(magnitude);
+      m[i] = scale * m[i];
+      m[i + 1] = scale * m[i + 1];
     }
   }
 

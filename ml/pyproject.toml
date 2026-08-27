@@ -59,6 +59,14 @@ dev = [
     # library itself takes float arrays and never touches a file, so this stays
     # out of [project] dependencies.
     "pillow>=12.3,<13",
+    # Property-based testing of the renderer (test_renderer_properties.py).
+    # Example-based tests only ever check the combinations someone thought to
+    # write down; three real defects in the renderer survived 191 of them
+    # because no test happened to move the right four sliders at once. This
+    # generates the combinations instead, and shrinks a failure to the smallest
+    # recipe that still reproduces it. Test-only: never imported by the library,
+    # so it stays out of both [project] dependencies and the service extra.
+    "hypothesis>=6.145,<7",
 ]
 
 [build-system]

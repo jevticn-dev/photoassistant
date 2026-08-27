@@ -212,7 +212,13 @@ void main() {
   }
 
   if (u_contrastOn) {                                   // 6
-    vec3 shaped = c * c * (vec3(3.0) - 2.0 * c);
+    // The shaping applies to the part of the value inside [0,1]; the excess is
+    // carried through untouched (ADR-20). Inside the range this is the original
+    // expression. Outside it contrast becomes the identity, which is the only
+    // honest answer for a value above white — and without it the cubic dives,
+    // turning a blown highlight into pure black at contrast +100.
+    vec3 inside = vec3(unitClamp(c.r), unitClamp(c.g), unitClamp(c.b));
+    vec3 shaped = inside * inside * (vec3(3.0) - 2.0 * inside) + (c - inside);
     c = c + u_contrast * (shaped - c);
   }
 
@@ -228,9 +234,17 @@ void main() {
     float y = luma(c);
     float highest = max(max(c.r, c.g), c.b);
     float lowest = min(min(c.r, c.g), c.b);
-    float p = (highest - lowest) / max(highest, EPS);
 
-    float gain = u_colour.x + u_colour.y * (1.0 - p);
+    // Both limits are required (ADR-20), and both enforce a range the spec
+    // already declares. p is stated to be in [0,1], but the guard against
+    // dividing by zero only holds while highest is non-negative -- a negative
+    // blacks sends all three channels under, and p reached 32,903. And the gain
+    // stops at -1, which is "all colour removed": below that the multiplier goes
+    // negative and the pixel is mirrored through its own luma instead of
+    // collapsing onto it, so a warm colour comes out cool.
+    float p = unitClamp((highest - lowest) / max(highest, EPS));
+
+    float gain = max(u_colour.x + u_colour.y * (1.0 - p), -1.0);
     c = vec3(y) + (c - vec3(y)) * (1.0 + gain);
   }
 

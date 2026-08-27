@@ -153,6 +153,20 @@ describe('edit schema validation', () => {
     );
   });
 
+  it.each([
+    ['a denormal apart', '[[0.0, 0.0], [2.2e-309, 1.0], [1.0, 0.0]]'],
+    ['half a table step apart', '[[0.0, 0.0], [0.0005, 0.5], [1.0, 1.0]]'],
+    ['too close to the end', '[[0.0, 0.0], [0.9999, 0.5], [1.0, 1.0]]'],
+  ])('refuses curve points closer than one table step: %s', (_label, points) => {
+    // ADR-20. "Strictly increasing" is not enough: the first case satisfies it
+    // and still overflows the secant slope, turning every pixel of the image
+    // into NaN. Found by the property tests on the Python side; the rule has to
+    // hold identically here or the two models stop agreeing.
+    expect(() => fromJson(`{"schema": 1, "tone_curve": {"points": ${points}}}`)).toThrow(
+      /at least/,
+    );
+  });
+
   it('allows a lifted black point', () => {
     // Only x is constrained to the endpoints; y is free, which is what a faded
     // look needs.

@@ -196,10 +196,20 @@ S-kriva oko srednje sive, izražena kao mešanje identiteta i `smoothstep` oblik
 
 ```
 s = contrast / 100
-S(x) = x² · (3 − 2x)
+u = min( max(x, 0), 1 )
+S(x) = u² · (3 − 2u) + (x − u)
 
 x ← x + s · ( S(x) − x )          po kanalu, nezavisno
 ```
+
+**Isecanje u `u` je obavezno** (ADR-20). Za `x ∈ [0,1]` je `u = x` i izraz je doslovno
+`x²(3 − 2x)`, kako je i stajalo. Van tog opsega je `S(x) = x`, pa kontrast tamo postaje
+identitet — jedini smislen odgovor, jer S-kriva oko srednje sive nema šta da kaže o vrednosti
+iznad bele.
+
+Bez tog isecanja `x²(3 − 2x)` je kubna funkcija koja obara: ekspozicija `+5` ostavlja belu na
+`4.42` posle koraka 4, gde izraz vraća `−114`, pa je `contrast = +100` presvetljen piksel
+pretvarao u **potpuno crn**. Izmereno: obrtanje svetline od 255/255 na sivom klinu.
 
 Osobine, sve proverljive:
 
@@ -208,7 +218,9 @@ Osobine, sve proverljive:
 - `s < 0` → od `S(x)`: smanjuje kontrast
 - monotono za svako `s ∈ [−1, 1]`; na `s = −1` izvod je `2 − 6x + 6x²`, čiji je minimum
   `0.5 > 0`
-- ostaje u [0,1] za ulaz iz [0,1]
+- **monotono i van [0,1]**, gde je operacija identitet
+- ostaje u [0,1] za ulaz iz [0,1], a vrednost van opsega prenosi nepromenjenu — zaliha iz §5
+  preživljava
 - primenjeno po kanalu → neutralna siva ostaje neutralna
 - **bez trigonometrije** — polinom trećeg stepena
 
@@ -244,9 +256,9 @@ primenjuju jednim skaliranjem, pa redosled među njima ne postoji.
 Y'   = 0.2126·R' + 0.7152·G' + 0.0722·B'
 mx   = max(R', G', B')
 mn   = min(R', G', B')
-p    = (mx − mn) / max(mx, ε)                   zasićenost piksela, ∈ [0, 1]
+p    = min( max( (mx − mn) / max(mx, ε), 0 ), 1 )      zasićenost piksela, ∈ [0, 1]
 
-g = (saturation / 100) + (vibrance / 100) · (1 − p)
+g = max( (saturation / 100) + (vibrance / 100) · (1 − p),  −1 )
 
 R' ← Y' + (R' − Y') · (1 + g)
 G' ← Y' + (G' − Y') · (1 + g)
@@ -254,6 +266,18 @@ B' ← Y' + (B' − Y') · (1 + g)
 ```
 
 **Konstanta:** `ε = 1e-6` (§8).
+
+**Oba ograničenja su obavezna** (ADR-20), i oba sprovode opseg koji ovaj dokument već tvrdi:
+
+- **`p` se iseca u [0,1].** Zaštita `max(mx, ε)` od deljenja nulom ispravna je samo dok je
+  `mx ≥ 0`, a §5 dozvoljava da vrednost ode ispod nule — negativan `blacks` to redovno radi.
+  Tada imenilac padne na `ε` i `p`, za koji ovde piše „∈ [0, 1]", dosegne **32.903**. Množilac
+  `1 + g` postane veliki negativan broj i piksel odleti na zasićen ugao kocke. Prekoračenje
+  nastaje čim **jedan** kanal ode ispod nule; negativan `mx` ga samo pretvara u eksploziju.
+- **`g` ne sme ispod −1.** Na `g = −1` je `1 + g = 0` i piksel postaje tačno `Y'` — potpuno
+  siv, kraj puta koji ova namera opisuje. Ispod toga množilac postaje negativan i piksel se
+  **preslikava preko sive** umesto da stane na nju: topla boja izlazi hladna. Dostižno već sa
+  `saturation = −100` i `vibrance = −5`.
 
 Osobine:
 
@@ -334,10 +358,20 @@ Kontrolne tačke iz `tone_curve.points`. Zahtevi:
 
 1. najmanje dve tačke
 2. sortirane strogo rastuće po `x`
-3. prva tačka ima `x = 0`, poslednja `x = 1` — kriva mora biti definisana na celom opsegu
-4. sve vrednosti u [0,1]
+3. **razmak po `x` najmanje `1/(N−1)`**, gde je `N = 1024` (§6.3)
+4. prva tačka ima `x = 0`, poslednja `x = 1` — kriva mora biti definisana na celom opsegu
+5. sve vrednosti u [0,1]
 
 Recept koji ih ne ispunjava se **odbija pri parsiranju**, ne popravlja.
+
+**Zahtev 3 je dodat ADR-om 20.** „Strogo rastuće" nije dovoljno: dve tačke razmaknute za
+`2.2e-309` i dalje rastu, a sekantni nagib između njih (§6.2, korak 1) prekorači opseg broja i
+postane beskonačan — odatle **svaki piksel slike** postane `NaN`, ne samo okolina tih tačaka.
+Prag je jedan korak tabele jer dve tačke bliže od toga opisuju detalj koji tabela od 1024
+vrednosti ionako ne može da predstavi.
+
+Dohvatljivo je u obe smera upotrebe: korisnik koji u editoru prevuče dve tačke jednu preko
+druge, i optimizator u Fazi 2 koji tačke pomera slobodno.
 
 ### 6.2 Interpolacija — monotona kubna (Fritsch–Carlson)
 
@@ -511,6 +545,53 @@ Lightroomove maske su **sadržajno adaptivne** — gledaju lokalno okruženje pi
 Posledica (plan §4.2): fitovanje u Fazi 2 neće uvek savršeno reprodukovati ekspertski edit.
 Master kriva pokupi većinu ostatka, a **ostatak greške se meri i prijavljuje**, ne skriva se
 kao pretpostavka.
+
+### 7.5 Izmerena karakteristika: traka u gradijentu pri jakim vrednostima
+
+> **Otvoreno pitanje, odloženo do Faze 2 sa razlogom.** ADR-20, odluka B.
+
+Svaka od četiri maske ima bar jednu ivicu široku `0.25`. Kroz nju maska raste brzo, i pri
+jakim vrednostima pomeraj pada brže nego što svetlina raste — poredak dva susedna piksela se
+obrne, što se na glatkom gradijentu vidi kao **traka**.
+
+Ukupan pomeraj je **zbir** sva četiri doprinosa, pa se njihovi nagibi sabiraju: **kombinacija
+je gora od svakog slajdera zasebno**. Izmereno, `tint` + `highlights` + `whites`, svaki
+**ispod** ±75, zajedno daju traku od 30 koraka od 255.
+
+Nad 3000 nasumičnih recepata u opsezima koje je sonda 1b stvarno fitovala (ekspert C):
+
+| | vrednost |
+|---|---|
+| medijana i 90. percentil | **0** — velika većina obrada nema traku |
+| 99. percentil | 24 koraka od 255 |
+| najgori slučaj | **60 koraka od 255** (24% raspona svetline) |
+| udeo obrada sa vidljivom trakom | **2,1%** |
+
+**Zašto se ne popravlja sada.** Slabljenje `K_REG` ne rešava problem po prihvatljivoj ceni —
+izmereno:
+
+| `K_REG` | najgora traka | udeo preko 12 koraka | izgubljen domet |
+|---|---|---|---|
+| **0.25** (važeća) | 47 | 2,1% | — |
+| 0.167 | 18 | 0,3% | 33% |
+| 0.125 | 5 | 0,0% | **50%** |
+
+Traka nestaje tek na `0.125`, uz **polovinu dometa** sva četiri slajdera — a `whites` i
+`blacks` već udaraju u granicu opsega kod 5% odnosno 3% slika. To je tačno kvar koji je ADR-19
+morao da poništi kod balansa bele: parametar koji ne dopire dovoljno daleko fitovanje
+nadoknađuje pogrešno.
+
+**Kandidat za popravku u Fazi 2**, bolji od slabljenja konstanti: regionalni pomeraj se računa
+kao tabela od `N` vrednosti nad lumom, pa se na nju primeni **ista provera monotonosti koju
+§6.2 već koristi za master krivu**. Traka tada ne može da nastane, a domet ostaje pun.
+
+**Kad se odlučuje:** uz fitovanje ~1000 edita, koje je i inače prvi korak Faze 2 (izveštaj 1b,
+preporuka 1). Taj prolaz daje **zajedničku** raspodelu fitovanih regionalnih vrednosti — jedini
+podatak koji kaže koliko često realne obrade upadnu u ovu kombinaciju — bez ijednog dodatnog
+minuta računanja.
+
+Do tada je veličina **ograničena testom** (`ml/tests/test_renderer_properties.py`), pa
+pogoršanje ne može proći neopaženo.
 
 ---
 
