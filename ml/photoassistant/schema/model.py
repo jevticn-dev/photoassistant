@@ -157,7 +157,25 @@ class EditRecipe(_Strict):
 
 
 def from_json(text: str) -> EditRecipe:
-    return EditRecipe.model_validate_json(text)
+    """Parse a recipe **document**, which must declare its schema version.
+
+    The version is required here but defaulted on the model, and the difference
+    is deliberate. ``EditRecipe()`` in code means "a neutral recipe of the version
+    this code speaks"; a stored document has to say which version it is, or the
+    promise that ``schema: 1`` stays readable forever has nothing to stand on.
+
+    Found by the C# agreement test: TypeScript refused a document without the
+    field, Python accepted it, and the two had disagreed since they were written.
+    """
+    try:
+        document = json.loads(text)
+    except json.JSONDecodeError as error:
+        raise ValueError(f"the recipe is not valid JSON: {error}") from error
+
+    if isinstance(document, dict) and "schema" not in document:
+        raise ValueError("the recipe must declare a schema version")
+
+    return EditRecipe.model_validate(document)
 
 
 def to_json(recipe: EditRecipe, *, indent: int = 2) -> str:

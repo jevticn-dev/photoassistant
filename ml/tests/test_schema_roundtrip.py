@@ -90,6 +90,22 @@ def test_an_omitted_group_reads_as_neutral_and_is_written_back() -> None:
     assert written["tone_curve"]["points"] == [[0.0, 0.0], [1.0, 1.0]]
 
 
+def test_a_recipe_with_no_schema_version_is_refused() -> None:
+    """A stored document has to say which version it is.
+
+    That is what makes the promise "``schema: 1`` stays readable forever" mean
+    anything. The version is defaulted on the model — ``EditRecipe()`` in code is
+    a neutral recipe of the version this code speaks — but required when parsing a
+    document.
+
+    Found by the C# agreement test: TypeScript refused this and Python accepted
+    it, and the two had disagreed since they were written. Which is what a
+    three-language agreement test is for.
+    """
+    with pytest.raises(ValueError, match="must declare a schema version"):
+        from_json('{"tone": {"exposure": 1.0}}')
+
+
 def test_a_newer_schema_is_refused() -> None:
     """edit_schema §7: a reader refuses what it does not understand rather than guessing."""
     with pytest.raises(ValidationError, match="unsupported schema version"):
