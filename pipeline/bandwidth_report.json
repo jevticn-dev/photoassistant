@@ -1,0 +1,78 @@
+{
+  "measured_at": "2026-08-28T19:28:39+0200",
+  "rendition": "tiff16_c",
+  "server": {
+    "server": "nginx",
+    "accept_ranges": "bytes",
+    "content_length": 31609888,
+    "content_type": "image/tiff"
+  },
+  "files_per_level": 12,
+  "seconds_per_level": 90.0,
+  "levels": [
+    {
+      "concurrency": 1,
+      "files_attempted": 12,
+      "files_failed": 0,
+      "megabytes": 554.7,
+      "seconds": 37.13,
+      "megabytes_per_second": 14.94,
+      "per_file_mbps_median": 14.75,
+      "errors": []
+    },
+    {
+      "concurrency": 2,
+      "files_attempted": 12,
+      "files_failed": 0,
+      "megabytes": 725.9,
+      "seconds": 35.75,
+      "megabytes_per_second": 20.3,
+      "per_file_mbps_median": 15.89,
+      "errors": []
+    },
+    {
+      "concurrency": 4,
+      "files_attempted": 12,
+      "files_failed": 0,
+      "megabytes": 531.9,
+      "seconds": 13.0,
+      "megabytes_per_second": 40.93,
+      "per_file_mbps_median": 11.31,
+      "errors": []
+    },
+    {
+      "concurrency": 6,
+      "files_attempted": 12,
+      "files_failed": 0,
+      "megabytes": 566.6,
+      "seconds": 11.14,
+      "megabytes_per_second": 50.86,
+      "per_file_mbps_median": 9.35,
+      "errors": []
+    },
+    {
+      "concurrency": 1,
+      "files_attempted": 12,
+      "files_failed": 0,
+      "megabytes": 698.3,
+      "seconds": 47.02,
+      "megabytes_per_second": 14.85,
+      "per_file_mbps_median": 14.34,
+      "errors": []
+    }
+  ],
+  "control": {
+    "sequential_first_mbps": 14.94,
+    "sequential_last_mbps": 14.85,
+    "relative_drift": 0.006,
+    "trustworthy": true
+  },
+  "best_level": 6,
+  "projection_at_best": {
+    "megabytes_per_second": 50.86,
+    "one_expert_gigabytes": 519.0,
+    "one_expert_hours": 2.8,
+    "five_experts_gigabytes": 1577.0,
+    "five_experts_hours": 8.6
+  }
+}
