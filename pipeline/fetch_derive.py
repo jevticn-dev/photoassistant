@@ -52,6 +52,7 @@ import sys  # noqa: E402
 import threading  # noqa: E402
 import time  # noqa: E402
 import urllib.error  # noqa: E402
+import urllib.parse  # noqa: E402
 import urllib.request  # noqa: E402
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
@@ -135,6 +136,21 @@ def strided(names: list[str]) -> list[str]:
     return [names[(index * stride) % count] for index in range(count)]
 
 
+def rendition_url(rendition: str, reference: str) -> str:
+    """The download URL for one rendition of one photograph.
+
+    The basename is **percent-encoded**, and that is not defensive tidiness: 29 of
+    the 5000 names contain a space or a bracket — ``a1907-2004-06-08 11-30-22
+    CRW_0272`` and friends, mostly camera exports that kept their capture
+    timestamp. urllib refuses such a URL outright rather than encoding it, so
+    those 174 steps failed until this existed.
+
+    Found by running the real thing, not by reading the index file. Four
+    photographs had already failed before the stride reached the rest.
+    """
+    return f"{BASE_URL}/{rendition}/{urllib.parse.quote(reference)}.tif"
+
+
 def plan(basenames: list[str], experts: tuple[str, ...]) -> list[WorkItem]:
     """Every step that would have to run for a full pass, in the order to attempt it.
 
@@ -149,7 +165,7 @@ def plan(basenames: list[str], experts: tuple[str, ...]) -> list[WorkItem]:
                 reference=reference,
                 expert=None,
                 step=STEP_DERIVE_BEFORE,
-                url=f"{BASE_URL}/{BEFORE_RENDITION}/{reference}.tif",
+                url=rendition_url(BEFORE_RENDITION, reference),
                 keys={
                     "fit": f"fivek/{reference}/pre512.png",
                     "proxy": f"fivek/{reference}/proxy2048.jpg",
@@ -163,7 +179,7 @@ def plan(basenames: list[str], experts: tuple[str, ...]) -> list[WorkItem]:
                     reference=reference,
                     expert=expert,
                     step=step_derive_after(expert),
-                    url=f"{BASE_URL}/tiff16_{expert}/{reference}.tif",
+                    url=rendition_url(f"tiff16_{expert}", reference),
                     keys={"fit": f"fivek/{reference}/after512-{expert}.png"},
                     with_proxy=False,
                 )

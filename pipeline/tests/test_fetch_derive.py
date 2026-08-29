@@ -7,7 +7,7 @@ loop over urllib and is exercised by running it.
 
 import pytest
 
-from pipeline.fetch_derive import ALL_EXPERTS, BEFORE_RENDITION, plan, strided
+from pipeline.fetch_derive import ALL_EXPERTS, BEFORE_RENDITION, plan, rendition_url, strided
 
 NAMES = [f"a{index:04d}-photo" for index in range(1, 5001)]
 
@@ -92,3 +92,37 @@ def test_a_partial_expert_selection_narrows_the_plan():
 
     assert len(items) == 10
     assert {item.expert for item in items} == {None, "c"}
+
+
+def test_a_name_with_a_space_is_percent_encoded():
+    """29 of the 5000 names carry a space or a bracket.
+
+    urllib refuses such a URL outright rather than encoding it, so these failed
+    with InvalidURL until the encoding existed. Found by running the real fetch,
+    not by reading the index file — four had already failed before the stride
+    reached the rest.
+    """
+    url = rendition_url("tiff16_c", "a1907-2004-06-08 11-30-22 CRW_0272")
+
+    assert " " not in url
+    assert url.endswith("/a1907-2004-06-08%2011-30-22%20CRW_0272.tif")
+
+
+def test_a_name_with_brackets_is_encoded_too():
+    url = rendition_url("tiff16_a", "a0532-jmacdscf0021 (1)")
+
+    assert "(" not in url and ")" not in url
+
+
+def test_an_ordinary_name_is_left_alone():
+    """Encoding must not rewrite the 4971 names that were always fine."""
+    assert rendition_url("tiff16_c", "a0001-jmac_DSC1459").endswith("/a0001-jmac_DSC1459.tif")
+
+
+def test_the_object_key_keeps_the_raw_name():
+    """Only the URL needs encoding. An object key is not a URL, and encoding it
+    would store the same photograph under two different names depending on which
+    code path wrote it."""
+    before, _ = plan(["a1907-2004-06-08 11-30-22 CRW_0272"], ("c",))
+
+    assert before.keys["fit"] == "fivek/a1907-2004-06-08 11-30-22 CRW_0272/pre512.png"
