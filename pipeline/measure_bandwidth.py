@@ -270,7 +270,10 @@ def main() -> None:
         print("  the link moved during the run — treat the comparison as unreliable")
     projected = report["projection_at_best"]
     print(f"best: concurrency {best['concurrency']} at {best['megabytes_per_second']} MB/s")
-    print(f"  one expert  {projected['one_expert_gigabytes']} GB  ~{projected['one_expert_hours']} h")
+    print(
+        f"  one expert  {projected['one_expert_gigabytes']} GB "
+        f"~{projected['one_expert_hours']} h"
+    )
     print(
         f"  five experts {projected['five_experts_gigabytes']} GB "
         f"~{projected['five_experts_hours']} h"

@@ -141,7 +141,9 @@ def orient(decoded: NDArray[np.float64], expert: NDArray[np.float64]) -> NDArray
     return min(
         candidates,
         key=lambda candidate: float(
-            np.abs(resample_area(centre_crop_to_aspect(candidate, target_aspect), size) - reference).mean()
+            np.abs(
+                resample_area(centre_crop_to_aspect(candidate, target_aspect), size) - reference
+            ).mean()
         ),
     )
 
@@ -195,7 +197,10 @@ def main() -> None:
         size = target_size(*expert_linear.shape[:2])
         aspect = expert_linear.shape[1] / expert_linear.shape[0]
 
-        np.save(root / "before" / f"{basename}.npy", finish(centre_crop_to_aspect(decoded, aspect), size))
+        np.save(
+            root / "before" / f"{basename}.npy",
+            finish(centre_crop_to_aspect(decoded, aspect), size),
+        )
         np.save(root / "after" / f"{basename}.npy", finish(expert_linear, size))
         np.save(root / "reference" / f"{basename}.npy", finish(input_linear, size))
 

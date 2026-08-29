@@ -133,8 +133,10 @@ def main() -> None:
     print(f"  cost of clipping to sRGB   mean dE {summary['delta_e_of_clipping']['mean']:.2f}, "
           f"median {summary['delta_e_of_clipping']['median']:.2f}, "
           f"worst image {summary['delta_e_of_clipping']['max']:.2f}")
-    print(f"  pixels above dE 1          mean {summary['share_of_pixels_over_1']['mean'] * 100:.1f}%")
-    print(f"  pixels above dE 3          mean {summary['share_of_pixels_over_3']['mean'] * 100:.1f}%")
+    over_1 = summary["share_of_pixels_over_1"]["mean"] * 100
+    print(f"  pixels above dE 1          mean {over_1:.1f}%")
+    over_3 = summary["share_of_pixels_over_3"]["mean"] * 100
+    print(f"  pixels above dE 3          mean {over_3:.1f}%")
     print(f"report -> {REPORT}")
 
 

@@ -78,7 +78,10 @@ def download(url: str, target: Path) -> tuple[bool, int]:
     target.parent.mkdir(parents=True, exist_ok=True)
     partial = target.with_suffix(".part")
 
-    with urllib.request.urlopen(url, timeout=TIMEOUT_SECONDS) as response, partial.open("wb") as out:
+    with (
+        urllib.request.urlopen(url, timeout=TIMEOUT_SECONDS) as response,
+        partial.open("wb") as out,
+    ):
         while chunk := response.read(1 << 20):
             out.write(chunk)
 

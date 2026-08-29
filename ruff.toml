@@ -1,0 +1,13 @@
+# Lint settings for the Python that lives outside ml/.
+#
+# ruff picks the configuration closest to each file. ml/pyproject.toml covers the
+# library, the service and their tests; pipeline/ and fixtures/ have no config
+# above them, so until this file existed they were checked with ruff's defaults —
+# Python 3.10 as the target, and a much smaller rule set. CI has been running
+# `ruff check ml fixtures pipeline` since phase 0 with a comment claiming those
+# directories are "held to the same standard as the library". They were not.
+#
+# `extend` points at the real settings rather than repeating them. Two copies of a
+# rule list drift the first time somebody adds a rule to one of them, which is the
+# same argument the project makes about formulas existing twice.
+extend = "ml/pyproject.toml"
