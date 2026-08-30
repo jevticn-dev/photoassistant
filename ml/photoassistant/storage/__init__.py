@@ -39,6 +39,7 @@ from photoassistant.storage.manifest import (
     step_derive_after,
     step_embed_style,
     step_fit,
+    step_refit,
 )
 from photoassistant.storage.objects import ObjectStore
 
@@ -57,4 +58,5 @@ __all__ = [
     "step_derive_after",
     "step_embed_style",
     "step_fit",
+    "step_refit",
 ]

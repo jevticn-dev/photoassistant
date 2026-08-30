@@ -65,6 +65,16 @@ def step_fit(expert: str) -> str:
     return f"fit:{expert}"
 
 
+def step_refit(expert: str) -> str:
+    """A second, harder search over an edit the first pass fitted poorly.
+
+    Tracked separately from ``fit:`` so that the tail can be revisited without
+    the first pass's marks being disturbed, and so that a second pass which is
+    interrupted resumes rather than starting over.
+    """
+    return f"refit:{expert}"
+
+
 def step_embed_style(expert: str) -> str:
     """Style fingerprint of one expert's result, e.g. ``embed_style:c``."""
     return f"embed_style:{expert}"

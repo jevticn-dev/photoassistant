@@ -25,7 +25,7 @@ look like, not what a recipe means, and the catalogue staging is upstream of bot
 import argparse
 import sys
 
-from photoassistant.storage import DatabaseConfig, connect
+from photoassistant.storage import DatabaseConfig, connect, step_fit, step_refit
 
 from pipeline.environment import load
 from pipeline.fivek.catalogue import EXPERTS
@@ -50,7 +50,11 @@ def main() -> None:
     arguments = parse_arguments()
     load()
 
-    steps = [f"fit:{expert}" for expert in EXPERTS]
+    # Both kinds of mark. A renderer change invalidates a recipe however hard
+    # it was searched for, so leaving the refit marks behind would make the
+    # second pass skip exactly the edits whose recipes were just deleted.
+    steps = [step_fit(expert) for expert in EXPERTS]
+    steps += [step_refit(expert) for expert in EXPERTS]
 
     with connect(DatabaseConfig.from_environment(), autocommit=False) as connection:
         with connection.cursor() as cursor:
