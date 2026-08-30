@@ -176,6 +176,7 @@ def fit(
     with_curve: bool = False,
     stride: int = 4,
     max_evaluations: int = 400,
+    diff_step: float = 3e-3,
 ) -> FitResult:
     """Search for the recipe that best reproduces ``after`` from ``before``.
 
@@ -231,9 +232,17 @@ def fit(
             bounds=(lower, upper),
             max_nfev=max_evaluations,
             # The renderer is not differentiable in closed form, so the Jacobian
-            # is numerical. Below about this the step disappears into float32
-            # rounding inside the renderer and the direction reads as flat.
-            diff_step=1e-2,
+            # is numerical, and how far each parameter is nudged to estimate it
+            # matters more than anything else measured in phase 2.
+            #
+            # The probe chose 1e-2 and warned that anything smaller would vanish
+            # into float32 rounding inside the renderer, leaving the direction
+            # reading as flat. Measured over the 50 hardest fits, that warning was
+            # caution turned into a limit: at 3e-3 the search lands better on 41
+            # of 50 and worse on 4, and at 3e-2 it is worse on 45 of 50. Below
+            # 3e-3 the gain flattens while the cost keeps rising (1e-3 and 3e-4
+            # buy 0.007 and 0.016 dE for 30% and 13% more time).
+            diff_step=diff_step,
         )
         attempts.append(solution)
     elapsed = time.perf_counter() - began

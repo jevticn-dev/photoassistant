@@ -42,6 +42,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed  # noqa: E402
 from pathlib import Path  # noqa: E402
 
 import numpy as np  # noqa: E402
+from photoassistant import fitting  # noqa: E402
 from photoassistant.fitting import fit  # noqa: E402
 from photoassistant.schema import EditRecipe  # noqa: E402
 from photoassistant.storage import (  # noqa: E402
@@ -110,12 +111,19 @@ def fit_one(task: dict) -> dict:
         if task.get("analytic"):
             extra.append(EditRecipe.model_validate(task["analytic"]))
 
+        if task["extra_starts"]:
+            # More places to begin, spread across the range rather than clustered
+            # near zero: a local minimum is escaped by starting in another basin,
+            # not by starting further along the same slope.
+            fitting.STARTS = (0.05, -0.05, 0.3, -0.3, 0.6, -0.6)
+
         result = fit(
             before,
             after,
             extra_starts=extra,
             with_curve=task["with_curve"],
             stride=task["stride"],
+            diff_step=task["diff_step"],
         )
 
         record = {
@@ -135,7 +143,12 @@ def fit_one(task: dict) -> dict:
             # What the sliders alone reach, so that "how much does the master
             # curve add" stays a measured number rather than plan §4.2's claim.
             sliders = fit(
-                before, after, extra_starts=extra, with_curve=False, stride=task["stride"]
+                before,
+                after,
+                extra_starts=extra,
+                with_curve=False,
+                stride=task["stride"],
+                diff_step=task["diff_step"],
             )
             record["sliders_only_delta_e"] = sliders.mean_delta_e
 
@@ -217,16 +230,50 @@ def record_result(connection, photo_id: str, result: dict) -> None:
 
 
 def stratified(tasks: list[dict], size: int) -> list[dict]:
-    """A sample spread across experts and across the catalogue.
+    """A sample balanced across experts and spread across the catalogue.
 
-    Not the first N. Names are grouped by photographer, and taking a prefix would
-    measure a handful of cameras and scenes rather than the dataset. Taking every
-    k-th of a list already ordered by (reference, expert) keeps both spreads.
+    Not the first N: names are grouped by photographer, so a prefix would measure
+    a handful of cameras and scenes rather than the dataset.
+
+    **And not a plain stride over the whole list either**, which is what this did
+    at first. The list runs photograph by photograph with the five experts inside
+    each, so it has a period of five — and a stride that shares a factor with that
+    period revisits the same expert positions. Over 24.986 tasks it produced 269
+    edits by expert C against 143 by expert E, nearly two to one.
+
+    That matters because the experts are not equally easy to reconstruct: measured
+    over this very sample, mean ΔE runs from 1.31 for B to 1.86 for C. An
+    unbalanced sample therefore reports an average of whichever experts it
+    happened to favour. The first run got away with it — the balanced mean was
+    1.598 against 1.597 reported, because the over-represented easy and hard
+    experts cancelled — but that was luck, not design.
+
+    So the stride runs **within** each expert instead of across all of them.
     """
     if size <= 0 or size >= len(tasks):
         return tasks
-    step = len(tasks) / size
-    return [tasks[int(index * step)] for index in range(size)]
+
+    by_expert: dict[str, list[dict]] = {}
+    for task in tasks:
+        by_expert.setdefault(task["expert"], []).append(task)
+
+    experts = sorted(by_expert)
+    share, remainder = divmod(size, len(experts))
+
+    sample: list[dict] = []
+    for position, expert in enumerate(experts):
+        group = by_expert[expert]
+        # The remainder is spread over the first few groups rather than dropped,
+        # so the sample is the size that was asked for. Without it, asking for
+        # fewer edits than there are experts returns nothing at all.
+        wanted = share + (1 if position < remainder else 0)
+        take = min(wanted, len(group))
+        if take == 0:
+            continue
+        step = len(group) / take
+        sample.extend(group[int(index * step)] for index in range(take))
+
+    return sample
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -239,6 +286,26 @@ def parse_arguments() -> argparse.Namespace:
         help="fit a stratified sample of this many edits; 0 fits everything available",
     )
     parser.add_argument("--workers", type=int, default=DEFAULT_WORKERS)
+    parser.add_argument(
+        "--diff-step",
+        type=float,
+        default=3e-3,
+        help=(
+            "how far a parameter is nudged to estimate the Jacobian. Measured over "
+            "the 50 hardest fits: 3e-3 lands better than 1e-2 on 41 of 50 and worse "
+            "on 4; 3e-2 is worse on 45 of 50. The single largest effect found in "
+            "phase 2, and it was a value nobody had revisited since the probe."
+        ),
+    )
+    parser.add_argument(
+        "--extra-starts",
+        action="store_true",
+        help=(
+            "search from six neutral offsets instead of two. Cannot make a fit "
+            "worse — the best attempt wins — and improves the hardest 50 by 2.2%% "
+            "in the mean, for 2.4 times the time."
+        ),
+    )
     parser.add_argument(
         "--stride",
         type=int,
@@ -307,6 +374,8 @@ def build_tasks(arguments: argparse.Namespace) -> tuple[list[dict], dict[str, in
                 "with_curve": not arguments.no_curve,
                 "measure_curve_contribution": arguments.measure_curve_contribution,
                 "stride": arguments.stride,
+                "diff_step": arguments.diff_step,
+                "extra_starts": arguments.extra_starts,
             }
         )
     return tasks, skipped
@@ -400,6 +469,8 @@ def write_report(results: list[dict], elapsed: float, arguments: argparse.Namesp
             round(sum(r["seconds"] for r in results) / len(results), 2) if results else None
         ),
         "stride": arguments.stride,
+        "diff_step": arguments.diff_step,
+        "extra_starts": arguments.extra_starts,
         "workers": arguments.workers,
         "delta_e": {
             "mean": round(sum(errors) / len(errors), 3) if errors else None,
