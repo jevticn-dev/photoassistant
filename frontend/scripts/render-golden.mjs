@@ -114,6 +114,43 @@ async function renderLuts(page, recipes) {
   );
 }
 
+/**
+ * The tone-region tables, one per distinct set of the four regional values.
+ *
+ * Compared array against array, exactly as the curve tables are (§6.6): the part
+ * that could quietly diverge runs 1024 times per recipe rather than per pixel, so
+ * the hardest question — do two hand-written implementations agree — becomes a
+ * comparison of two arrays of numbers, with no picture to interpret.
+ */
+async function renderRegionTables(page, recipes) {
+  const tables = new Map();
+  for (const entry of recipes) {
+    const tone = entry.recipe.tone ?? {};
+    const values = {
+      highlights: tone.highlights ?? 0,
+      shadows: tone.shadows ?? 0,
+      whites: tone.whites ?? 0,
+      blacks: tone.blacks ?? 0,
+    };
+    tables.set(JSON.stringify(values), values);
+  }
+
+  return page.evaluate(
+    (tables) => {
+      const out = {};
+      for (const [key, values] of tables) {
+        out[key] = Array.from(
+          window.PhotoRenderer.buildRegionTable({
+            tone: { exposure: 0, contrast: 0, ...values },
+          }),
+        );
+      }
+      return out;
+    },
+    [...tables.entries()],
+  );
+}
+
 async function main() {
   const bundle = await bundleRenderer();
   const { recipes } = JSON.parse(await readFile(CORPUS, 'utf-8'));
@@ -148,6 +185,7 @@ async function main() {
   }
 
   const luts = await renderLuts(page, recipes);
+  const regionTables = await renderRegionTables(page, recipes);
 
   const version = await page.evaluate(() => {
     const gl = document.createElement('canvas').getContext('webgl2');
@@ -161,6 +199,7 @@ async function main() {
   }
 
   await writeFile(join(OUT, 'luts.json'), `${JSON.stringify(luts)}\n`);
+  await writeFile(join(OUT, 'region-tables.json'), `${JSON.stringify(regionTables)}\n`);
   await writeFile(
     join(OUT, 'manifest.json'),
     `${JSON.stringify(

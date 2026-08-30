@@ -110,3 +110,94 @@ export function planFor(recipe: EditRecipe): RenderPlan {
 export function isPlanEmpty(plan: RenderPlan): boolean {
   return !(plan.linearStage || plan.regions || plan.contrast || plan.curve || plan.colour);
 }
+
+/**
+ * Number of entries in the tone-region table, spec §3.3. The same size as the
+ * master curve's LUT, and for the same reason: one texture layout, one lookup.
+ */
+export const REGION_TABLE_SIZE = 1024;
+
+/** Strength of the tone-region shift, spec §8.3. */
+export const K_REG = 0.25;
+
+const BLACKS_END = 0.25;
+const SHADOWS_END = 0.6;
+const HIGHLIGHTS_START = 0.4;
+const WHITES_START = 0.75;
+
+/**
+ * Spec §7.1. Clamps at both ends, which is what leaves a pixel above white to
+ * `whites` alone (§7.3.1).
+ */
+function smoothstep(edge0: number, edge1: number, x: number): number {
+  const raw = f32(f32(x - edge0) / f32(edge1 - edge0));
+  const t = f32(Math.min(Math.max(raw, 0), 1));
+  return f32(f32(t * t) * f32(3 - f32(2 * t)));
+}
+
+function maskBlacks(y: number): number {
+  return f32(1 - smoothstep(0, BLACKS_END, y));
+}
+
+function maskShadows(y: number): number {
+  return f32(smoothstep(0, BLACKS_END, y) * f32(1 - smoothstep(BLACKS_END, SHADOWS_END, y)));
+}
+
+function maskHighlights(y: number): number {
+  return f32(
+    smoothstep(HIGHLIGHTS_START, WHITES_START, y) * f32(1 - smoothstep(WHITES_START, 1, y)),
+  );
+}
+
+function maskWhites(y: number): number {
+  return smoothstep(WHITES_START, 1, y);
+}
+
+/**
+ * The shift every luma level receives, made monotone (spec §3.3, ADR-22).
+ *
+ * Built once per recipe on the CPU, exactly as the master curve's table is, and
+ * uploaded as a texture. The shader does a lookup and nothing else.
+ *
+ * **Why it has to be monotone.** Each mask has an edge 0.25 wide and the total
+ * shift is their sum, so their slopes add. Past a certain strength the shift
+ * falls faster than brightness rises, two neighbouring pixels come out in the
+ * opposite order, and a smooth sky shows a band. Nine of 1012 fitted recipes did
+ * it, the worst reversing by 34 steps of 255.
+ *
+ * **Why a running maximum.** The table is already dense, so the condition reduces
+ * to a comparison and an assignment — no arithmetic, and therefore no last-bit
+ * disagreement with the NumPy side.
+ *
+ * **Why it stores the shift and not the resulting luma.** Lookups clip their
+ * input (§6.4). A table of results would give every luma above 1 the result at 1
+ * and flatten the highlight headroom §5 exists to keep. A shift is correct
+ * outside the range too, because the masks saturate there.
+ */
+export function buildRegionTable(recipe: EditRecipe): Float32Array {
+  const tone = recipe.tone;
+  const highlights = f32(tone.highlights / 100);
+  const shadows = f32(tone.shadows / 100);
+  const whites = f32(tone.whites / 100);
+  const blacks = f32(tone.blacks / 100);
+
+  const table = new Float32Array(REGION_TABLE_SIZE);
+
+  let running = -Infinity;
+  for (let index = 0; index < REGION_TABLE_SIZE; index += 1) {
+    const y = f32(index / (REGION_TABLE_SIZE - 1));
+
+    // Left to right, because NumPy's `a + b + c + d` is ((a + b) + c) + d and a
+    // different association can differ in the last bit of a float32.
+    let sum = f32(highlights * maskHighlights(y));
+    sum = f32(sum + f32(shadows * maskShadows(y)));
+    sum = f32(sum + f32(whites * maskWhites(y)));
+    sum = f32(sum + f32(blacks * maskBlacks(y)));
+    const out = f32(y + f32(K_REG * sum));
+
+    running = out > running ? out : running;
+    table[index] = f32(running - y);
+  }
+
+  return table;
+}

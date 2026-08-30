@@ -24,7 +24,13 @@
  */
 
 import { buildLut, LUT_SIZE } from './curve';
-import { exposureScale, planFor, whiteBalanceMultipliers } from './pipeline';
+import {
+  buildRegionTable,
+  exposureScale,
+  planFor,
+  REGION_TABLE_SIZE,
+  whiteBalanceMultipliers,
+} from './pipeline';
 import type { EditRecipe } from './schema';
 import { FRAGMENT_SHADER, VERTEX_SHADER } from './shader';
 
@@ -108,9 +114,9 @@ function link(gl: WebGL2RenderingContext): WebGLProgram {
 const UNIFORM_NAMES = [
   'u_image',
   'u_lut',
+  'u_regionTable',
   'u_whiteBalance',
   'u_exposureScale',
-  'u_regions',
   'u_contrast',
   'u_colour',
   'u_linearStage',
@@ -129,6 +135,7 @@ export class WebGlRenderer {
   private readonly uniforms: Record<UniformName, WebGLUniformLocation | null>;
   private readonly imageTexture: WebGLTexture;
   private readonly lutTexture: WebGLTexture;
+  private readonly regionTexture: WebGLTexture;
   private readonly vertexArray: WebGLVertexArrayObject | null;
 
   private imageWidth = 0;
@@ -136,6 +143,9 @@ export class WebGlRenderer {
 
   /** The points the uploaded table was built from, so it is rebuilt only on change. */
   private lutKey: string | null = null;
+
+  /** The four regional values the uploaded table was built from, same reason. */
+  private regionKey: string | null = null;
 
   private target: {
     framebuffer: WebGLFramebuffer;
@@ -153,6 +163,7 @@ export class WebGlRenderer {
 
     this.imageTexture = this.createTexture();
     this.lutTexture = this.createTexture();
+    this.regionTexture = this.createTexture();
 
     // The draw needs no attributes — the quad comes from gl_VertexID — but a
     // vertex array object still has to be bound for the draw to be valid.
@@ -161,6 +172,7 @@ export class WebGlRenderer {
     gl.useProgram(this.program);
     gl.uniform1i(this.uniforms.u_image, 0);
     gl.uniform1i(this.uniforms.u_lut, 1);
+    gl.uniform1i(this.uniforms.u_regionTable, 2);
   }
 
   static create(canvas: HTMLCanvasElement | OffscreenCanvas): WebGlRenderer {
@@ -277,6 +289,7 @@ export class WebGlRenderer {
     const gl = this.gl;
     gl.deleteTexture(this.imageTexture);
     gl.deleteTexture(this.lutTexture);
+    gl.deleteTexture(this.regionTexture);
     gl.deleteProgram(this.program);
     if (this.vertexArray) {
       gl.deleteVertexArray(this.vertexArray);
@@ -343,6 +356,38 @@ export class WebGlRenderer {
     this.lutKey = key;
   }
 
+  /**
+   * The tone-region table (spec §3.3, ADR-22).
+   *
+   * Uploaded exactly as the curve's LUT is, and for the same reason: the delicate
+   * part is built once per recipe on the CPU, where it can be compared against
+   * NumPy directly, and the shader is left with a lookup.
+   */
+  private uploadRegionTable(tone: EditRecipe['tone']): void {
+    const key = `${tone.highlights},${tone.shadows},${tone.whites},${tone.blacks}`;
+    if (key === this.regionKey) {
+      return;
+    }
+
+    const gl = this.gl;
+    gl.activeTexture(gl.TEXTURE2);
+    gl.bindTexture(gl.TEXTURE_2D, this.regionTexture);
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.R32F,
+      REGION_TABLE_SIZE,
+      1,
+      0,
+      gl.RED,
+      gl.FLOAT,
+      buildRegionTable({ tone } as EditRecipe),
+    );
+
+    this.regionKey = key;
+  }
+
   private bindTarget(width: number, height: number): void {
     const gl = this.gl;
 
@@ -387,6 +432,10 @@ export class WebGlRenderer {
       this.uploadLut(recipe.toneCurve.points);
     }
 
+    if (plan.regions) {
+      this.uploadRegionTable(recipe.tone);
+    }
+
     gl.useProgram(this.program);
     gl.bindVertexArray(this.vertexArray);
 
@@ -394,19 +443,14 @@ export class WebGlRenderer {
     gl.bindTexture(gl.TEXTURE_2D, this.imageTexture);
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, this.lutTexture);
+    gl.activeTexture(gl.TEXTURE2);
+    gl.bindTexture(gl.TEXTURE_2D, this.regionTexture);
 
     const { tone, color, whiteBalance } = recipe;
     const multipliers = whiteBalanceMultipliers(whiteBalance.temperature, whiteBalance.tint);
 
     gl.uniform3f(this.uniforms.u_whiteBalance, multipliers[0], multipliers[1], multipliers[2]);
     gl.uniform1f(this.uniforms.u_exposureScale, exposureScale(tone.exposure));
-    gl.uniform4f(
-      this.uniforms.u_regions,
-      tone.highlights / 100,
-      tone.shadows / 100,
-      tone.whites / 100,
-      tone.blacks / 100,
-    );
     gl.uniform1f(this.uniforms.u_contrast, tone.contrast / 100);
     gl.uniform2f(this.uniforms.u_colour, color.saturation / 100, color.vibrance / 100);
 

@@ -34,7 +34,7 @@ from PIL import Image
 
 from photoassistant.renderer.color import delta_e
 from photoassistant.renderer.curve import build_lut
-from photoassistant.renderer.pipeline import quantise, render
+from photoassistant.renderer.pipeline import build_region_table, quantise, render
 from photoassistant.schema import EditRecipe
 
 RENDERED = Path(__file__).parent / "rendered"
@@ -162,5 +162,39 @@ def test_the_curve_tables_agree_exactly() -> None:
 
         assert difference.max() < 1e-6, (
             f"curve {key}: tables differ by {difference.max():.2e} at index "
+            f"{int(difference.argmax())}"
+        )
+
+
+def test_the_region_tables_agree_exactly() -> None:
+    """The other table, compared the same way (spec §3.3, ADR-22).
+
+    Since ADR-22 the tone-region shift is a table as well, built once per recipe
+    on the CPU in both languages, and the shader only looks it up. That moves the
+    four masks out of GLSL entirely — so the question "do the masks agree" stops
+    being a comparison between NumPy and a fragment shader and becomes a
+    comparison between NumPy and TypeScript, on 1024 numbers, with no GPU in the
+    middle.
+
+    The monotonicity pass itself cannot disagree: it is a comparison and an
+    assignment, with no arithmetic to round differently. What this checks is the
+    summation underneath it, where float32 association does matter.
+    """
+    path = RENDERED / "region-tables.json"
+    if not path.is_file():
+        pytest.skip("no region tables written; run `npm --prefix frontend run golden` first")
+
+    theirs = json.loads(path.read_text(encoding="utf-8"))
+
+    assert theirs, "the browser wrote no region tables"
+
+    for key, table in theirs.items():
+        values = json.loads(key)
+        recipe = EditRecipe.model_validate({"schema": 1, "tone": values})
+        ours = build_region_table(recipe).astype(np.float64)
+        difference = np.abs(ours - np.asarray(table, dtype=np.float64))
+
+        assert difference.max() < 1e-6, (
+            f"regions {key}: tables differ by {difference.max():.2e} at index "
             f"{int(difference.argmax())}"
         )

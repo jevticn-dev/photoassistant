@@ -22,7 +22,7 @@ from the 191 example-based tests that were passing the whole time.
 import numpy as np
 import pytest
 
-from photoassistant.renderer.pipeline import quantise, render
+from photoassistant.renderer.pipeline import quantise, render, tone_region_shift
 from photoassistant.schema import EditRecipe, from_json
 
 GREY_WEDGE = np.repeat(
@@ -172,3 +172,53 @@ def test_the_repairs_leave_an_ordinary_edit_untouched() -> None:
     # Nothing here approaches an edge of the range, so the gain and the saturation
     # measure both stay inside their own bounds and no repair can have fired.
     assert largest_reversal(GREY_WEDGE, recipe) == 0
+
+
+def test_strong_regional_sliders_no_longer_reverse_a_gradient() -> None:
+    """ADR-22. The worst recipe the calibration pass produced, kept by name.
+
+    `blacks` at 99 lifts the darkest pixels by 63 steps of 255, and that lift
+    fades faster than brightness rises: input level 16 came out at 67 while input
+    level 48 came out at 44. On a smooth sky that is a visible band, and nine of
+    1012 fitted recipes had one.
+
+    The cause was isolated by ablation rather than assumed — removing the regional
+    sliders eliminated it in all nine, removing `tint` changed nothing — and the
+    repair makes the shift a monotone table (spec §3.3), so the ordering cannot
+    invert however strong the sliders are set.
+    """
+    recipe = EditRecipe.model_validate(
+        {
+            "schema": 1,
+            "tone": {"highlights": 21.0, "shadows": -26.0, "whites": 4.0, "blacks": 99.0},
+        }
+    )
+
+    assert largest_reversal(GREY_WEDGE, recipe) == 0
+
+
+def test_the_regional_table_stores_a_shift_so_headroom_survives() -> None:
+    """The trap inside the repair, kept where it would be noticed.
+
+    Lookups clip their input (spec §6.4). Had the table stored the resulting luma
+    rather than the shift, every pixel whose luma is above 1 would have been given
+    the result at 1 — flattening exactly the headroom §5 exists to preserve.
+
+    Exposure +2 puts white at 1.86 after step 4. What must happen there is that it
+    keeps its value and receives the shift belonging to luma 1, because the masks
+    are saturated above 1 and the shift is constant there. What must not happen is
+    that it be replaced by whatever luma 1 maps to.
+    """
+    recipe = EditRecipe.model_validate({"schema": 1, "tone": {"whites": 60.0}})
+
+    at_one = np.full((1, 1, 3), 1.0, dtype=np.float32)
+    above = np.full((1, 1, 3), 1.86, dtype=np.float32)
+
+    shift_at_one = float(tone_region_shift(at_one, recipe)[0, 0])
+    shift_above = float(tone_region_shift(above, recipe)[0, 0])
+
+    # Same shift, because the masks are saturated above 1.
+    assert shift_above == pytest.approx(shift_at_one)
+    # And it is a shift, not a replacement: the value keeps its distance above 1.
+    assert float(above[0, 0, 0]) + shift_above == pytest.approx(1.86 + shift_at_one)
+    assert 1.86 + shift_above > 1.0
