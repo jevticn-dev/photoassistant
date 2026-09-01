@@ -68,13 +68,22 @@ def example():
     try:
         yield connection, row
     finally:
-        with connection.transaction(), connection.cursor() as cursor:
-            cursor.execute("DELETE FROM examples WHERE id = %s", (example_id,))
-            cursor.execute("DELETE FROM photos WHERE id = %s", (photo_id,))
-            cursor.execute(
+        connection.close()
+
+        # Cleanup runs on its own **autocommit** connection, and that is not
+        # tidiness. With autocommit off, psycopg opens a transaction at the first
+        # execute; `connection.transaction()` then nests as a savepoint rather
+        # than beginning one, and releasing a savepoint commits nothing. A test
+        # that reads through a bare execute — as these do — leaves such a
+        # transaction open, so deletes issued on the same connection are rolled
+        # back when it closes. They appeared to work: the DELETE reported a row
+        # count, and the rows stayed in the database.
+        with psycopg.connect(config.conninfo, autocommit=True) as cleaner:
+            cleaner.execute("DELETE FROM examples WHERE id = %s", (example_id,))
+            cleaner.execute("DELETE FROM photos WHERE id = %s", (photo_id,))
+            cleaner.execute(
                 "DELETE FROM ingest_status WHERE photo_reference = %s", (reference,)
             )
-        connection.close()
 
 
 def stored(connection, example_id: str) -> tuple[float, dict]:

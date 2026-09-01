@@ -30,6 +30,23 @@ def connect(config: DatabaseConfig, *, autocommit: bool = True) -> psycopg.Conne
     Work that writes rows and marks a step in one breath wants the opposite —
     ``autocommit=False``, both statements in one transaction, so a crash cannot
     leave the mark without the rows.
+
+    **With ``autocommit=False``, never execute outside a transaction block.**
+    psycopg opens a transaction at the first statement, and from then on
+    ``connection.transaction()`` nests as a **savepoint** rather than beginning a
+    transaction of its own. Releasing a savepoint commits nothing, so every
+    "committed" write after that first stray statement is really held open until
+    the connection closes — and closing rolls them back.
+
+    It fails silently in the worst way: each statement reports the rows it
+    touched, a read on the same connection sees them, and only a second
+    connection reveals that nothing landed. Found in a test that deleted its own
+    fixtures and left fifteen of them in the database.
+
+    So on a connection opened this way: every statement inside
+    ``with connection.transaction():``, and nothing outside it. If a read is
+    needed alongside, open a second connection — that is what the default
+    autocommit is for.
     """
     return psycopg.connect(config.conninfo, autocommit=autocommit)
 
