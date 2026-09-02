@@ -143,6 +143,28 @@ def read_raw_text(connection: sqlite3.Connection, collection: int) -> dict[str, 
     return dict(rows)
 
 
+def read_orientations(connection: sqlite3.Connection, collection: int) -> dict[str, str]:
+    """How each photograph in a collection is turned.
+
+    Not in the develop settings — rotation lives on the image row itself, which is
+    why looking for it among the ``Crop*`` keys found nothing. Values are
+    Lightroom's two-letter codes such as ``AB`` for upright.
+    """
+    return {
+        name: orientation
+        for name, orientation in connection.execute(
+            """
+            SELECT f.baseName, i.orientation
+              FROM AgLibraryCollectionImage ci
+              JOIN Adobe_images i  ON i.id_local = ci.image
+              JOIN AgLibraryFile f ON f.id_local = i.rootFile
+             WHERE ci.collection = ?
+            """,
+            (collection,),
+        )
+    }
+
+
 def read_tags(connection: sqlite3.Connection) -> dict[str, dict[str, object]]:
     """Semantic labels per photograph, filtered to what is worth keeping.
 
@@ -196,14 +218,17 @@ def read_tags(connection: sqlite3.Connection) -> dict[str, dict[str, object]]:
     return result
 
 
-def exclusion_reason(settings: dict[str, str], raw: str) -> str | None:
+def exclusion_reason(
+    settings: dict[str, str], raw: str, *, rotated: bool = False
+) -> str | None:
     """Why edit schema v1 cannot represent this edit, or None if it can.
 
     Three reasons, all of them rare, all of them measured rather than feared:
 
     ``grayscale``     7 edits touch the grayscale mixer (`edit_schema` §5)
-    ``local``         3 carry brush or gradient corrections
+    ``local``         2 carry brush or gradient corrections
     ``crop``          5 were cropped, and plan §3 keeps crop out of the look
+    ``rotated``       5 — one photograph all five experts turned upright
 
     Clarity is **not** here. Sixteen edits use it and the schema does not model
     it, but that is a spatial operation whose absence shows up honestly as
@@ -218,6 +243,13 @@ def exclusion_reason(settings: dict[str, str], raw: str) -> str | None:
         return "local"
     if any(key.startswith("Crop") for key in settings):
         return "crop"
+    if rotated:
+        # A turned photograph is not the same picture in the same place, so a
+        # per-pixel comparison against the starting image is meaningless — the
+        # arrays do not even have the same shape. Found by the fitting pass
+        # raising rather than quietly resizing one to match the other, which
+        # would have put a geometric error into a colour measurement.
+        return "rotated"
     return None
 
 
@@ -261,19 +293,27 @@ def read_edits(connection: sqlite3.Connection) -> tuple[list[Edit], dict[str, di
         raise CatalogueError(f"catalogue is missing expected collections: {missing}")
 
     baseline = read_settings(connection, collections[BEFORE_COLLECTION])
+    baseline_orientation = read_orientations(connection, collections[BEFORE_COLLECTION])
 
     edits: list[Edit] = []
     for expert in EXPERTS:
         identifier = collections[expert.upper()]
         settings_by_photo = read_settings(connection, identifier)
         raw_by_photo = read_raw_text(connection, identifier)
+        orientation = read_orientations(connection, identifier)
         for reference, settings in settings_by_photo.items():
+            turned = (
+                reference in baseline_orientation
+                and orientation.get(reference) != baseline_orientation[reference]
+            )
             edits.append(
                 Edit(
                     reference=reference,
                     expert=expert,
                     settings=settings,
-                    excluded_reason=exclusion_reason(settings, raw_by_photo.get(reference, "")),
+                    excluded_reason=exclusion_reason(
+                        settings, raw_by_photo.get(reference, ""), rotated=turned
+                    ),
                     notes=notes_for(settings),
                 )
             )

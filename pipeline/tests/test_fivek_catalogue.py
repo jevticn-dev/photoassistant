@@ -108,7 +108,7 @@ def test_the_exclusion_counts_are_the_ones_the_plan_was_written_from(parsed):
         if edit.excluded_reason:
             reasons[edit.excluded_reason] = reasons.get(edit.excluded_reason, 0) + 1
 
-    assert reasons == {"grayscale": 7, "local": 2, "crop": 5}
+    assert reasons == {"grayscale": 7, "local": 2, "crop": 5, "rotated": 5}
 
 
 def test_the_curve_split_matches_the_schema_document(parsed):
@@ -153,3 +153,16 @@ def test_no_photographer_name_survives_into_the_tags(connection):
     allowed = {"subjects", "depth_of_field", "light_direction", "light_type"}
 
     assert {key for entry in tags.values() for key in entry} <= allowed
+
+
+def test_a_rotated_edit_is_excluded():
+    """One photograph, turned upright by all five experts.
+
+    Rotation is not in the develop settings — it lives on the image row — so
+    looking for it among the Crop keys found nothing, and five edits reached the
+    fitting pass. There the shapes did not match and the guard raised rather than
+    resizing one to the other, which would have put a geometric error into a
+    colour measurement.
+    """
+    assert exclusion_reason(PLAIN, "", rotated=True) == "rotated"
+    assert exclusion_reason(PLAIN, "", rotated=False) is None
