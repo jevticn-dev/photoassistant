@@ -5,7 +5,8 @@ using PhotoAssistant.Application.Authentication;
 
 namespace PhotoAssistant.Api.Tests;
 
-public sealed class AuthEndpointsTests(ApiFactory factory) : IClassFixture<ApiFactory>
+[Collection(ApiCollection.Name)]
+public sealed class AuthEndpointsTests(ApiFactory factory)
 {
     private const string ValidPassword = "Str0ng!Passphrase";
 
