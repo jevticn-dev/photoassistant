@@ -29,6 +29,28 @@ dependencies = [
     # (plan §4.3). Library, because phase 2 runs the same loop over 25,000 edits
     # from the pipeline, which installs only [project] dependencies.
     "scipy>=1.18,<2",
+    # Object storage through the S3 API, not through a MinIO client (ADR-12).
+    # The distinction is the point: boto3 talks to anything that speaks S3, so
+    # moving to Cloudflare R2 or Backblaze B2 is a change of endpoint and keys,
+    # not of code. A MinIO-specific client would make the local choice permanent.
+    "boto3>=1.43,<2",
+    # Postgres from Python: the pipeline writes photos, examples and the ingest
+    # manifest. The [binary] extra ships a prebuilt libpq, without which the
+    # install needs a C toolchain and Postgres headers present — on Windows that
+    # is not a reasonable thing to require.
+    #
+    # The tables themselves are created by the backend through EF migrations.
+    # This side only inserts into a schema that already exists.
+    "psycopg[binary]>=3.3,<4",
+    # Encoding derivatives: PNG for the 512px images the fit is measured against,
+    # JPEG for the 2048px editor proxy. Moved here from the dev group in phase 2 —
+    # writing an encoded image stopped being a test convenience the moment the
+    # pipeline had to store 30.000 of them, and phase 4's export needs the same
+    # encoder from the service side.
+    #
+    # Reading is a different matter: a 16-bit TIFF is read with tifffile, never
+    # with Pillow, which truncates it to 8 bits without a word (.claude/rules).
+    "pillow>=12.3,<13",
 ]
 
 [project.optional-dependencies]
@@ -47,6 +69,22 @@ service = [
     "pydantic-settings>=2.14,<3",
 ]
 
+# What the EMBEDDING STEP adds. A third set, for a third reason: torch is about a
+# gigabyte and only the phase 2 step that computes vectors needs it. In the main
+# dependencies every CI job would pull it down, including `ml` and `golden`, which
+# have no use for it. A set answers "who gets this automatically", not "who is
+# allowed to have it" — the service asks for it explicitly in phase 5 if it needs
+# to embed an upload.
+#
+#   uv sync --project ml --extra embeddings
+#
+# open_clip_torch brings the ViT-B/32 architecture and downloads the weights on
+# first use; the weights themselves are not a package and are not committed.
+embeddings = [
+    "torch>=2.13,<3",
+    "open_clip_torch>=3.3,<4",
+]
+
 [dependency-groups]
 dev = [
     "pytest>=9.1,<10",
@@ -54,11 +92,6 @@ dev = [
     # deprecated the httpx backend and warns on every test run.
     "httpx2>=2.9,<3",
     "ruff>=0.16,<0.17",
-    # Reading and writing the PNG fixtures: the generator in
-    # fixtures/images/generate.py and the renderer tests that load them. The
-    # library itself takes float arrays and never touches a file, so this stays
-    # out of [project] dependencies.
-    "pillow>=12.3,<13",
     # Property-based testing of the renderer (test_renderer_properties.py).
     # Example-based tests only ever check the combinations someone thought to
     # write down; three real defects in the renderer survived 191 of them

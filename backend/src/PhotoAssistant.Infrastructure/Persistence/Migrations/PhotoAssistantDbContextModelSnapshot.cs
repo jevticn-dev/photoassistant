@@ -292,12 +292,17 @@ namespace PhotoAssistant.Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("excluded_from_fitting");
 
+                    b.Property<string>("ExcludedReason")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("excluded_reason");
+
                     b.Property<string>("Expert")
                         .HasMaxLength(1)
                         .HasColumnType("character varying(1)")
                         .HasColumnName("expert");
 
-                    b.Property<double>("FitError")
+                    b.Property<double?>("FitError")
                         .HasColumnType("double precision")
                         .HasColumnName("fit_error");
 
@@ -310,7 +315,7 @@ namespace PhotoAssistant.Infrastructure.Persistence.Migrations
                         .HasColumnName("photo_id");
 
                     b.Property<Vector>("StyleFingerprint")
-                        .HasColumnType("vector")
+                        .HasColumnType("vector(30)")
                         .HasColumnName("style_fingerprint");
 
                     b.HasKey("Id")
@@ -324,6 +329,11 @@ namespace PhotoAssistant.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PhotoId")
                         .HasDatabaseName("ix_examples_photo_id");
+
+                    b.HasIndex("PhotoId", "Expert")
+                        .IsUnique()
+                        .HasDatabaseName("ix_examples_photo_id_expert")
+                        .HasFilter("expert IS NOT NULL");
 
                     b.ToTable("examples", (string)null);
                 });
@@ -458,7 +468,7 @@ namespace PhotoAssistant.Infrastructure.Persistence.Migrations
                         .HasColumnName("source");
 
                     b.Property<Vector>("StyleFingerprint")
-                        .HasColumnType("vector")
+                        .HasColumnType("vector(30)")
                         .HasColumnName("style_fingerprint");
 
                     b.HasKey("Id")
@@ -520,6 +530,12 @@ namespace PhotoAssistant.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_photos");
+
+                    b.HasIndex("ClipEmbedding")
+                        .HasDatabaseName("ix_photos_clip_embedding");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("ClipEmbedding"), "hnsw");
+                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("ClipEmbedding"), new[] { "vector_cosine_ops" });
 
                     b.HasIndex("Source", "SourceReference")
                         .IsUnique()

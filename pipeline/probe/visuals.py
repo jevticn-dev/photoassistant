@@ -102,7 +102,10 @@ def main() -> None:
         ]
         target = out / f"{kind}-{position}-{name}.png"
         sheet(panels, title).save(target, optimize=True)
-        print(f"  {kind:<5} {position}  {name:<40} dE {row['curve_from_theirs']:5.2f}  -> {target.name}")
+        print(
+            f"  {kind:<5} {position}  {name:<40} "
+            f"dE {row['curve_from_theirs']:5.2f}  -> {target.name}"
+        )
 
     print()
     print(f"{len(chosen)} sheets -> {out}")

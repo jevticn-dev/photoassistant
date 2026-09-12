@@ -31,9 +31,6 @@
 /** Table size, spec §8.3. Shared with `curve.ts` and injected into the shader. */
 import { LUT_SIZE } from './curve';
 
-/** Strength of the tone-region shift, spec §8.3. */
-export const K_REG = 0.25;
-
 /** Guards the division in the saturation measure, spec §8.3. */
 export const EPS = 1e-6;
 
@@ -78,10 +75,10 @@ precision highp sampler2D;
 
 uniform sampler2D u_image;
 uniform sampler2D u_lut;
+uniform sampler2D u_regionTable;
 
 uniform vec3 u_whiteBalance;    // per-channel multipliers, already normalised
 uniform float u_exposureScale;  // 2^exposure
-uniform vec4 u_regions;         // highlights, shadows, whites, blacks, each / 100
 uniform float u_contrast;       // contrast / 100
 uniform vec2 u_colour;          // saturation / 100, vibrance / 100
 
@@ -101,7 +98,6 @@ in vec2 v_uv;
 out vec4 fragColour;
 
 const int LUT_SIZE = ${LUT_SIZE};
-const float K_REG = ${glslFloat(K_REG)};
 const float EPS = ${glslFloat(EPS)};
 const vec3 LUMA = vec3(${LUMA_WEIGHTS.map(glslFloat).join(', ')});
 
@@ -140,34 +136,27 @@ float unitClamp(float x) {
   return min(max(x, 0.0), 1.0);
 }
 
-// ------------------------------------------------------- tone-region masks
-
-// §7.1. Written out rather than taken from the built-in, and it does clamp at
-// both ends — which is what gives a pixel above white to whites alone (§7.3.1).
-float smoothRamp(float e0, float e1, float x) {
-  float t = unitClamp((x - e0) / (e1 - e0));
-  return t * t * (3.0 - 2.0 * t);
-}
-
-float maskBlacks(float y) {
-  return 1.0 - smoothRamp(0.0, 0.25, y);
-}
-
-float maskShadows(float y) {
-  return smoothRamp(0.0, 0.25, y) * (1.0 - smoothRamp(0.25, 0.60, y));
-}
-
-float maskHighlights(float y) {
-  return smoothRamp(0.40, 0.75, y) * (1.0 - smoothRamp(0.75, 1.0, y));
-}
-
-float maskWhites(float y) {
-  return smoothRamp(0.75, 1.0, y);
-}
+// The four tone-region masks are **not** here any more (ADR-22). The shift they
+// produce is built into a table on the CPU, in pipeline.ts, so that the
+// monotonicity condition §3.3 requires can be applied to it before use — and so
+// that the arithmetic happens once per recipe in a place NumPy can be compared
+// against directly, rather than once per pixel on the GPU.
 
 // ------------------------------------------------------------------- LUT
 
 // §6.4 and §6.5: NEAREST sampling, two texel reads, the interpolation done here.
+// The tone-region table is read the same way and for the same reasons.
+float regionLookup(float x) {
+  float t = unitClamp(x) * float(LUT_SIZE - 1);
+  float base = min(max(floor(t), 0.0), float(LUT_SIZE - 2));
+  float frac = t - base;
+
+  int i = int(base);
+  float a = texelFetch(u_regionTable, ivec2(i, 0), 0).r;
+  float b = texelFetch(u_regionTable, ivec2(i + 1, 0), 0).r;
+  return a * (1.0 - frac) + b * frac;
+}
+
 float lutLookup(float x) {
   float t = unitClamp(x) * float(LUT_SIZE - 1);
   float base = min(max(floor(t), 0.0), float(LUT_SIZE - 2));
@@ -200,15 +189,14 @@ void main() {
   }
 
   if (u_regionsOn) {                                    // 5
-    // All four weights come from the same luma, taken before any of them is
-    // applied, and the shifts are summed and applied once. That removes the
-    // question of which regional parameter goes first.
-    float y = luma(c);
-    float shift = K_REG * (u_regions.x * maskHighlights(y)
-                         + u_regions.y * maskShadows(y)
-                         + u_regions.z * maskWhites(y)
-                         + u_regions.w * maskBlacks(y));
-    c = c + vec3(shift);
+    // One luma, one lookup, one addition. All four parameters were summed into
+    // the table on the CPU, so there is no question of which goes first, and the
+    // table was made monotone there (§3.3) so this cannot reverse a gradient.
+    //
+    // The table holds the **shift**, not the resulting luma: the lookup clips its
+    // input, and a table of results would give every luma above 1 the result at 1
+    // and flatten the highlight headroom §5 exists to keep.
+    c = c + vec3(regionLookup(luma(c)));
   }
 
   if (u_contrastOn) {                                   // 6

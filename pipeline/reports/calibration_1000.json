@@ -1,0 +1,31 @@
+{
+  "finished_at": "2026-08-29T22:21:38+0200",
+  "fitted": 1000,
+  "failed": 0,
+  "hours": 4.205,
+  "wall_seconds_per_edit": 15.14,
+  "cpu_seconds_per_edit": 33.25,
+  "stride": 4,
+  "workers": 4,
+  "delta_e": {
+    "mean": 1.601,
+    "median": 1.469,
+    "p90": 2.486,
+    "p99": 4.023,
+    "max": 6.092
+  },
+  "at_bounds": {
+    "whites": 39,
+    "blacks": 35,
+    "highlights": 5,
+    "contrast": 4,
+    "temperature": 3,
+    "vibrance": 1
+  },
+  "not_converged": 11,
+  "failures": [],
+  "curve_contribution": {
+    "mean_share": 0.248,
+    "median_share": 0.245
+  }
+}

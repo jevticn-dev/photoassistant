@@ -24,8 +24,11 @@ internal sealed class LookConfiguration : IEntityTypeConfiguration<Look>
 
         builder.Property(look => look.Family).HasMaxLength(100);
 
-        // Shadow property; see ExampleConfiguration. Dimension fixed in phase 2.
-        builder.Property<Vector?>("StyleFingerprint").HasColumnType("vector");
+        // Shadow property; see ExampleConfiguration, which explains the
+        // composition. Fixed here too although the table is empty until phase 4:
+        // the two columns describe the same thing and must be comparable, and a
+        // dimension left open here is one nobody would remember to close.
+        builder.Property<Vector?>("StyleFingerprint").HasColumnType("vector(30)");
 
         builder.Property(look => look.CreatedAt)
             .HasDefaultValueSql("now()")

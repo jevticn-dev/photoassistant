@@ -69,8 +69,15 @@ GENTLE_REGION = st.floats(min_value=-75.0, max_value=75.0, allow_nan=False, allo
 # both above the worst case seen so that ordinary noise cannot make the suite
 # flaky. Spec §7.5 records how they were obtained.
 #
-#   gentle regions (±75)  → worst measured 47 over 4000 recipes
-#   full range            → worst measured 78 over 4000 recipes
+#   gentle regions (±75)  → worst measured 5 over 6000 recipes
+#   full range            → worst measured 5 over 6000 recipes
+#
+# **Both were far larger until ADR-22**: 47 and 78 respectively. The regional
+# shift is now a monotone table (spec §3.3), so the four masks can no longer
+# reverse the ordering however strong they are set, and the two ranges stop being
+# meaningfully different. What is left is 8-bit rounding, which can put two
+# neighbouring inputs on opposite sides of a boundary — measured as `129, 128` at
+# input level 244.
 #
 # Both are measured with a **neutral** curve, and that is the point of the split
 # rather than a convenience. The master curve may be arbitrarily steep within the
@@ -86,10 +93,11 @@ GENTLE_REGION = st.floats(min_value=-75.0, max_value=75.0, allow_nan=False, allo
 #   * the pipeline without the curve  → bounded here
 #   * the curve's table is monotone   → the rule below, over generated curves
 #
-# Either way both stay an order of magnitude below the defects ADR-20 repairs,
-# which reversed by 118 and 255 steps out of 255.
-GENTLE_COMPRESSION_LIMIT = 55
-MEASURED_COMPRESSION_LIMIT = 90
+# The limits sit above the measured worst rather than at it, so that ordinary
+# rounding noise does not make the tests flaky. They are now more than twenty
+# times below the defects ADR-20 repairs, which reversed by 118 and 255 steps.
+GENTLE_COMPRESSION_LIMIT = 8
+MEASURED_COMPRESSION_LIMIT = 8
 
 
 @st.composite
@@ -275,11 +283,13 @@ def test_a_brighter_pixel_never_comes_out_darker(recipe: EditRecipe) -> None:
     for the reason set out on the next test. Every defect ADR-20 repairs occurs
     well inside that interval, so nothing is being hidden by the restriction.
 
-    The allowance covers two effects that are not defects. Rounding a continuous
+    The allowance covers one effect that is not a defect: rounding a continuous
     result to 256 levels can put two neighbouring inputs on opposite sides of a
-    boundary — measured as ``129, 128`` at input level 244. And the region masks
-    compress an end of the range even below ±75 once several sliders combine, for
-    the reasons set out on the next test and in spec §7.5.
+    boundary — measured as ``129, 128`` at input level 244.
+
+    Until ADR-22 it also had to cover the region masks, which compressed an end of
+    the range once several sliders combined. That is gone: the regional shift is a
+    monotone table now, and the measured worst fell from 47 to 5.
 
     Kept far below the defects this rule exists for, which reverse by 118 and 255
     steps out of 255.

@@ -1,0 +1,27 @@
+{
+  "photos": 5000,
+  "examples": 25000,
+  "excluded": 19,
+  "with_embedding": 5000,
+  "with_fingerprint": 24981,
+  "manifest_not_done": 0,
+  "excluded_reasons": {
+    "crop": 5,
+    "grayscale": 7,
+    "local": 2,
+    "rotated": 5
+  },
+  "fit_error": {
+    "mean": 1.5353,
+    "median": 1.3742,
+    "p90": 2.4598,
+    "max": 10.159
+  },
+  "photo_indexes": [
+    "ix_photos_clip_embedding",
+    "ix_photos_source_source_reference",
+    "pk_photos"
+  ],
+  "incomplete": [],
+  "problems": []
+}

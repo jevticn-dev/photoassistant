@@ -101,6 +101,14 @@ jobs:
       - name: Test
         run: uv run --project ml --extra service pytest ml/tests
 
+      - name: Test the offline pipeline
+        # Separate from ml/tests because the pipeline is not part of the package:
+        # it is a directory of scripts that imports the library, and pytest is
+        # pointed at it by path. The storage tests inside ml/tests that need a
+        # live Postgres or MinIO skip themselves here — the schema they check
+        # against is created by EF migrations, which this job cannot run.
+        run: uv run --project ml --extra service pytest pipeline/tests
+
       - name: Verify the library installs without the service extra
         # The claim "the library does not depend on FastAPI" is about packaging,
         # not imports, so the import-level test cannot prove it. This can.

@@ -60,3 +60,10 @@ Desktop.ini
 # copy would let the Python side compare against an old shader and still pass.
 # The comparison has to be between the two implementations as they are now.
 ml/tests/golden/rendered/
+
+# Run artefacts the pipeline overwrites on every pass. The measurements worth
+# keeping are copied into pipeline/reports/ under a name that says which run
+# produced them.
+pipeline/fetch_report.json
+pipeline/fit_report.json
+pipeline/fit_analysis.json

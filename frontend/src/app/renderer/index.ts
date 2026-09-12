@@ -31,7 +31,10 @@ export {
 export { LUT_SIZE, applyLut, buildLut, evaluate, tangents, type CurvePoints } from './curve';
 
 export {
+  K_REG,
   K_WB,
+  REGION_TABLE_SIZE,
+  buildRegionTable,
   exposureScale,
   isPlanEmpty,
   planFor,
@@ -39,6 +42,6 @@ export {
   type RenderPlan,
 } from './pipeline';
 
-export { EPS, FRAGMENT_SHADER, K_REG, LUMA_WEIGHTS, VERTEX_SHADER } from './shader';
+export { EPS, FRAGMENT_SHADER, LUMA_WEIGHTS, VERTEX_SHADER } from './shader';
 
 export { RendererError, WebGlRenderer, type PixelSource, type RenderedPixels } from './renderer';

@@ -21,6 +21,7 @@ Two deliberate choices worth knowing:
 """
 
 import time
+from collections.abc import Sequence
 from dataclasses import dataclass
 
 import numpy as np
@@ -158,9 +159,11 @@ def measure(
 # the honest answer; a single arbitrary start would report whichever basin it
 # happened to land in.
 #
-# Phase 2 replaces these with the analytic mapping from the catalogue
-# (`docs/edit_schema_v1.md` §4), which is non-degenerate by construction and
-# starts near the answer instead of near nothing.
+# Phase 2 adds the catalogue's analytic mapping as a further start, through
+# `extra_starts`, rather than replacing these. Measured on the probe: as the
+# *only* start the mapping is worse than a neutral offset (2.18 against 1.77),
+# because a half-right guess leaves the search in the wrong valley. As an
+# *additional* one, where the best of several wins, it is worth about 1%.
 STARTS: tuple[float, ...] = (0.05, -0.05)
 
 
@@ -169,14 +172,33 @@ def fit(
     after: NDArray[np.floating],
     *,
     start: EditRecipe | None = None,
+    starts: Sequence[float] | None = None,
+    extra_starts: Sequence[EditRecipe] = (),
     with_curve: bool = False,
     stride: int = 4,
     max_evaluations: int = 400,
+    diff_step: float = 3e-3,
 ) -> FitResult:
     """Search for the recipe that best reproduces ``after`` from ``before``.
 
-    With ``start`` given, that single point is used. Otherwise every offset in
-    ``STARTS`` is tried and the best result wins.
+    With ``start`` given, that single point is used and nothing else — a way to
+    ask "how far does this particular guess get", which is how the probe compared
+    the analytic mapping against fitting.
+
+    Otherwise the search runs from every offset in ``starts`` — defaulting to
+    ``STARTS`` — **plus** every recipe in ``extra_starts``, and the best result
+    wins. More starts cost proportionally more time and buy insurance against
+    local minima, which this problem has: the same photograph reached 1.81, 2.01
+    and 4.59 from three different starting points (notes §B8).
+
+    ``starts`` is an argument rather than a module-level knob callers reassign,
+    and that is the whole point. It used to be the latter, and the second pass
+    spent two hours searching from the default two offsets while reporting that
+    six of them made no difference: the assignment landed on the name re-exported
+    by ``photoassistant.fitting`` while this function reads the one in this
+    module, so it silently did nothing. A setting that quietly fails to apply is
+    indistinguishable from a setting that applied and did not help — one is a bug,
+    the other a finding, and they print the same number (notes §B50).
 
     ``with_curve`` adds the three interior control points of the master curve to
     the search. Running both ways is how plan §4.2's claim — that the curve
@@ -202,7 +224,11 @@ def fit(
     if start is not None:
         initials = [np.concatenate([vector_from_recipe(start), tail])]
     else:
-        initials = [np.concatenate([np.full(len(SCALARS), offset), tail]) for offset in STARTS]
+        offsets = STARTS if starts is None else starts
+        initials = [np.concatenate([np.full(len(SCALARS), offset), tail]) for offset in offsets]
+        initials.extend(
+            np.concatenate([vector_from_recipe(recipe), tail]) for recipe in extra_starts
+        )
 
     # The curve fractions live in [0, 1]; the scalars in [-1, 1].
     lower = np.concatenate([-np.ones(len(SCALARS)), np.zeros(len(tail))])
@@ -217,9 +243,17 @@ def fit(
             bounds=(lower, upper),
             max_nfev=max_evaluations,
             # The renderer is not differentiable in closed form, so the Jacobian
-            # is numerical. Below about this the step disappears into float32
-            # rounding inside the renderer and the direction reads as flat.
-            diff_step=1e-2,
+            # is numerical, and how far each parameter is nudged to estimate it
+            # matters more than anything else measured in phase 2.
+            #
+            # The probe chose 1e-2 and warned that anything smaller would vanish
+            # into float32 rounding inside the renderer, leaving the direction
+            # reading as flat. Measured over the 50 hardest fits, that warning was
+            # caution turned into a limit: at 3e-3 the search lands better on 41
+            # of 50 and worse on 4, and at 3e-2 it is worse on 45 of 50. Below
+            # 3e-3 the gain flattens while the cost keeps rising (1e-3 and 3e-4
+            # buy 0.007 and 0.016 dE for 30% and 13% more time).
+            diff_step=diff_step,
         )
         attempts.append(solution)
     elapsed = time.perf_counter() - began

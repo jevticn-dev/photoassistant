@@ -166,18 +166,72 @@ definisane u §7.
 Time je operacija nezavisna od redosleda četiri parametra — nema pitanja „šta se primenjuje
 prvo", pa nema ni mesta gde dve implementacije mogu da se raziđu.
 
+**Pomeraj se ne primenjuje neposredno nego kroz tabelu sa uslovom monotonosti** (ADR-22).
+Razlog i merenja su u §7.5; ovde je samo postupak.
+
+#### Korak 1 — tabela pomeraja, jednom po receptu
+
+`N = 1024` vrednosti nad `Y' ∈ [0,1]`, isti broj kao master kriva (§6.1):
+
+```
+za j = 0 … N−1:
+    Yj = j / (N − 1)
+
+    Δ_raw[j] = K_REG · (   (highlights/100) · w_hi(Yj)
+                         + (shadows/100)    · w_sh(Yj)
+                         + (whites/100)     · w_wh(Yj)
+                         + (blacks/100)     · w_bl(Yj)  )
+
+    out[j] = Yj + Δ_raw[j]
+```
+
+#### Korak 2 — ispravka monotonosti
+
+```
+za j = 1 … N−1:
+    out[j] = max( out[j], out[j−1] )
+
+Δ[j] = out[j] − Yj
+```
+
+Uslov je isti kao onaj koji §6.2 nameće master krivoj — **izlaz ne sme opadati dok ulaz
+raste** — samo sproveden nad gustom tabelom umesto nad kontrolnim tačkama, pa se svodi na
+poređenje i dodelu. **Nijedna računska operacija**, dakle nijedno mesto na kom bi se dve
+implementacije mogle raziđi u poslednjem bitu.
+
+Tabela se gradi **jednom po receptu**, na procesoru u obe implementacije, kao i LUT master
+krive (§6.5).
+
+#### Korak 3 — primena po pikselu
+
 ```
 Y' = 0.2126·R' + 0.7152·G' + 0.0722·B'          (jednom, pre bilo kakve izmene)
 
-Δ = K_REG · (   (highlights/100) · w_hi(Y')
-              + (shadows/100)    · w_sh(Y')
-              + (whites/100)     · w_wh(Y')
-              + (blacks/100)     · w_bl(Y')  )
+t = clamp(Y', 0, 1) · (N − 1)
+i = clamp( floor(t), 0, N − 2 )
+f = t − i
+Δ = tab[i] · (1 − f) + tab[i+1] · f
 
 R' ← R' + Δ
 G' ← G' + Δ
 B' ← B' + Δ
 ```
+
+**Zašto tabela čuva pomeraj `Δ`, a ne izlaznu vrednost.** Posle koraka 3 luma sme biti van
+[0,1] — izmereno, do `4.416` pri `exposure = +5`, što je tačno `srgb_encode(2⁵)`. Balans bele
+tu granicu ne podiže, jer su njegovi množioci normalizovani sopstvenom luminancijom (§3.1).
+Da tabela čuva izlaz, odsecanje ulaza bi svakoj lumi preko 1 dodelilo izlaz kao pri 1 i time
+**uništilo zalihu u svetlima** koju §5 postoji da sačuva.
+
+**Zašto je odsecanje ulaza tačno, a ne aproksimacija.** Van [0,1] su maske zasićene: iznad 1
+radi isključivo `w_wh` i to konstantno `1`, ispod 0 isključivo `w_bl` i to konstantno `1`
+(§7.2). Pomeraj je tamo **konstantan**, pa je vrednost na granici tabele istovremeno i tačna
+vrednost svuda van nje.
+
+Mehanizam van opsega se dakle ne menja — i dalje se dodaje jedna konstanta. Sama ta konstanta
+podleže istoj ispravci monotonosti kao i ostatak tabele, i to **mora** biti tako: da granični
+unos bio izuzet, na `Y' = 1` bi nastao skok između poslednje ispravljene i prve neispravljene
+vrednosti.
 
 **Konstanta:** `K_REG = 0.25`. Na `blacks = +100` i `Y' = 0` daje pomeraj `+0.25` — crna
 tačka podignuta na četvrtinu opsega.
@@ -543,55 +597,86 @@ Lightroomove maske su **sadržajno adaptivne** — gledaju lokalno okruženje pi
 čiste funkcije lume tog piksela.
 
 Posledica (plan §4.2): fitovanje u Fazi 2 neće uvek savršeno reprodukovati ekspertski edit.
-Master kriva pokupi većinu ostatka, a **ostatak greške se meri i prijavljuje**, ne skriva se
-kao pretpostavka.
+**Ostatak greške se meri i prijavljuje**, ne skriva se kao pretpostavka.
 
-### 7.5 Izmerena karakteristika: traka u gradijentu pri jakim vrednostima
+Plan §4.2 je tvrdio da master kriva „pokupi većinu ostatka". Izmereno je dvaput i tvrdnja ne
+stoji: sonda 1b je nad 97 fotografija dobila **37%**, a kalibracioni prolaz Faze 2 nad 1012
+edita i svih pet eksperata **24,8%** — dakle četvrtinu, ne većinu. Merodavna brojka je uvek ona
+iz poslednjeg prolaza; živi u izveštaju faze, jer se pri svakoj promeni renderera ponovo meri.
 
-> **Otvoreno pitanje, odloženo do Faze 2 sa razlogom.** ADR-20, odluka B.
+### 7.5 Traka u gradijentu — merena, pa uklonjena (ADR-22)
 
-Svaka od četiri maske ima bar jednu ivicu široku `0.25`. Kroz nju maska raste brzo, i pri
-jakim vrednostima pomeraj pada brže nego što svetlina raste — poredak dva susedna piksela se
-obrne, što se na glatkom gradijentu vidi kao **traka**.
+> **Zatvoreno 2026-08-30.** Ovo je bilo otvoreno pitanje ADR-20, odluka B, odloženo dok
+> podatak koji ga rešava ne bude postojao. Faza 2 ga je proizvela.
 
-Ukupan pomeraj je **zbir** sva četiri doprinosa, pa se njihovi nagibi sabiraju: **kombinacija
-je gora od svakog slajdera zasebno**. Izmereno, `tint` + `highlights` + `whites`, svaki
-**ispod** ±75, zajedno daju traku od 30 koraka od 255.
+#### Kako je nastajala
 
-Nad 3000 nasumičnih recepata u opsezima koje je sonda 1b stvarno fitovala (ekspert C):
+Svaka od četiri maske ima bar jednu ivicu široku `0.25`. Kroz nju maska pada strmo, a pošto je
+ukupan pomeraj **zbir** četiri doprinosa, nagibi se sabiraju. Pri dovoljno jakim vrednostima
+pomeraj pada brže nego što svetlina raste, pa se poredak dva susedna piksela obrne — što se na
+glatkom gradijentu vidi kao **traka**.
 
-| | vrednost |
-|---|---|
-| medijana i 90. percentil | **0** — velika većina obrada nema traku |
-| 99. percentil | 24 koraka od 255 |
-| najgori slučaj | **60 koraka od 255** (24% raspona svetline) |
-| udeo obrada sa vidljivom trakom | **2,1%** |
+Izmereno na najgorem receptu iz kalibracije (`blacks` 99, `highlights` 21, `shadows` −26),
+u koracima od 255:
 
-**Zašto se ne popravlja sada.** Slabljenje `K_REG` ne rešava problem po prihvatljivoj ceni —
-izmereno:
+| Ulazna svetlina | Pomeraj | Izlazna svetlina |
+|---|---|---|
+| 16 | +51 | 67 |
+| 48 | −4 | **44** |
 
-| `K_REG` | najgora traka | udeo preko 12 koraka | izgubljen domet |
-|---|---|---|---|
-| **0.25** (važeća) | 47 | 2,1% | — |
-| 0.167 | 18 | 0,3% | 33% |
-| 0.125 | 5 | 0,0% | **50%** |
+Nagib izlazne krive pada na **−0,88**. Piksel koji je na ulazu svetliji izlazi tamniji.
 
-Traka nestaje tek na `0.125`, uz **polovinu dometa** sva četiri slajdera — a `whites` i
-`blacks` već udaraju u granicu opsega kod 5% odnosno 3% slika. To je tačno kvar koji je ADR-19
-morao da poništi kod balansa bele: parametar koji ne dopire dovoljno daleko fitovanje
-nadoknađuje pogrešno.
+#### Šta su podaci pokazali
 
-**Kandidat za popravku u Fazi 2**, bolji od slabljenja konstanti: regionalni pomeraj se računa
-kao tabela od `N` vrednosti nad lumom, pa se na nju primeni **ista provera monotonosti koju
-§6.2 već koristi za master krivu**. Traka tada ne može da nastane, a domet ostaje pun.
+Nad **1012 stvarno fitovanih edita** preko svih pet eksperata, naspram ranijeg merenja koje je
+svaki parametar izvlačilo **nezavisno**:
 
-**Kad se odlučuje:** uz fitovanje ~1000 edita, koje je i inače prvi korak Faze 2 (izveštaj 1b,
-preporuka 1). Taj prolaz daje **zajedničku** raspodelu fitovanih regionalnih vrednosti — jedini
-podatak koji kaže koliko često realne obrade upadnu u ovu kombinaciju — bez ijednog dodatnog
-minuta računanja.
+| | nezavisno izvučeni | **stvarni fitovani** |
+|---|---|---|
+| medijana i 90. percentil | 0 | 0 |
+| 99. percentil | 24 | **12** |
+| najgori slučaj | 60 | **34** |
+| udeo sa vidljivom trakom | 2,1% | **0,89%** |
 
-Do tada je veličina **ograničena testom** (`ml/tests/test_renderer_properties.py`), pa
-pogoršanje ne može proći neopaženo.
+Stvarnost je dvaput blaža: nezavisno izvlačenje sastavlja kombinacije koje se u praksi ne
+javljaju.
+
+#### Uzrok je izolovan, a ne pretpostavljen
+
+Devet recepata koji prave traku provereno je isključivanjem osumnjičenih:
+
+| Pun recept | Bez `tint` | Bez regionalnih |
+|---|---|---|
+| 34 | 32 | **0** |
+| 25 | 29 | **0** |
+| ostalih sedam | ~isto | **0** |
+
+**Regionalni sloj je ceo uzrok.** Raniji opis u ovom dokumentu navodio je kombinaciju `tint` +
+`highlights` + `whites`; taj opis potiče iz nezavisnog izvlačenja i ne opisuje stvarne obrade.
+`tint` ne učestvuje — u jednom slučaju je njegovo isključivanje čak pogoršalo stanje.
+
+#### Rešenje i njegova cena
+
+Uslov monotonosti nad tabelom pomeraja (§3.3). Izmereno nad devet recepata koji su pravili
+traku: **svih devet ide na 0**, uz promenu ograničenu na 19–27% tonskog opsega — tačno onaj
+deo u kom je poredak i bio obrnut.
+
+Od **965** recepata bez vidljive trake, popravka menja **17** (1,8%) — one kod kojih je
+obrtanje postojalo ali ga je kasniji korak sakrio. Preostalih 948 ostaje nepromenjeno.
+
+**Domet sva četiri slajdera ostaje pun**, za razliku od slabljenja `K_REG`, koje je odbačeno
+merenjem: traka nestaje tek na `0.125`, uz **polovinu dometa**, a `whites` i `blacks` već
+udaraju u granicu opsega kod 4,1% odnosno 3,5% edita — tačno kvar koji je ADR-19 morao da
+poništi kod balansa bele.
+
+**Konstanta `K_REG` se ne menja.** Ni jedna druga konstanta, ni redosled operacija.
+
+#### Šta test sada tvrdi
+
+`ml/tests/test_renderer_properties.py` je do sada držao **granicu** (`largest_reversal ≤ 90`),
+jer se pojava nije mogla ukloniti. Sada tvrdi da obrtanja **nema**: renderer je monotonan po
+svetlini na celom prostoru parametara — što je doslovno ono što Namera uz §3.3 traži, „da se
+na granici regiona **ne pojavi vidljiv prelaz** u glatkom gradijentu".
 
 ---
 

@@ -1,25 +1,53 @@
 """Embeddings — vector descriptions of content and of style.
 
-Filled in **phase 2**.
-
-Two different things, answering two different questions:
+Two different things, answering two different questions.
 
 ``clip_embedding`` (content of the "before" image)
-    CLIP ViT-B/32, 512 dimensions. Answers "what did experts do to scenes like
-    this one". Written to ``photos.clip_embedding``.
+    CLIP ViT-B/32, 512 dimensions, L2-normalised. Answers "what did experts do to
+    scenes like this one". Written to ``photos.clip_embedding``, which carries the
+    HNSW index because that is where a search actually happens.
 
-``style_fingerprint`` (style of the "after" image)
-    Colour statistics (histograms, saturation, luminance distribution) combined
-    with a DINOv2 embedding. Used to pick suggestions that differ **from each
-    other**. Written to ``examples.style_fingerprint`` and
-    ``looks.style_fingerprint``.
+``style_fingerprint`` (what the expert did)
+    Thirty numbers: the fitted recipe, plus the difference in colour statistics
+    between the neutral rendition and the expert's result. No neural model — the
+    remaining candidates are an ablation axis for phase 3 (``docs/STATUS.md``).
+    Written to ``examples.style_fingerprint`` and later ``looks``. **No index**:
+    it is used to compare a few dozen already-retrieved candidates, and an index
+    speeds up finding among many, not comparing among few (``docs/notes`` §B40).
 
-    The dimension is **not fixed yet**, which is why those columns are declared
-    as ``vector`` without one. Once the composition is settled in this phase, a
-    migration fixes the dimension and creates the HNSW index — an index is not
-    possible without a fixed dimension.
+**Nothing here imports torch, and that is deliberate.** ``clip`` is the only
+module that needs it, it imports it lazily, and this file does not import
+``clip``. So ``import photoassistant.embeddings`` works in an installation
+without the ``embeddings`` extra — the ordinary test run and CI — and the extra
+stays a genuine boundary rather than a habit. Reach the encoder explicitly:
 
-GPU strategy (plan §5.1, sub-decision 3d): RX 9070 through WSL2+ROCm, falling
-back to ONNX+DirectML, falling back to CPU. CPU is acceptable — this is a one-off
-job of a few hours.
+    from photoassistant.embeddings.clip import ClipEncoder
 """
+
+from photoassistant.embeddings.fingerprint import (
+    COMPONENT_NAMES,
+    FINGERPRINT_DIMENSION,
+    RECIPE_COMPONENT_COUNT,
+    Scaling,
+    raw_fingerprint,
+    recipe_components,
+)
+from photoassistant.embeddings.statistics import (
+    STATISTIC_COUNT,
+    STATISTIC_NAMES,
+    colour_statistics,
+    statistics_difference,
+)
+
+__all__ = [
+    "COMPONENT_NAMES",
+    "FINGERPRINT_DIMENSION",
+    "RECIPE_COMPONENT_COUNT",
+    "STATISTIC_COUNT",
+    "STATISTIC_NAMES",
+    "Scaling",
+    "colour_statistics",
+    "raw_fingerprint",
+    "recipe_components",
+    "statistics_difference",
+]

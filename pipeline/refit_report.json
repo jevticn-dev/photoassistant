@@ -1,0 +1,13 @@
+{
+  "finished_at": "2026-09-11T00:58:02+0200",
+  "selected": 1249,
+  "replaced": 796,
+  "unchanged": 453,
+  "failed": 0,
+  "hours": 4.696,
+  "mean_gain_where_replaced": 0.1114,
+  "total_gain": 88.694,
+  "starts": 6,
+  "stride": 6,
+  "diff_step": 0.003
+}

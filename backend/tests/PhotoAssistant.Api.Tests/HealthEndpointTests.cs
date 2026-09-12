@@ -4,7 +4,8 @@ using PhotoAssistant.Api.Tests.Infrastructure;
 
 namespace PhotoAssistant.Api.Tests;
 
-public sealed class HealthEndpointTests(ApiFactory factory) : IClassFixture<ApiFactory>
+[Collection(ApiCollection.Name)]
+public sealed class HealthEndpointTests(ApiFactory factory)
 {
     [Fact]
     public async Task Health_reports_the_database_as_reachable()
