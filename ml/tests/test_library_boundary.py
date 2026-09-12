@@ -15,6 +15,7 @@ empty environment and asking whether FastAPI is present.
 
 import importlib
 import pkgutil
+import sys
 
 import photoassistant
 
@@ -58,3 +59,26 @@ def test_library_does_not_import_the_service_layer() -> None:
 
         leaked = imported_roots & FORBIDDEN_ROOTS
         assert not leaked, f"{name} imports {leaked}, which breaks the library boundary"
+
+
+def test_the_embeddings_package_does_not_drag_torch_in() -> None:
+    """The third dependency set has to be a boundary, not a habit.
+
+    ``torch`` is about a gigabyte and only the step that computes CLIP vectors
+    needs it, so it lives in the ``embeddings`` extra rather than in the library's
+    dependencies. That only holds if importing the package does not reach for it:
+    one convenience re-export in ``embeddings/__init__.py`` would put a gigabyte
+    into every CI job and into the pipeline's install, and nothing would fail —
+    the jobs would simply get slower and nobody would connect the two.
+
+    Written against ``sys.modules`` rather than against the import list, because
+    the failure is a transitive import somewhere below, not a name in this file.
+    """
+    for name in ["photoassistant", "photoassistant.embeddings"]:
+        importlib.import_module(name)
+
+    assert "torch" not in sys.modules, (
+        "importing the library pulled in torch; the embeddings extra stops being "
+        "a boundary the moment something imports photoassistant.embeddings.clip "
+        "at module scope"
+    )

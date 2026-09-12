@@ -69,6 +69,22 @@ service = [
     "pydantic-settings>=2.14,<3",
 ]
 
+# What the EMBEDDING STEP adds. A third set, for a third reason: torch is about a
+# gigabyte and only the phase 2 step that computes vectors needs it. In the main
+# dependencies every CI job would pull it down, including `ml` and `golden`, which
+# have no use for it. A set answers "who gets this automatically", not "who is
+# allowed to have it" — the service asks for it explicitly in phase 5 if it needs
+# to embed an upload.
+#
+#   uv sync --project ml --extra embeddings
+#
+# open_clip_torch brings the ViT-B/32 architecture and downloads the weights on
+# first use; the weights themselves are not a package and are not committed.
+embeddings = [
+    "torch>=2.13,<3",
+    "open_clip_torch>=3.3,<4",
+]
+
 [dependency-groups]
 dev = [
     "pytest>=9.1,<10",
