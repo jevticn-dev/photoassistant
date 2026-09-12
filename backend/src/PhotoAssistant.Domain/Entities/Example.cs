@@ -33,8 +33,16 @@ public class Example
     /// Mean colour difference left over after fitting, measured between the
     /// rendered recipe and the expert's TIFF. Reported rather than hidden —
     /// its distribution is one of the evaluation metrics.
+    /// <para>
+    /// Null when the edit was never fitted, which is the case for every row
+    /// flagged by <see cref="ExcludedFromFitting"/>. Null rather than a
+    /// sentinel: zero would read as a perfect reconstruction and put those rows
+    /// at the top of "best fitted examples", while any impossible value is an
+    /// exception every future query has to remember. Null drops out of
+    /// comparisons on its own.
+    /// </para>
     /// </summary>
-    public double FitError { get; set; }
+    public double? FitError { get; set; }
 
     // The table also carries style_fingerprint, a pgvector column describing the
     // "after" image (colour statistics combined with a DINOv2 embedding) and used
@@ -50,6 +58,18 @@ public class Example
     /// fitting.
     /// </summary>
     public bool ExcludedFromFitting { get; set; }
+
+    /// <summary>
+    /// Why the edit was excluded: "grayscale", "local", "crop" or "rotated".
+    /// Null for rows that were fitted.
+    /// <para>
+    /// Kept in the table rather than only in the pipeline's staging file because
+    /// the phase gate asks the database how many edits were excluded
+    /// <em>and for what</em>, and an answer that requires a file on somebody's
+    /// disk is not an answer the database can give.
+    /// </para>
+    /// </summary>
+    public string? ExcludedReason { get; set; }
 
     public DateTimeOffset CreatedAt { get; set; }
 }

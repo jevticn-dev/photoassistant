@@ -45,7 +45,26 @@ internal sealed class PhotoConfiguration : IEntityTypeConfiguration<Photo>
             .IsUnique()
             .HasFilter("source_reference IS NOT NULL");
 
-        // HNSW index on clip_embedding is created in phase 2, once the table
-        // holds data — building it on an empty table costs a rebuild later.
+        // The search path from plan §7: "which photographs in the corpus are
+        // most like the one the user just uploaded". That is a nearest-neighbour
+        // query over every row on every request, which is exactly what an
+        // approximate index is for — as opposed to the style fingerprint, which
+        // is only ever compared across a few dozen candidates and therefore has
+        // none.
+        //
+        // Cosine, matching how the vectors are written: the pipeline
+        // L2-normalises every CLIP embedding, and on unit-length vectors cosine
+        // and Euclidean rank identically. Building the index for one measure and
+        // querying with the other returns wrong neighbours and reports nothing,
+        // since both are valid queries — normalising removes the possibility
+        // rather than relying on everyone remembering.
+        //
+        // Created in a migration of its own so that it is applied **after** the
+        // pipeline has filled the column. Built over an empty table it would
+        // still be correct, but every row inserted afterwards pays to maintain
+        // an index that then has to be rebuilt to be any good.
+        builder.HasIndex("ClipEmbedding")
+            .HasMethod("hnsw")
+            .HasOperators("vector_cosine_ops");
     }
 }

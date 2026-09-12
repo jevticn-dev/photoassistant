@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pgvector;
@@ -12,9 +13,11 @@ using PhotoAssistant.Infrastructure.Persistence;
 namespace PhotoAssistant.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(PhotoAssistantDbContext))]
-    partial class PhotoAssistantDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260903000944_FixFingerprintDimension")]
+    partial class FixFingerprintDimension
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -530,12 +533,6 @@ namespace PhotoAssistant.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_photos");
-
-                    b.HasIndex("ClipEmbedding")
-                        .HasDatabaseName("ix_photos_clip_embedding");
-
-                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("ClipEmbedding"), "hnsw");
-                    NpgsqlIndexBuilderExtensions.HasOperators(b.HasIndex("ClipEmbedding"), new[] { "vector_cosine_ops" });
 
                     b.HasIndex("Source", "SourceReference")
                         .IsUnique()
