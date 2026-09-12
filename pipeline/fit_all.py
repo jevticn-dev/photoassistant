@@ -42,7 +42,6 @@ from concurrent.futures import ProcessPoolExecutor, as_completed  # noqa: E402
 from pathlib import Path  # noqa: E402
 
 import numpy as np  # noqa: E402
-from photoassistant import fitting  # noqa: E402
 from photoassistant.fitting import fit  # noqa: E402
 from photoassistant.schema import EditRecipe  # noqa: E402
 from photoassistant.storage import (  # noqa: E402
@@ -63,6 +62,12 @@ from pipeline.fivek.catalogue import EXPERTS  # noqa: E402
 REPORT = Path(__file__).parent / "fit_report.json"
 
 DEFAULT_WORKERS = max(1, (os.cpu_count() or 4) // 2)
+
+# Six neutral offsets instead of the library's two, spread across the range
+# rather than clustered near zero: a local minimum is escaped by starting in
+# another basin, not by starting further along the same slope. Defined here and
+# imported by refit_worst, so the two passes cannot drift apart.
+WIDE_STARTS: tuple[float, ...] = (0.05, -0.05, 0.3, -0.3, 0.6, -0.6)
 
 # Reused inside a worker process. Building an S3 client per edit would add a
 # connection setup to every few seconds of arithmetic.
@@ -111,15 +116,17 @@ def fit_one(task: dict) -> dict:
         if task.get("analytic"):
             extra.append(EditRecipe.model_validate(task["analytic"]))
 
-        if task["extra_starts"]:
-            # More places to begin, spread across the range rather than clustered
-            # near zero: a local minimum is escaped by starting in another basin,
-            # not by starting further along the same slope.
-            fitting.STARTS = (0.05, -0.05, 0.3, -0.3, 0.6, -0.6)
-
+        # More places to begin, spread across the range rather than clustered near
+        # zero: a local minimum is escaped by starting in another basin, not by
+        # starting further along the same slope.
+        #
+        # Carried in the task rather than set on the module. Workers are spawned
+        # on Windows, so each one re-imports everything and starts from the
+        # defaults — only what travels inside the task actually reaches them.
         result = fit(
             before,
             after,
+            starts=task.get("starts"),
             extra_starts=extra,
             with_curve=task["with_curve"],
             stride=task["stride"],
@@ -145,6 +152,7 @@ def fit_one(task: dict) -> dict:
             sliders = fit(
                 before,
                 after,
+                starts=task.get("starts"),
                 extra_starts=extra,
                 with_curve=False,
                 stride=task["stride"],
@@ -375,7 +383,7 @@ def build_tasks(arguments: argparse.Namespace) -> tuple[list[dict], dict[str, in
                 "measure_curve_contribution": arguments.measure_curve_contribution,
                 "stride": arguments.stride,
                 "diff_step": arguments.diff_step,
-                "extra_starts": arguments.extra_starts,
+                "starts": WIDE_STARTS if arguments.extra_starts else None,
             }
         )
     return tasks, skipped

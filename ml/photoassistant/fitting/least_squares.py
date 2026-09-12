@@ -172,6 +172,7 @@ def fit(
     after: NDArray[np.floating],
     *,
     start: EditRecipe | None = None,
+    starts: Sequence[float] | None = None,
     extra_starts: Sequence[EditRecipe] = (),
     with_curve: bool = False,
     stride: int = 4,
@@ -184,11 +185,20 @@ def fit(
     ask "how far does this particular guess get", which is how the probe compared
     the analytic mapping against fitting.
 
-    Otherwise the search runs from every offset in ``STARTS`` **plus** every
-    recipe in ``extra_starts``, and the best result wins. More starts cost
-    proportionally more time and buy insurance against local minima, which this
-    problem has: the same photograph reached 1.81, 2.01 and 4.59 from three
-    different starting points (notes §B8).
+    Otherwise the search runs from every offset in ``starts`` — defaulting to
+    ``STARTS`` — **plus** every recipe in ``extra_starts``, and the best result
+    wins. More starts cost proportionally more time and buy insurance against
+    local minima, which this problem has: the same photograph reached 1.81, 2.01
+    and 4.59 from three different starting points (notes §B8).
+
+    ``starts`` is an argument rather than a module-level knob callers reassign,
+    and that is the whole point. It used to be the latter, and the second pass
+    spent two hours searching from the default two offsets while reporting that
+    six of them made no difference: the assignment landed on the name re-exported
+    by ``photoassistant.fitting`` while this function reads the one in this
+    module, so it silently did nothing. A setting that quietly fails to apply is
+    indistinguishable from a setting that applied and did not help — one is a bug,
+    the other a finding, and they print the same number (notes §B50).
 
     ``with_curve`` adds the three interior control points of the master curve to
     the search. Running both ways is how plan §4.2's claim — that the curve
@@ -214,7 +224,8 @@ def fit(
     if start is not None:
         initials = [np.concatenate([vector_from_recipe(start), tail])]
     else:
-        initials = [np.concatenate([np.full(len(SCALARS), offset), tail]) for offset in STARTS]
+        offsets = STARTS if starts is None else starts
+        initials = [np.concatenate([np.full(len(SCALARS), offset), tail]) for offset in offsets]
         initials.extend(
             np.concatenate([vector_from_recipe(recipe), tail]) for recipe in extra_starts
         )

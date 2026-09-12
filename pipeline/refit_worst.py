@@ -34,7 +34,6 @@ import time  # noqa: E402
 from concurrent.futures import ProcessPoolExecutor, as_completed  # noqa: E402
 from pathlib import Path  # noqa: E402
 
-from photoassistant import fitting  # noqa: E402
 from photoassistant.storage import (  # noqa: E402
     DatabaseConfig,
     Manifest,
@@ -43,14 +42,15 @@ from photoassistant.storage import (  # noqa: E402
 )
 
 from pipeline.environment import load  # noqa: E402
-from pipeline.fit_all import DEFAULT_WORKERS, fit_one, read_jsonl, staging_dir  # noqa: E402
+from pipeline.fit_all import (  # noqa: E402
+    DEFAULT_WORKERS,
+    WIDE_STARTS,
+    fit_one,
+    read_jsonl,
+    staging_dir,
+)
 
 REPORT = Path(__file__).parent / "refit_report.json"
-
-# Six offsets instead of two, spread across the range rather than clustered near
-# zero: a local minimum is escaped by starting in another basin, not by starting
-# further along the same slope.
-WIDE_STARTS = (0.05, -0.05, 0.3, -0.3, 0.6, -0.6)
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -141,9 +141,6 @@ def main() -> None:
     arguments = parse_arguments()
     load()
 
-    # Applies to the workers this process spawns, since they inherit the module.
-    fitting.STARTS = WIDE_STARTS
-
     analytic = {}
     for edit in read_jsonl(staging_dir() / "edits.jsonl"):
         analytic[f"{edit['reference']}:{edit['expert']}"] = edit.get("analytic")
@@ -179,7 +176,11 @@ def main() -> None:
             "measure_curve_contribution": False,
             "stride": arguments.stride,
             "diff_step": arguments.diff_step,
-            "extra_starts": True,
+            # The one thing this pass does differently from the first, so it is
+            # the one thing that must actually arrive. It travels in the task
+            # because that is what a spawned worker receives; assigning it to a
+            # module global looked identical and did nothing (notes §B50).
+            "starts": WIDE_STARTS,
         }
         for row in chosen
     ]
