@@ -25,3 +25,15 @@ Honest limit of v1: FiveK edits are **corrective**, so the three suggestions are
 three approaches to correction rather than three dramatic styles. Drama arrives
 with presets through the same mechanism. This is stated explicitly in the thesis.
 """
+
+from photoassistant.recommender.split import (
+    HELD_OUT_COUNT,
+    EvaluationSplit,
+    SplitError,
+)
+
+__all__ = [
+    "HELD_OUT_COUNT",
+    "EvaluationSplit",
+    "SplitError",
+]
