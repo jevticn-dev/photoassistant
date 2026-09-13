@@ -26,14 +26,32 @@ three approaches to correction rather than three dramatic styles. Drama arrives
 with presets through the same mechanism. This is stated explicitly in the thesis.
 """
 
+from photoassistant.recommender.embedders import ClipEmbedder
+from photoassistant.recommender.interfaces import (
+    Candidate,
+    IEmbedder,
+    IRecommendationStrategy,
+    IVectorStore,
+    Neighbour,
+)
 from photoassistant.recommender.split import (
     HELD_OUT_COUNT,
     EvaluationSplit,
     SplitError,
 )
+from photoassistant.recommender.stores import PostgresVectorStore
+from photoassistant.recommender.strategies import TopCandidates
 
 __all__ = [
     "HELD_OUT_COUNT",
+    "Candidate",
+    "ClipEmbedder",
     "EvaluationSplit",
+    "IEmbedder",
+    "IRecommendationStrategy",
+    "IVectorStore",
+    "Neighbour",
+    "PostgresVectorStore",
     "SplitError",
+    "TopCandidates",
 ]
