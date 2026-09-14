@@ -35,6 +35,15 @@ from photoassistant.recommender.interfaces import (
     IVectorStore,
     Neighbour,
 )
+from photoassistant.recommender.metrics import (
+    closeness,
+    mean_delta_e,
+    mean_pairwise_delta_e,
+    mean_pairwise_distance,
+    median_pairwise_delta_e,
+    recipe_distance,
+    relative_to_experts,
+)
 from photoassistant.recommender.split import (
     HELD_OUT_COUNT,
     EvaluationSplit,
@@ -46,6 +55,7 @@ from photoassistant.recommender.strategies import (
     KMeansGroups,
     MaximalMarginalRelevance,
     RandomCandidates,
+    RenderAwareSelection,
     TopCandidates,
 )
 
@@ -63,7 +73,15 @@ __all__ = [
     "Neighbour",
     "PostgresVectorStore",
     "RandomCandidates",
+    "RenderAwareSelection",
     "SplitError",
     "TopCandidates",
+    "closeness",
     "kmeans",
+    "mean_delta_e",
+    "mean_pairwise_delta_e",
+    "mean_pairwise_distance",
+    "median_pairwise_delta_e",
+    "recipe_distance",
+    "relative_to_experts",
 ]

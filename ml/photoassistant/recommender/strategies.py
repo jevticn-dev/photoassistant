@@ -23,13 +23,14 @@ all (§B56).
 """
 
 import hashlib
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 
 import numpy as np
 from numpy.typing import NDArray
 
 from photoassistant.recommender.clustering import kmeans
-from photoassistant.recommender.interfaces import Candidate
+from photoassistant.recommender.interfaces import Candidate, IRecommendationStrategy
+from photoassistant.recommender.metrics import mean_delta_e
 
 
 # Ties are broken by example id everywhere in this file. Scene distance is a
@@ -280,3 +281,79 @@ class KMeansGroups:
             best.values(),
             key=lambda entry: (entry.photo_distance, entry.example_id),
         )[:count]
+
+
+class RenderAwareSelection:
+    """Two stages: a cheap sieve over fingerprints, the final call on pixels (ADR-23).
+
+    The fingerprint measures split toning — shadows cool, highlights warm — which
+    edit schema v1 cannot express. Two candidates can therefore look different to
+    the selection and render almost identically for the user, costing one of the
+    three slots without anything going wrong (§A16).
+
+    Choosing on renders directly would fix that and is impossible: 250 candidates
+    at 59 ms each is about 15 seconds per request, against a synchronous call
+    (ADR-7). So the work is split, which is the general shape of every search
+    system — an approximate index narrows, an exact measure decides (§B66):
+
+        250 candidates  --inner strategy over fingerprints-->  6 finalists
+        6 finalists     --rendered, 0,35 s-->                  3 suggestions
+
+    Six rather than three leaves room for two finalists turning out to be twins.
+    The number is a knob and a small axis of the ablation.
+
+    **Rendering arrives as a callable, bound to the query photograph.** A strategy
+    cannot be handed an image through ``select`` without putting an image into the
+    protocol that four of five arms have no use for, so the caller builds this one
+    per request with the rendering already closed over — and memoises it, since the
+    three that survive have to be rendered again for the diversity metric.
+
+    The callable returns **CIELAB**, not sRGB: the comparison needs Lab and
+    converting twice costs more than the render itself (§B55).
+    """
+
+    def __init__(
+        self,
+        inner: IRecommendationStrategy,
+        render: Callable[[Candidate], NDArray[np.floating]],
+        *,
+        finalists: int = 6,
+    ) -> None:
+        if finalists < 1:
+            raise ValueError(f"finalists must be at least 1, got {finalists}")
+        self.inner = inner
+        self.render = render
+        self.finalists = finalists
+
+    @property
+    def name(self) -> str:
+        return f"{self.inner.name}+render{self.finalists}"
+
+    def select(self, candidates: Sequence[Candidate], count: int) -> list[Candidate]:
+        if count <= 0 or not candidates:
+            return []
+
+        shortlist = self.inner.select(candidates, self.finalists)
+        if len(shortlist) <= count:
+            return shortlist
+
+        rendered = [self.render(candidate) for candidate in shortlist]
+
+        # The first suggestion stays the inner strategy's best: the shortlist is
+        # ordered by it, and the search is surer about relevance than about
+        # anything this stage can add.
+        chosen = [0]
+        while len(chosen) < count:
+            best_index, best_gap = None, -np.inf
+            for index in range(len(shortlist)):
+                if index in chosen:
+                    continue
+                # Maximise the *smallest* difference to what is already chosen, so
+                # a third suggestion cannot be a twin of the second while being
+                # far from the first.
+                gap = min(mean_delta_e(rendered[index], rendered[taken]) for taken in chosen)
+                if gap > best_gap:
+                    best_gap, best_index = gap, index
+            chosen.append(best_index)
+
+        return [shortlist[index] for index in chosen]

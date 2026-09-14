@@ -16,6 +16,7 @@ from photoassistant.recommender import (
     KMeansGroups,
     MaximalMarginalRelevance,
     RandomCandidates,
+    RenderAwareSelection,
     TopCandidates,
 )
 from photoassistant.schema import EditRecipe
@@ -225,3 +226,92 @@ def test_the_average_edit_returns_one_suggestion_rather_than_three_copies() -> N
     chosen = AverageEdit(candidate("average", "", 0.0)).select(twins_and_an_outsider(), 3)
 
     assert len(chosen) == 1
+
+
+# -- two-stage, render-aware selection (ADR-23) -------------------------------
+
+
+def flat_lab(lightness: float) -> np.ndarray:
+    return np.tile(np.array([lightness, 0.0, 0.0], dtype=np.float64), (4, 4, 1))
+
+
+def render_by_id(mapping: dict[str, float]):
+    """A stand-in renderer: each candidate becomes a flat patch of a given lightness.
+
+    Real rendering is tested in phase 1 and costs 59 ms a go. What needs proving
+    here is the *selection* — that a candidate which renders the same as one
+    already chosen loses its slot — and that is visible on flat patches.
+    """
+    return lambda candidate: flat_lab(mapping[candidate.example_id])
+
+
+def test_the_second_stage_drops_a_candidate_that_renders_the_same() -> None:
+    """The risk ADR-23 exists for: different fingerprints, identical on screen."""
+    pool = [
+        candidate("a", "a0001", 0.10, (0.0, 0.0)),
+        candidate("b", "a0002", 0.11, (9.0, 9.0)),  # far by fingerprint...
+        candidate("c", "a0003", 0.12, (0.2, 0.2)),
+    ]
+    # ...but renders exactly like "a", while "c" renders differently.
+    renders = {"a": 50.0, "b": 50.0, "c": 80.0}
+
+    inner = MaximalMarginalRelevance(lambda_=0.0)
+    chosen = RenderAwareSelection(inner, render_by_id(renders), finalists=3).select(pool, 2)
+
+    assert [entry.example_id for entry in chosen] == ["a", "c"]
+    assert [entry.example_id for entry in inner.select(pool, 2)] == ["a", "b"]
+
+
+def test_the_first_suggestion_is_still_the_inner_strategy_s_best() -> None:
+    pool = [candidate(name, f"a000{index}", 0.1 * index, (float(index), 0.0))
+            for index, name in enumerate("abcd", start=1)]
+    renders = {"a": 10.0, "b": 40.0, "c": 70.0, "d": 95.0}
+
+    chosen = RenderAwareSelection(
+        TopCandidates(), render_by_id(renders), finalists=4
+    ).select(pool, 3)
+
+    assert chosen[0].example_id == "a"
+
+
+def test_a_shortlist_no_longer_than_the_ask_is_returned_unrendered() -> None:
+    """Nothing to choose between, so nothing is rendered — 59 ms a go is not free."""
+    pool = [candidate("a", "a0001", 0.1), candidate("b", "a0002", 0.2)]
+    rendered: list[str] = []
+
+    def render(entry):
+        rendered.append(entry.example_id)
+        return flat_lab(50.0)
+
+    chosen = RenderAwareSelection(TopCandidates(), render, finalists=2).select(pool, 2)
+
+    assert len(chosen) == 2
+    assert rendered == []
+
+
+def test_it_renders_the_shortlist_and_not_the_whole_pool() -> None:
+    """250 candidates at 59 ms is 15 seconds a request; six is 0,35 s (§B66)."""
+    pool = [candidate(str(index), f"a{index:04d}", index / 100.0) for index in range(50)]
+    rendered: list[str] = []
+
+    def render(entry):
+        rendered.append(entry.example_id)
+        return flat_lab(float(entry.example_id))
+
+    RenderAwareSelection(TopCandidates(), render, finalists=6).select(pool, 3)
+
+    assert len(rendered) == 6
+
+
+def test_the_name_says_which_inner_strategy_and_how_many_finalists() -> None:
+    name = RenderAwareSelection(
+        MaximalMarginalRelevance(lambda_=0.3), render_by_id({}), finalists=6
+    ).name
+
+    assert "mmr-0.3" in name
+    assert "6" in name
+
+
+def test_a_shortlist_of_zero_finalists_is_refused() -> None:
+    with pytest.raises(ValueError, match="at least 1"):
+        RenderAwareSelection(TopCandidates(), render_by_id({}), finalists=0)
