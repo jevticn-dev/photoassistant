@@ -315,3 +315,68 @@ def test_the_name_says_which_inner_strategy_and_how_many_finalists() -> None:
 def test_a_shortlist_of_zero_finalists_is_refused() -> None:
     with pytest.raises(ValueError, match="at least 1"):
         RenderAwareSelection(TopCandidates(), render_by_id({}), finalists=0)
+
+
+# -- choosing within a scene (the late finding, §B79) -------------------------
+
+
+def fitted(identifier: str, reference: str, fit_error: float) -> Candidate:
+    """Two edits of one photograph differ only in how well v1 reproduced them."""
+    return Candidate(
+        example_id=identifier,
+        photo_reference=reference,
+        expert="a",
+        recipe=EditRecipe.model_validate({"schema": 1}),
+        fingerprint=np.zeros(2),
+        after_key=None,
+        photo_distance=0.10,
+        fit_error=fit_error,
+    )
+
+
+def test_by_default_the_edit_within_a_scene_is_chosen_arbitrarily() -> None:
+    """Deterministic, but by identifier — measured at 18/24/20/17/21% per expert."""
+    pool = [fitted("b", "a0001", 0.5), fitted("a", "a0001", 9.0)]
+
+    (chosen,) = TopCandidates(one_per_photograph=True).select(pool, 1)
+
+    assert chosen.example_id == "a"
+
+
+def test_preferring_the_best_fit_takes_the_faithfully_reproduced_edit() -> None:
+    """A recipe v1 reproduced well is a truer record of what the expert did."""
+    pool = [fitted("b", "a0001", 0.5), fitted("a", "a0001", 9.0)]
+
+    (chosen,) = TopCandidates(one_per_photograph=True, prefer_best_fit=True).select(pool, 1)
+
+    assert chosen.example_id == "b"
+
+
+def test_the_scene_still_comes_before_the_fit() -> None:
+    """Relevance is not traded away: a nearer scene wins even with a worse fit."""
+    near = fitted("near", "a0001", 9.0)
+    far = Candidate(
+        example_id="far", photo_reference="a0002", expert="a",
+        recipe=EditRecipe.model_validate({"schema": 1}), fingerprint=np.zeros(2),
+        after_key=None, photo_distance=0.90, fit_error=0.1,
+    )
+
+    chosen = TopCandidates(one_per_photograph=True, prefer_best_fit=True).select([far, near], 2)
+
+    assert [entry.example_id for entry in chosen] == ["near", "far"]
+
+
+def test_a_candidate_without_a_fit_error_does_not_break_the_ordering() -> None:
+    """Nineteen edits were never fitted; they must not sort as infinitely good."""
+    pool = [fitted("fitted", "a0001", 2.0), candidate("unfitted", "a0001", 0.10)]
+
+    chosen = TopCandidates(one_per_photograph=True, prefer_best_fit=True).select(pool, 1)
+
+    assert len(chosen) == 1
+
+
+def test_the_two_variants_are_named_apart_as_well() -> None:
+    assert (
+        TopCandidates(one_per_photograph=True).name
+        != TopCandidates(one_per_photograph=True, prefer_best_fit=True).name
+    )

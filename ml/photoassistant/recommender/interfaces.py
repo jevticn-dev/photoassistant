@@ -66,6 +66,11 @@ class Candidate:
     fingerprint: NDArray[np.float64]
     after_key: str | None
     photo_distance: float
+    # How faithfully schema v1 reproduced this expert's result when it was fitted
+    # (phase 2). Carried because it is the only per-candidate quality signal that
+    # exists: all five edits of one photograph share a scene distance, so without
+    # it "the best of the five" has nothing to mean.
+    fit_error: float | None = None
 
 
 @runtime_checkable

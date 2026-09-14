@@ -35,7 +35,7 @@ SELECT p.id, p.source_reference, p.clip_embedding <=> %(query)s::vector AS dista
 
 CANDIDATES_SQL = """
 SELECT e.id, p.source_reference, e.expert, e.edit,
-       e.style_fingerprint::text, e.after_key
+       e.style_fingerprint::text, e.after_key, e.fit_error
   FROM examples e
   JOIN photos p ON p.id = e.photo_id
  WHERE p.source_reference = ANY(%(references)s)
@@ -123,8 +123,9 @@ class PostgresVectorStore:
                 fingerprint=parse_vector(fingerprint),
                 after_key=after_key,
                 photo_distance=distances[reference],
+                fit_error=None if fit_error is None else float(fit_error),
             )
-            for identifier, reference, expert, edit, fingerprint, after_key in rows
+            for identifier, reference, expert, edit, fingerprint, after_key, fit_error in rows
         ]
         # Nearest scene first, so a strategy that simply takes the head of the
         # list is already the "top-N without diversity" baseline rather than an

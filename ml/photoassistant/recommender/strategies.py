@@ -82,20 +82,41 @@ class TopCandidates:
     beat *it*, not the degenerate one (§B70).
     """
 
-    def __init__(self, *, one_per_photograph: bool = False) -> None:
+    def __init__(
+        self, *, one_per_photograph: bool = False, prefer_best_fit: bool = False
+    ) -> None:
         self.one_per_photograph = one_per_photograph
+        self.prefer_best_fit = prefer_best_fit
 
     @property
     def name(self) -> str:
-        return "top-per-scene" if self.one_per_photograph else "top"
+        if not self.one_per_photograph:
+            return "top"
+        return "top-per-scene-bestfit" if self.prefer_best_fit else "top-per-scene"
 
     def select(self, candidates: Sequence[Candidate], count: int) -> list[Candidate]:
         if count <= 0:
             return []
 
+        # Which edit of a scene gets taken. All five share a scene distance, so the
+        # plain ordering breaks the tie by identifier — deterministic, and otherwise
+        # arbitrary: measured over 500 photographs the five experts come out at
+        # 18/24/20/17/21 per cent, which is a coin toss.
+        #
+        # ``prefer_best_fit`` breaks it by fitting error instead, on the argument
+        # that a recipe schema v1 reproduced faithfully is a truer record of what
+        # the expert did than one it only approximated. Whether that transfers to
+        # *another* photograph is the question, and it is measured rather than
+        # assumed.
+        order = (
+            (lambda entry: (entry.photo_distance, entry.fit_error or 0.0, entry.example_id))
+            if self.prefer_best_fit
+            else (lambda entry: (entry.photo_distance, entry.example_id))
+        )
+
         chosen: list[Candidate] = []
         seen: set[str] = set()
-        for candidate in _ranked(candidates):
+        for candidate in sorted(candidates, key=order):
             if self.one_per_photograph:
                 if candidate.photo_reference in seen:
                     continue

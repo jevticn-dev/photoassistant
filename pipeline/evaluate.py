@@ -63,9 +63,11 @@ from photoassistant.recommender import (  # noqa: E402
     RenderAwareSelection,
     TopCandidates,
     aggregate,
+    fingerprints,  # noqa: E402
     score_photograph,
     slice_by,
 )
+from photoassistant.recommender.metrics import mean_pairwise_distance  # noqa: E402
 from photoassistant.recommender.stores import parse_vector  # noqa: E402
 from photoassistant.renderer import render, srgb_to_lab  # noqa: E402
 from photoassistant.schema import EditRecipe  # noqa: E402
@@ -109,6 +111,9 @@ class Arm:
     note: str = ""
     needs_average: bool = False
     is_oracle: bool = False
+    # Which ruler this arm measures difference with. ``None`` means the column as
+    # phase 2 wrote it; anything else is the fingerprint ablation (task 11).
+    fingerprint: str | None = None
 
 
 def _built_by_the_runner(_: RenderFn) -> IRecommendationStrategy:
@@ -124,6 +129,11 @@ ARMS: dict[str, Arm] = {
             "top-per-scene",
             lambda _: TopCandidates(one_per_photograph=True),
             note="baseline: one edit per scene",
+        ),
+        Arm(
+            "top-per-scene-bestfit",
+            lambda _: TopCandidates(one_per_photograph=True, prefer_best_fit=True),
+            note="one edit per scene, the one schema v1 reproduced best",
         ),
         Arm("random", lambda _: RandomCandidates(seed=20260913), note="floor: three at random"),
         Arm("average", _built_by_the_runner, note="floor: always the average edit",
@@ -147,8 +157,110 @@ ARMS: dict[str, Arm] = {
             note="CEILING: the photograph's own expert recipes",
             is_oracle=True,
         ),
+        # Task 11: the same default strategy, measuring difference with a different
+        # ruler. One knob at a time (ADR-10), so everything else stays at default.
+        Arm(
+            "fp-recipe",
+            lambda _: MaximalMarginalRelevance(lambda_=0.5),
+            note="fingerprint: the 13 recipe numbers only",
+            fingerprint="recipe",
+        ),
+        Arm(
+            "fp-statistics",
+            lambda _: MaximalMarginalRelevance(lambda_=0.5),
+            note="fingerprint: the 17 colour statistics only",
+            fingerprint="statistics",
+        ),
+        Arm(
+            "fp-after",
+            lambda _: MaximalMarginalRelevance(lambda_=0.5),
+            note="fingerprint: DINOv2 over the edited image - the mandated baseline",
+            fingerprint="after-dinov2",
+        ),
+        Arm(
+            "fp-difference",
+            lambda _: MaximalMarginalRelevance(lambda_=0.5),
+            note="fingerprint: DINOv2 over the difference image",
+            fingerprint="difference-dinov2",
+        ),
+        Arm(
+            "fp-combined+diff",
+            lambda _: MaximalMarginalRelevance(lambda_=0.5),
+            note="fingerprint: the thirty hand-made numbers plus the difference encoding",
+            fingerprint="combined+difference-dinov2",
+        ),
+        # k-means with two different rulers, to settle whether the §B77 finding is a
+        # property of MMR alone. k-means groups the whole pool before picking, so a
+        # different fingerprint can move even the first suggestion — which would make
+        # the ablation visible through closeness after all.
+        Arm(
+            "kmeans-fp-recipe",
+            lambda _: KMeansGroups(),
+            note="k-means, recipe-only ruler",
+            fingerprint="recipe",
+        ),
+        Arm(
+            "kmeans-fp-difference",
+            lambda _: KMeansGroups(),
+            note="k-means, difference-image ruler",
+            fingerprint="difference-dinov2",
+        ),
+        # The resolution probe. Same hundred questions, same k, the only difference
+        # being what the encoder saw: 224 px against the 518 the weights were
+        # trained at. A smaller experiment rather than a sample of the data, because
+        # a candidate without a vector would decide the comparison by itself.
+        Arm(
+            "probe-224",
+            lambda _: MaximalMarginalRelevance(lambda_=0.5),
+            neighbours=10,
+            note="probe: difference image encoded at 224 px",
+            fingerprint="difference-dinov2",
+        ),
+        Arm(
+            "probe-518",
+            lambda _: MaximalMarginalRelevance(lambda_=0.5),
+            neighbours=10,
+            note="probe: difference image encoded at 518 px, as trained",
+            fingerprint="difference-dinov2-518",
+        ),
     )
 }
+
+# The fingerprint compositions of task 11. The first three cost nothing — they are
+# slices of a vector already in the database — so they run before any encoder pass.
+FINGERPRINTS: dict[str, Callable[[], fingerprints.Transform]] = {
+    "recipe": lambda: fingerprints.sliced(fingerprints.RECIPE_SLICE),
+    "statistics": lambda: fingerprints.sliced(fingerprints.STATISTICS_SLICE),
+    "combined": lambda: fingerprints.stored,
+}
+
+ARM_VECTORS = REPOSITORY_ROOT / "pipeline/.work/fingerprints"
+
+
+def fingerprint_transform(name: str | None) -> fingerprints.Transform:
+    """Build the ruler for one arm, loading a computed file if it needs one.
+
+    A name with a ``+`` is a concatenation of the parts around it, each block scaled
+    so that the widest one does not swallow the rest (§B63) — ``combined+difference
+    -dinov2`` is the thirty hand-made numbers next to the 384 neural ones, weighted
+    to count comparably rather than 30 against 384.
+    """
+    if name is None or name == "combined":
+        return fingerprints.stored
+    if "+" in name:
+        return fingerprints.blocks(
+            *((fingerprint_transform(part), 1.0) for part in name.split("+"))
+        )
+    if name in FINGERPRINTS:
+        return FINGERPRINTS[name]()
+
+    path = ARM_VECTORS / f"{name}.npz"
+    if not path.is_file():
+        raise FileNotFoundError(
+            f"arm '{name}' needs {path}; run pipeline.embed_arms --arm {name} first"
+        )
+    return fingerprints.StoredVectors(path)
+
 
 # Per-process state. Each worker opens its own database connection and reads the
 # frozen artefacts once; none of it can be pickled across the boundary anyway.
@@ -166,6 +278,20 @@ def _state() -> dict[str, object]:
             scales=ExpertScales.load_all(AGREEMENT),
         )
     return _STATE
+
+
+_TRANSFORMS: dict[str, fingerprints.Transform] = {}
+
+
+def _transform_for(name: str) -> fingerprints.Transform:
+    """One transform per worker process, built once.
+
+    A file-backed composition is tens of megabytes; loading it per photograph would
+    cost more than the exam it serves.
+    """
+    if name not in _TRANSFORMS:
+        _TRANSFORMS[name] = fingerprint_transform(name)
+    return _TRANSFORMS[name]
 
 
 def expert_material(connection, reference: str) -> tuple[list[str], list[Candidate]]:
@@ -264,9 +390,13 @@ def evaluate_one(task: dict) -> dict:
         else:
             strategy = arm.build(draw)
 
+        store = state["store"]
+        if arm.fingerprint:
+            store = fingerprints.RestampedStore(store, _transform_for(arm.fingerprint))
+
         recommender = Recommender(
             embedder=None,  # the vector is already computed; see recommend_from_vector
-            store=state["store"],
+            store=store,
             strategy=strategy,
             neighbours=arm.neighbours,
         )
@@ -510,14 +640,71 @@ def summary_line(summary: dict) -> str:
     )
 
 
-def reaggregate(labels: dict[str, str]) -> list[dict]:
+EXPERT_FINGERPRINTS_SQL = """
+SELECT p.source_reference, e.id, e.style_fingerprint::text
+  FROM examples e
+  JOIN photos p ON p.id = e.photo_id
+ WHERE p.source_reference = ANY(%(references)s)
+   AND NOT e.excluded_from_fitting
+   AND e.style_fingerprint IS NOT NULL
+ ORDER BY p.source_reference, e.expert
+"""
+
+
+def arm_expert_scales(connection, references: list[str], arm: str | None) -> dict[str, float]:
+    """How far apart the five experts are **in this arm's fingerprint space**.
+
+    Without this the diversity ratio is nonsense for any arm that changed the
+    ruler: the numerator would be measured in 384 unit-normalised dimensions and
+    the denominator in the thirty standardised ones from phase 2. Raw figures make
+    it obvious — 7,92 against 1,19 — and dividing both by the same 5,05 produces a
+    number that looks like a result and is an artefact (§B72 again, one level
+    deeper).
+
+    Needs no images: every arm's vectors are already computed, so this is a few
+    thousand distances over arrays.
+    """
+    transform = fingerprint_transform(arm)
+
+    with connection.cursor() as cursor:
+        cursor.execute(EXPERT_FINGERPRINTS_SQL, {"references": references})
+        rows = cursor.fetchall()
+
+    grouped: dict[str, list[Candidate]] = {}
+    for reference, identifier, literal in rows:
+        grouped.setdefault(reference, []).append(
+            Candidate(
+                example_id=str(identifier),
+                photo_reference=reference,
+                expert=None,
+                recipe=None,
+                fingerprint=parse_vector(literal),
+                after_key=None,
+                photo_distance=0.0,
+            )
+        )
+
+    scales: dict[str, float] = {}
+    for reference, candidates in grouped.items():
+        vectors = [transform(candidate) for candidate in candidates]
+        spread = mean_pairwise_distance(vectors)
+        if spread:
+            scales[reference] = spread
+    return scales
+
+
+def reaggregate(connection, labels: dict[str, str]) -> list[dict]:
     """Recompute every summary from the rows already on disk.
 
     The point of keeping per-photograph results (decision I): a new column, a
     different threshold or a fresh slice is a regrouping of what was measured, not
-    a second exam. This rewrites the summaries and leaves the rows untouched.
+    a second exam. Here it earns itself twice over — the fingerprint ratio was
+    being divided by the wrong scale for every arm that changed the ruler, and
+    fixing it costs a pass over stored numbers instead of an hour of re-running.
     """
     summaries = []
+    scale_cache: dict[str | None, dict[str, float]] = {}
+
     for path in sorted(RESULTS.glob("*.json")):
         document = json.loads(path.read_text(encoding="utf-8"))
         rows_path = ROWS / path.name
@@ -526,6 +713,21 @@ def reaggregate(labels: dict[str, str]) -> list[dict]:
             continue
 
         rows = json.loads(rows_path.read_text(encoding="utf-8"))
+
+        # Which ruler this arm used decides what its fingerprint diversity can be
+        # compared against; see arm_expert_scales.
+        arm_name = path.stem.removesuffix("-no-exclusion")
+        composition = ARMS[arm_name].fingerprint if arm_name in ARMS else None
+        if composition not in scale_cache:
+            scale_cache[composition] = arm_expert_scales(
+                connection, [row["reference"] for row in rows], composition
+            )
+        scales = scale_cache[composition]
+
+        for row in rows:
+            spread = row.get("diversity_fingerprint")
+            scale = scales.get(row["reference"])
+            row["fingerprint_ratio"] = spread / scale if spread is not None and scale else None
 
         scores = [_as_score(row) for row in rows]
         summary = {
@@ -540,6 +742,9 @@ def reaggregate(labels: dict[str, str]) -> list[dict]:
             failures=document.get("failures", []),
         )
         path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+        # The rows carry the corrected ratio too, so the next re-aggregation does
+        # not have to recompute a scale that has not changed.
+        rows_path.write_text(json.dumps(rows, indent=2) + "\n", encoding="utf-8")
         summaries.append(summary)
     return summaries
 
@@ -580,7 +785,7 @@ def main() -> int:
     if arguments.re_aggregate:
         load()
         with connect(DatabaseConfig.from_environment()) as connection:
-            summaries = reaggregate(semantic_labels(connection))
+            summaries = reaggregate(connection, semantic_labels(connection))
         for summary in summaries:
             print(summary_line(summary))
         return 0
