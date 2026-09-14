@@ -1,0 +1,36 @@
+{
+  "measured_at": "2026-09-14T19:28:36+00:00",
+  "queries": 500,
+  "neighbours": 50,
+  "recall": {
+    "mean": 0.9986000000000002,
+    "median": 1.0,
+    "minimum": 0.94,
+    "perfect_share": 0.944
+  },
+  "neighbour_lists_differing": 28,
+  "suggestions_differing": 1,
+  "latency": {
+    "approximate": {
+      "median_ms": 1.5499499859288335,
+      "mean_ms": 1.5600177984451875,
+      "p95_ms": 1.834419992519542
+    },
+    "exact": {
+      "median_ms": 8.01990000763908,
+      "mean_ms": 8.129908999311738,
+      "p95_ms": 8.951110043562949
+    },
+    "filtered": {
+      "median_ms": 50.5214000295382,
+      "mean_ms": 50.7755961981602,
+      "p95_ms": 54.02648000163026
+    },
+    "control": {
+      "median_ms": 1.225250045536086,
+      "mean_ms": 1.2332919985055923,
+      "p95_ms": 1.4256799855502322
+    }
+  },
+  "control_drift_percent": 22.767812156032193
+}

@@ -144,3 +144,85 @@ def test_the_choice_does_not_depend_on_the_order_rows_arrived_in() -> None:
     second = TopCandidates().select(list(reversed(pool)), 2)
 
     assert [entry.example_id for entry in first] == [entry.example_id for entry in second]
+
+
+# -- the walk width, which pgvector will not warn about -----------------------
+
+
+class RecordingCursor:
+    def __init__(self, log):
+        self.log = log
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        return False
+
+    def execute(self, statement, parameters=None):
+        self.log.append(statement.strip().split("\n")[0])
+
+    def fetchall(self):
+        return []
+
+
+class RecordingConnection:
+    def __init__(self):
+        self.statements: list[str] = []
+
+    def cursor(self):
+        return RecordingCursor(self.statements)
+
+
+def widths(statements: list[str]) -> list[int]:
+    return [
+        int(statement.rsplit("=", 1)[1])
+        for statement in statements
+        if statement.startswith("SET hnsw.ef_search")
+    ]
+
+
+def test_the_walk_is_widened_before_asking_for_more_than_it_would_return() -> None:
+    """pgvector returns at most ef_search rows, defaulting to 40, without a word.
+
+    Measured before the fix: asking for 50 gave 40 and asking for 100 gave 40, so
+    the pool was a fifth smaller than the configuration said and recall against
+    exact search sat at exactly 0,80 on every query.
+    """
+    connection = RecordingConnection()
+
+    PostgresVectorStore(connection).neighbours(
+        np.zeros(512), count=50, exclude=frozenset()
+    )
+
+    assert widths(connection.statements) == [100]
+
+
+def test_a_small_request_needs_no_widening() -> None:
+    """The default already covers it, and a SET costs a round trip."""
+    connection = RecordingConnection()
+
+    PostgresVectorStore(connection).neighbours(
+        np.zeros(512), count=10, exclude=frozenset()
+    )
+
+    assert widths(connection.statements) == []
+
+
+def test_the_width_is_set_once_and_never_lowered() -> None:
+    store = PostgresVectorStore(connection := RecordingConnection())
+
+    store.neighbours(np.zeros(512), count=50, exclude=frozenset())
+    store.neighbours(np.zeros(512), count=50, exclude=frozenset())
+    store.neighbours(np.zeros(512), count=20, exclude=frozenset())
+
+    assert widths(connection.statements) == [100]
+
+
+def test_a_larger_request_widens_it_further() -> None:
+    store = PostgresVectorStore(connection := RecordingConnection())
+
+    store.neighbours(np.zeros(512), count=50, exclude=frozenset())
+    store.neighbours(np.zeros(512), count=200, exclude=frozenset())
+
+    assert widths(connection.statements) == [100, 400]

@@ -54,11 +54,42 @@ def parse_vector(literal: str) -> NDArray[np.float64]:
     return np.fromstring(literal.strip("[]"), sep=",", dtype=np.float64)
 
 
+# How many candidates the HNSW walk keeps in flight. pgvector defaults to 40, and
+# that default is a trap: **the index cannot return more rows than this**, so a
+# query asking for 50 neighbours silently comes back with 40 and one asking for 100
+# also comes back with 40. No error, no warning, and the pool is a fifth smaller
+# than the configuration says.
+#
+# Measured here, not read from documentation: at the default, k=50 returns 40 rows
+# and recall against exact search is exactly 0,80 on every query.
+#
+# Twice k is the usual recommendation — enough headroom that the walk has
+# candidates to discard, at a cost that is still microseconds on 5.000 vectors.
+EF_SEARCH_MULTIPLE = 2
+MINIMUM_EF_SEARCH = 40
+
+
 class PostgresVectorStore:
     """Search and fetch against the migrated schema. Reads only; never writes."""
 
     def __init__(self, connection) -> None:
         self._connection = connection
+        self._ef_search = MINIMUM_EF_SEARCH
+
+    def _ensure_ef_search(self, count: int) -> None:
+        """Raise the walk width if this query asks for more than it can return.
+
+        Session level, and only when it has to grow: a SET costs a round trip, and
+        the value is a property of the connection rather than of one statement.
+        """
+        wanted = max(int(count) * EF_SEARCH_MULTIPLE, MINIMUM_EF_SEARCH)
+        if wanted <= self._ef_search:
+            return
+        with self._connection.cursor() as cursor:
+            # Not a parameter: SET does not take one. The value is an int this code
+            # computed, never anything that came from outside.
+            cursor.execute(f"SET hnsw.ef_search = {wanted}")
+        self._ef_search = wanted
 
     # -- search ---------------------------------------------------------------
 
@@ -84,6 +115,7 @@ class PostgresVectorStore:
         if count <= 0:
             return []
 
+        self._ensure_ef_search(count)
         parameters = {
             "query": as_vector_literal(vector),
             "exclude": sorted(exclude),
