@@ -67,6 +67,10 @@ service = [
     "fastapi>=0.141,<0.142",
     "uvicorn[standard]>=0.52,<0.53",
     "pydantic-settings>=2.14,<3",
+    # Multipart parsing, which is how POST /recommend receives a photograph.
+    # FastAPI does not declare it: UploadFile raises at import time telling you to
+    # install it, so the failure is at least loud rather than at the first request.
+    "python-multipart>=0.0.20,<0.1",
 ]
 
 # What the EMBEDDING STEP adds. A third set, for a third reason: torch is about a
