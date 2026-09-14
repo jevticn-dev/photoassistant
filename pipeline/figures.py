@@ -298,10 +298,11 @@ def index_and_latency(path: Path) -> bool:
     left.set_ylabel("medijana po upitu (ms, logaritamska osa)")
     left.set_title("Oblik upita odlučuje cenu", fontsize=11)
     recall = index["recall"]
+    perfect = sr(recall["perfect_share"] * 100, 1)
     left.text(
         0.5,
         -0.26,
-        f"recall {sr(recall['mean'], 4)}, savršen na {sr(recall['perfect_share'] * 100, 1)}% upita\n"
+        f"recall {sr(recall['mean'], 4)}, savršen na {perfect}% upita\n"
         f"tri predloga se razlikuju na {index['suggestions_differing']} od {index['queries']}",
         transform=left.transAxes,
         ha="center",
