@@ -68,7 +68,7 @@ from photoassistant.recommender import (  # noqa: E402
     slice_by,
 )
 from photoassistant.recommender.metrics import mean_pairwise_distance  # noqa: E402
-from photoassistant.recommender.stores import parse_vector  # noqa: E402
+from photoassistant.recommender.stores import MatrixVectorStore, parse_vector  # noqa: E402
 from photoassistant.renderer import render, srgb_to_lab  # noqa: E402
 from photoassistant.schema import EditRecipe  # noqa: E402
 from photoassistant.storage import DatabaseConfig, connect  # noqa: E402
@@ -114,6 +114,9 @@ class Arm:
     # Which ruler this arm measures difference with. ``None`` means the column as
     # phase 2 wrote it; anything else is the fingerprint ablation (task 11).
     fingerprint: str | None = None
+    # Which vectors decide what counts as a similar scene. ``None`` is
+    # photos.clip_embedding; a name loads a file and searches it (task 12).
+    search: str | None = None
 
 
 def _built_by_the_runner(_: RenderFn) -> IRecommendationStrategy:
@@ -134,6 +137,15 @@ ARMS: dict[str, Arm] = {
             "top-per-scene-bestfit",
             lambda _: TopCandidates(one_per_photograph=True, prefer_best_fit=True),
             note="one edit per scene, the one schema v1 reproduced best",
+        ),
+        # Task 12: the same winning strategy, but DINOv2 decides which scenes are
+        # similar. The one axis from the plan that acts on retrieval rather than on
+        # selection — and retrieval carries four times the gain (§B76).
+        Arm(
+            "search-dinov2",
+            lambda _: TopCandidates(one_per_photograph=True, prefer_best_fit=True),
+            note="search encoder: DINOv2 instead of CLIP",
+            search="search-dinov2",
         ),
         Arm("random", lambda _: RandomCandidates(seed=20260913), note="floor: three at random"),
         Arm("average", _built_by_the_runner, note="floor: always the average edit",
@@ -281,6 +293,29 @@ def _state() -> dict[str, object]:
 
 
 _TRANSFORMS: dict[str, fingerprints.Transform] = {}
+_SEARCH: dict[str, tuple[list[str], np.ndarray]] = {}
+
+
+def _search_vectors(name: str) -> tuple[list[str], np.ndarray]:
+    """Photograph vectors for an alternative search encoder, one load per process.
+
+    The same file provides both sides of the question: the corpus that is searched
+    and the query photograph's own vector. Taking the query from one encoder and
+    the corpus from another would compare nothing at all — and is the sort of
+    mismatch that produces plausible numbers rather than an error.
+    """
+    if name not in _SEARCH:
+        path = ARM_VECTORS / f"{name}.npz"
+        if not path.is_file():
+            raise FileNotFoundError(
+                f"arm needs {path}; run pipeline.embed_arms --search first"
+            )
+        payload = np.load(path, allow_pickle=False)
+        _SEARCH[name] = (
+            [str(value) for value in payload["identifiers"]],
+            payload["vectors"].astype(np.float64),
+        )
+    return _SEARCH[name]
 
 
 def _transform_for(name: str) -> fingerprints.Transform:
@@ -391,6 +426,11 @@ def evaluate_one(task: dict) -> dict:
             strategy = arm.build(draw)
 
         store = state["store"]
+        query = np.array(task["vector"], dtype=np.float64)
+        if arm.search:
+            references, matrix = _search_vectors(arm.search)
+            store = MatrixVectorStore(references, matrix, store)
+            query = matrix[references.index(reference)]
         if arm.fingerprint:
             store = fingerprints.RestampedStore(store, _transform_for(arm.fingerprint))
 
@@ -403,7 +443,7 @@ def evaluate_one(task: dict) -> dict:
 
         began = time.perf_counter()
         recommendation = recommender.recommend_from_vector(
-            np.array(task["vector"], dtype=np.float64),
+            query,
             exclude=state["split"].held_out_set if task["exclude"] else frozenset(),
         )
         seconds = time.perf_counter() - began

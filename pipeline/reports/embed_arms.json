@@ -1,5 +1,5 @@
 {
-  "measured_at": "2026-09-14T16:03:10+00:00",
+  "measured_at": "2026-09-14T18:57:24+00:00",
   "measure:after": {
     "arm": "after",
     "encoder": {
@@ -77,5 +77,21 @@
     "dimension": 384,
     "minutes": 70.5,
     "path": "D:\\Fakultet\\IV godina\\Diplomski\\pipeline\\.work\\fingerprints\\difference-dinov2-518.npz"
+  },
+  "search-dinov2": {
+    "kind": "search",
+    "name": "search-dinov2",
+    "encoder": {
+      "name": "dinov2",
+      "model": "vit_small_patch14_dinov2.lvd142m",
+      "device": "cpu",
+      "image_size": 224,
+      "batch_size": 32,
+      "dimension": 384
+    },
+    "photographs": 5000,
+    "dimension": 384,
+    "minutes": 11.0,
+    "path": "D:\\Fakultet\\IV godina\\Diplomski\\pipeline\\.work\\fingerprints\\search-dinov2.npz"
   }
 }

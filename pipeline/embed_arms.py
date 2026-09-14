@@ -79,6 +79,65 @@ def encoder(name: str):
     raise SystemExit(f"unknown encoder {name!r}; expected 'dinov2' or 'clip'")
 
 
+PHOTOGRAPHS_SQL = """
+SELECT source_reference, pre512_key
+  FROM photos
+ WHERE source = 'Fivek' AND pre512_key IS NOT NULL
+ ORDER BY source_reference
+"""
+
+
+def run_search_vectors(model, connection, name: str) -> dict:
+    """Encode every photograph's neutral rendition — the search side (task 12).
+
+    A different question from the fingerprint arms: this is what decides **which
+    scenes count as similar**, and unlike a fingerprint it would run on the user's
+    photograph at request time if it ever won (§B78).
+
+    Written to a file rather than into ``photos.clip_embedding``: that column is
+    ``vector(512)`` and holds CLIP, and a column changes only when something wins,
+    together with its index (decision D).
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(PHOTOGRAPHS_SQL)
+        rows = cursor.fetchall()
+
+    references: list[str] = []
+    vectors: list[np.ndarray] = []
+    began = time.perf_counter()
+
+    for start in range(0, len(rows), BATCH):
+        chunk = rows[start : start + BATCH]
+        images = [derivative_cache.image(key) for _, key in chunk]
+        vectors.append(model.encode(images))
+        references.extend(reference for reference, _ in chunk)
+
+        if len(references) % (BATCH * 20) == 0 or len(references) == len(rows):
+            elapsed = time.perf_counter() - began
+            rate = len(references) / elapsed
+            print(
+                f"  {len(references)}/{len(rows)}  {elapsed / 60:.1f} min elapsed, "
+                f"{(len(rows) - len(references)) / rate / 60:.1f} min left",
+                flush=True,
+            )
+
+    stack = np.vstack(vectors)
+    VECTORS.mkdir(parents=True, exist_ok=True)
+    path = VECTORS / f"{name}.npz"
+    np.savez_compressed(
+        path, identifiers=np.array(references), vectors=stack.astype(np.float32)
+    )
+    return {
+        "kind": "search",
+        "name": name,
+        "encoder": model.describe(),
+        "photographs": len(references),
+        "dimension": int(stack.shape[1]),
+        "minutes": round((time.perf_counter() - began) / 60, 1),
+        "path": str(path),
+    }
+
+
 def image_for(arm: str, row: dict) -> np.ndarray:
     """The one image this arm encodes, built from what is in storage."""
     after = derivative_cache.image(row["after_key"])
@@ -220,6 +279,11 @@ def run_arm(arm: str, name: str, model, tasks: list[dict]) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Compute fingerprints for the model arms.")
     parser.add_argument("--arm", choices=("after", "difference"), help="which composition")
+    parser.add_argument(
+        "--search",
+        action="store_true",
+        help="encode the neutral renditions instead: the search side (task 12)",
+    )
     parser.add_argument("--encoder", default="dinov2", choices=("dinov2", "clip"))
     parser.add_argument("--measure", type=int, metavar="N", help="measure throughput on N images")
     parser.add_argument("--limit", type=int, help="only the first N examples (a smoke run)")
@@ -231,8 +295,8 @@ def main() -> int:
     )
     arguments = parser.parse_args()
 
-    if not arguments.arm and not arguments.measure:
-        parser.error("give --arm, or --measure to size the work first")
+    if not arguments.arm and not arguments.measure and not arguments.search:
+        parser.error("give --arm or --search, or --measure to size the work first")
 
     load()
     with connect(DatabaseConfig.from_environment()) as connection:
@@ -255,6 +319,16 @@ def main() -> int:
                 f"dim {measurement['encoder']['dimension']}   "
                 f"all {len(tasks)} -> {measurement['projected_minutes_for_all']} min"
             )
+
+    if arguments.search:
+        name = arguments.name or f"search-{arguments.encoder}"
+        print(f"\n{name}: encoding the neutral renditions")
+        with connect(DatabaseConfig.from_environment()) as connection:
+            result = run_search_vectors(model, connection, name)
+        report[name] = result
+        print(
+            f"\nwrote {result['photographs']} x {result['dimension']} to {result['path']}"
+        )
 
     if arguments.arm:
         name = arguments.name or f"{arguments.arm}-{arguments.encoder}"

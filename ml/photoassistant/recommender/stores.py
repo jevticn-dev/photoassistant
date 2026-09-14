@@ -132,3 +132,68 @@ class PostgresVectorStore:
         # arbitrary order that happens to come out of the database.
         candidates.sort(key=lambda candidate: (candidate.photo_distance, candidate.example_id))
         return candidates
+
+
+class MatrixVectorStore:
+    """Search over vectors held in memory; candidates still come from the database.
+
+    The search encoder ablation needs somewhere to put 5.000 DINOv2 vectors, and
+    ``photos.clip_embedding`` is ``vector(512)`` holding CLIP. Rather than migrate a
+    column for an experiment (decision D, the same rule as for fingerprints), the
+    vectors live in a file and the search runs here.
+
+    **Exact, not approximate, and that is not a compromise.** Measured in this
+    phase: 5.000 vectors of 512 numbers is about 10 MB, and an exact scan answers in
+    the same 13 ms as the HNSW index (§B54). One matrix multiply is if anything
+    simpler than what Postgres does.
+
+    Only ``neighbours`` is answered here. Everything else about a candidate — the
+    recipe, the fingerprint, the fitting error — lives in the database and is
+    fetched by the store this one wraps, so the two halves cannot drift apart.
+    """
+
+    def __init__(self, references: Sequence[str], vectors: NDArray[np.floating], inner) -> None:
+        if len(references) != len(vectors):
+            raise ValueError(
+                f"{len(references)} references against {len(vectors)} vectors"
+            )
+        self.references = list(references)
+        # Normalised once here so the search is a dot product. The encoders already
+        # return unit vectors; doing it again costs nothing and means a file written
+        # by something else cannot silently change what "distance" means (§B44).
+        stack = np.asarray(vectors, dtype=np.float64)
+        norms = np.linalg.norm(stack, axis=1, keepdims=True)
+        self.vectors = stack / np.where(norms > 0.0, norms, 1.0)
+        self._inner = inner
+
+    def neighbours(
+        self,
+        vector: NDArray[np.floating],
+        *,
+        count: int,
+        exclude: frozenset[str],
+    ) -> list[Neighbour]:
+        if count <= 0:
+            return []
+
+        query = np.asarray(vector, dtype=np.float64)
+        norm = float(np.linalg.norm(query))
+        similarity = self.vectors @ (query / norm if norm > 0.0 else query)
+
+        # Cosine distance, so that the numbers mean the same thing they do coming
+        # out of pgvector and a strategy cannot tell which store it is talking to.
+        distances = 1.0 - similarity
+        allowed = [
+            index for index in np.argsort(distances) if self.references[index] not in exclude
+        ]
+        return [
+            Neighbour(
+                reference=self.references[index],
+                photo_id=self.references[index],
+                distance=float(distances[index]),
+            )
+            for index in allowed[:count]
+        ]
+
+    def candidates(self, neighbours: Sequence[Neighbour]) -> list[Candidate]:
+        return self._inner.candidates(neighbours)
