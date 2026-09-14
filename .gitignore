@@ -16,6 +16,13 @@ Dataset/
 # derivatives. Reproducible from pipeline/probe/, and several gigabytes.
 pipeline/.work/
 
+# Per-photograph evaluation rows (phase 3). The summaries next to them are
+# committed and the thesis cites those; these are five hundred rows per arm and
+# follow deterministically from the code, the committed split and the frozen
+# expert scales, so a single command reproduces them. Kept on disk, where
+# `pipeline.evaluate --re-aggregate` reads them without rerunning the exam.
+pipeline/reports/evaluation/rows/
+
 .venv/
 venv/
 __pycache__/

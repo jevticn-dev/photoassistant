@@ -92,6 +92,14 @@ dev = [
     # deprecated the httpx backend and warns on every test run.
     "httpx2>=2.9,<3",
     "ruff>=0.16,<0.17",
+    # Figures for the phase 3 evaluation report: the hit-rate curve, diversity
+    # against the human scale, recall and latency. Dev-only on purpose — it is
+    # never imported by the library or the service, so neither the pipeline's
+    # install set nor the container image grows by a pixel. The alternative was
+    # drawing axes by hand through Pillow, as phase 2 did for contact sheets,
+    # which is an afternoon of work for something every plotting library does
+    # better and which the thesis needs in publishable form anyway.
+    "matplotlib>=3.11,<4",
     # Property-based testing of the renderer (test_renderer_properties.py).
     # Example-based tests only ever check the combinations someone thought to
     # write down; three real defects in the renderer survived 191 of them

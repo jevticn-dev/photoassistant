@@ -28,6 +28,14 @@ with presets through the same mechanism. This is stated explicitly in the thesis
 
 from photoassistant.recommender.clustering import kmeans
 from photoassistant.recommender.embedders import ClipEmbedder
+from photoassistant.recommender.harness import (
+    ExpertScales,
+    PhotographScore,
+    aggregate,
+    hit_rate_curve,
+    score_photograph,
+    slice_by,
+)
 from photoassistant.recommender.interfaces import (
     Candidate,
     IEmbedder,
@@ -43,6 +51,12 @@ from photoassistant.recommender.metrics import (
     median_pairwise_delta_e,
     recipe_distance,
     relative_to_experts,
+)
+from photoassistant.recommender.recommend import (
+    DEFAULT_NEIGHBOURS,
+    DEFAULT_SUGGESTIONS,
+    Recommendation,
+    Recommender,
 )
 from photoassistant.recommender.split import (
     HELD_OUT_COUNT,
@@ -60,23 +74,31 @@ from photoassistant.recommender.strategies import (
 )
 
 __all__ = [
+    "DEFAULT_NEIGHBOURS",
+    "DEFAULT_SUGGESTIONS",
     "HELD_OUT_COUNT",
     "AverageEdit",
     "Candidate",
     "ClipEmbedder",
     "EvaluationSplit",
+    "ExpertScales",
     "IEmbedder",
     "IRecommendationStrategy",
     "IVectorStore",
     "KMeansGroups",
     "MaximalMarginalRelevance",
     "Neighbour",
+    "PhotographScore",
     "PostgresVectorStore",
+    "Recommendation",
+    "Recommender",
     "RandomCandidates",
     "RenderAwareSelection",
     "SplitError",
     "TopCandidates",
+    "aggregate",
     "closeness",
+    "hit_rate_curve",
     "kmeans",
     "mean_delta_e",
     "mean_pairwise_delta_e",
@@ -84,4 +106,6 @@ __all__ = [
     "median_pairwise_delta_e",
     "recipe_distance",
     "relative_to_experts",
+    "score_photograph",
+    "slice_by",
 ]
