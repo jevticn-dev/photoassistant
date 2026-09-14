@@ -87,7 +87,38 @@ service = [
 embeddings = [
     "torch>=2.13,<3",
     "open_clip_torch>=3.3,<4",
+    # Declared even though open_clip pulls it anyway, because it has to come from
+    # the same index as torch: the two ship compiled operators that register into
+    # each other, and a torchvision built against PyPI's torch fails at import
+    # against the CPU build with "operator torchvision::nms does not exist".
+    # Naming it here is what lets [tool.uv.sources] below pin where it comes from.
+    "torchvision>=0.28,<1",
 ]
+
+# WHERE torch comes from, which on Linux is a three-gigabyte question.
+#
+# PyPI ships one Linux wheel of torch and it is the "everything included" build:
+# it depends on 43 `nvidia-*` packages (2.189 MB) and `triton` (248 MB), none of
+# which can ever be called on a machine without an Nvidia card. Measured from
+# uv.lock, not estimated — notes §B83.
+#
+# PyTorch publishes per-hardware indexes; ours is the CPU one. Same package, same
+# version (2.14.0 exists on both, checked before this was written), without the
+# CUDA kernels — so those 43 packages simply stop being dependencies and the
+# install drops to roughly 200 MB.
+#
+# Linux only, by marker: local development happens on Windows, where PyPI already
+# ships a CPU build, and pinning the index there would change a working setup for
+# nothing. `explicit = true` means nothing else is ever resolved from this index —
+# only the package named below.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+torchvision = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
 
 [dependency-groups]
 dev = [

@@ -168,6 +168,12 @@ services:
       S3_ACCESS_KEY: ${MINIO_ROOT_USER}
       S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
 
+    # The model weights live here, outside the image. POST /recommend encodes the
+    # upload at request time, so this container runs CLIP; without the volume every
+    # recreated container downloads 605 MB again before it can answer.
+    volumes:
+      - mlcache:/cache/huggingface
+
   frontend:
     build:
       context: ..
@@ -183,3 +189,9 @@ services:
 volumes:
   pgdata:
   miniodata:
+  # CLIP weights, which open_clip downloads on first use (605 MB). A volume
+  # rather than a layer in the image: they are data, they never change, and a
+  # fresh container would otherwise fetch them again. Losing this one costs a
+  # download, unlike the two above — but `down -v` takes all three, which is why
+  # it is never the command to run here.
+  mlcache:

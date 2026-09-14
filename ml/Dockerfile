@@ -13,20 +13,38 @@ WORKDIR /app
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_PROJECT_ENVIRONMENT=/app/.venv \
-    PATH="/app/.venv/bin:$PATH"
+    PATH="/app/.venv/bin:$PATH" \
+    # Where open_clip puts the weights it downloads on first use. They are data,
+    # not code: 605 MB that would otherwise land in a container layer and be
+    # fetched again by every new container. docker-compose.yml mounts a named
+    # volume here, so the download happens once per machine.
+    HF_HOME=/cache/huggingface
 
 # Dependencies before source, so editing a module does not reinstall the world.
 # --frozen installs exactly what uv.lock pins and fails if the lock file drifted
 # from pyproject.toml; --no-dev leaves pytest and ruff out of the image.
+#
+# --extra embeddings is here because POST /recommend encodes the uploaded
+# photograph at request time, so torch runs inside this container -- without it
+# the image would start, pass its health check, and fail the first real request.
+# It costs ~200 MB rather than the ~3 GB PyPI's build would, because
+# pyproject.toml resolves torch from the CPU index on Linux (notes B83).
+#
 # README.md is here because pyproject.toml declares it as the package readme and
 # hatchling refuses to build without it. It changes rarely, so it costs nothing
 # on this layer.
 COPY ml/pyproject.toml ml/uv.lock ml/README.md ./
-RUN uv sync --frozen --extra service --no-dev --no-install-project
+# The cache mount keeps uv's downloaded wheels out of the layer. Without it this
+# step weighed 2.52 GB against a 1.3 GB environment -- the difference was a copy
+# of every wheel, baked in and never read again. UV_LINK_MODE=copy above is what
+# makes a cache on another filesystem work.
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --extra service --extra embeddings --no-dev --no-install-project
 
 COPY ml/photoassistant/ ./photoassistant/
 COPY ml/service/ ./service/
-RUN uv sync --frozen --extra service --no-dev
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --extra service --extra embeddings --no-dev
 
 EXPOSE 8000
 
