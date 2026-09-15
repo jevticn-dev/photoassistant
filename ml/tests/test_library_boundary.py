@@ -15,6 +15,7 @@ empty environment and asking whether FastAPI is present.
 
 import importlib
 import pkgutil
+import subprocess
 import sys
 
 import photoassistant
@@ -82,3 +83,29 @@ def test_the_embeddings_package_does_not_drag_torch_in() -> None:
         "a boundary the moment something imports photoassistant.embeddings.clip "
         "at module scope"
     )
+
+
+def test_the_recommender_costs_nothing_heavy_to_import() -> None:
+    """Importing the seams must not drag in torch or a database driver.
+
+    Both are real dependencies of real arms — CLIP needs torch, the pgvector store
+    needs psycopg — but they belong to the *use*, not to the import. The pipeline
+    installs the library without the ``embeddings`` extra, and a module-level
+    import of torch there fails at the top of a nine-hour run rather than in a
+    test.
+
+    Checked in a fresh interpreter rather than here, because by the time this test
+    runs another test has long since imported both.
+    """
+    source = (
+        "import sys, photoassistant.recommender;"
+        "print(','.join(n for n in ('torch','psycopg','open_clip') if n in sys.modules))"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", source],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+
+    assert result.stdout.strip() == ""

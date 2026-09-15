@@ -127,7 +127,33 @@ class Scaling:
         vector = np.asarray(raw, dtype=np.float64)
         if vector.shape != (FINGERPRINT_DIMENSION,):
             raise ValueError(f"expected {FINGERPRINT_DIMENSION} components")
-        return (vector - self.mean) / self.deviation
+        return self.apply_stack(vector[None, :])[0]
+
+    def apply_stack(self, raw: NDArray[np.floating]) -> NDArray[np.float64]:
+        """``apply`` over a stack of raw fingerprints, one per row."""
+        return (self._stack(raw) - self.mean) / self.deviation
+
+    def invert_stack(self, scaled: NDArray[np.floating]) -> NDArray[np.float64]:
+        """Undo the scaling: recover the raw values from stored fingerprints.
+
+        This is what makes the constants measurable **without touching a single
+        image**. The column stores ``(raw - mean) / deviation``, so multiplying by
+        the deviation and adding the mean gives the raw numbers back, and a
+        different set of constants can be measured over any subset of the rows in
+        seconds rather than in the hours a pass over 30.000 images costs (§B52).
+
+        Exact to rounding, with one exception that is not one: a component whose
+        deviation was forced to 1 because it never varied carries no information
+        either way.
+        """
+        return self._stack(scaled) * self.deviation + self.mean
+
+    @staticmethod
+    def _stack(values: NDArray[np.floating]) -> NDArray[np.float64]:
+        stack = np.asarray(values, dtype=np.float64)
+        if stack.ndim != 2 or stack.shape[1] != FINGERPRINT_DIMENSION:
+            raise ValueError(f"expected rows of {FINGERPRINT_DIMENSION} components")
+        return stack
 
     @classmethod
     def fit(cls, raw: NDArray[np.floating]) -> Self:

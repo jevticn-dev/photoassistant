@@ -1,0 +1,37 @@
+{
+  "measured_at": "2026-09-13T21:54:57+00:00",
+  "fingerprints": 24981,
+  "from_build_set": 22482,
+  "from_held_out": 2499,
+  "threshold_percent": 1.0,
+  "negligible": true,
+  "distances": {
+    "pairs": 199993,
+    "relative_change_percent": {
+      "median": 0.1038403338313427,
+      "p90": 0.20961376455407502,
+      "p99": 0.30703981695612204,
+      "worst": 0.5117172657499074
+    },
+    "mean_distance_before": 7.33000976741255,
+    "mean_distance_after": 7.338230700505847
+  },
+  "constants": {
+    "deviation_ratio": {
+      "median": 0.9993017290948742,
+      "minimum": 0.9931765241928538,
+      "maximum": 1.004291879863525
+    },
+    "worst_component": {
+      "name": "chroma_mean",
+      "deviation_ratio": 0.9931765241928538,
+      "mean_shift_in_deviations": 0.006057078329216336
+    },
+    "mean_shift_in_deviations": {
+      "median": 0.0021612521346171293,
+      "p90": 0.004166496256629219,
+      "p99": 0.0067977472433539835,
+      "worst": 0.007100273982931331
+    }
+  }
+}

@@ -67,6 +67,10 @@ service = [
     "fastapi>=0.141,<0.142",
     "uvicorn[standard]>=0.52,<0.53",
     "pydantic-settings>=2.14,<3",
+    # Multipart parsing, which is how POST /recommend receives a photograph.
+    # FastAPI does not declare it: UploadFile raises at import time telling you to
+    # install it, so the failure is at least loud rather than at the first request.
+    "python-multipart>=0.0.20,<0.1",
 ]
 
 # What the EMBEDDING STEP adds. A third set, for a third reason: torch is about a
@@ -83,7 +87,38 @@ service = [
 embeddings = [
     "torch>=2.13,<3",
     "open_clip_torch>=3.3,<4",
+    # Declared even though open_clip pulls it anyway, because it has to come from
+    # the same index as torch: the two ship compiled operators that register into
+    # each other, and a torchvision built against PyPI's torch fails at import
+    # against the CPU build with "operator torchvision::nms does not exist".
+    # Naming it here is what lets [tool.uv.sources] below pin where it comes from.
+    "torchvision>=0.28,<1",
 ]
+
+# WHERE torch comes from, which on Linux is a three-gigabyte question.
+#
+# PyPI ships one Linux wheel of torch and it is the "everything included" build:
+# it depends on 43 `nvidia-*` packages (2.189 MB) and `triton` (248 MB), none of
+# which can ever be called on a machine without an Nvidia card. Measured from
+# uv.lock, not estimated — notes §B83.
+#
+# PyTorch publishes per-hardware indexes; ours is the CPU one. Same package, same
+# version (2.14.0 exists on both, checked before this was written), without the
+# CUDA kernels — so those 43 packages simply stop being dependencies and the
+# install drops to roughly 200 MB.
+#
+# Linux only, by marker: local development happens on Windows, where PyPI already
+# ships a CPU build, and pinning the index there would change a working setup for
+# nothing. `explicit = true` means nothing else is ever resolved from this index —
+# only the package named below.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+torchvision = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
 
 [dependency-groups]
 dev = [
@@ -92,6 +127,14 @@ dev = [
     # deprecated the httpx backend and warns on every test run.
     "httpx2>=2.9,<3",
     "ruff>=0.16,<0.17",
+    # Figures for the phase 3 evaluation report: the hit-rate curve, diversity
+    # against the human scale, recall and latency. Dev-only on purpose — it is
+    # never imported by the library or the service, so neither the pipeline's
+    # install set nor the container image grows by a pixel. The alternative was
+    # drawing axes by hand through Pillow, as phase 2 did for contact sheets,
+    # which is an afternoon of work for something every plotting library does
+    # better and which the thesis needs in publishable form anyway.
+    "matplotlib>=3.11,<4",
     # Property-based testing of the renderer (test_renderer_properties.py).
     # Example-based tests only ever check the combinations someone thought to
     # write down; three real defects in the renderer survived 191 of them

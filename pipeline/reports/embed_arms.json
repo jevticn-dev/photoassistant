@@ -1,0 +1,97 @@
+{
+  "measured_at": "2026-09-14T18:57:24+00:00",
+  "measure:after": {
+    "arm": "after",
+    "encoder": {
+      "name": "dinov2",
+      "model": "vit_small_patch14_dinov2.lvd142m",
+      "device": "cpu",
+      "image_size": 224,
+      "batch_size": 32,
+      "dimension": 384
+    },
+    "images": 32,
+    "images_per_second": 8.32,
+    "projected_minutes_for_all": 50.1,
+    "note": "encoder only; loading images from the cache is extra"
+  },
+  "measure:difference": {
+    "arm": "difference",
+    "encoder": {
+      "name": "dinov2",
+      "model": "vit_small_patch14_dinov2.lvd142m",
+      "device": "cpu",
+      "image_size": 224,
+      "batch_size": 32,
+      "dimension": 384
+    },
+    "images": 32,
+    "images_per_second": 8.62,
+    "projected_minutes_for_all": 48.3,
+    "note": "encoder only; loading images from the cache is extra"
+  },
+  "after-dinov2": {
+    "arm": "after",
+    "name": "after-dinov2",
+    "encoder": {
+      "name": "dinov2",
+      "model": "vit_small_patch14_dinov2.lvd142m",
+      "device": "cpu",
+      "image_size": 224,
+      "batch_size": 32,
+      "dimension": 384
+    },
+    "examples": 24981,
+    "dimension": 384,
+    "minutes": 53.1,
+    "path": "D:\\Fakultet\\IV godina\\Diplomski\\pipeline\\.work\\fingerprints\\after-dinov2.npz"
+  },
+  "difference-dinov2": {
+    "arm": "difference",
+    "name": "difference-dinov2",
+    "encoder": {
+      "name": "dinov2",
+      "model": "vit_small_patch14_dinov2.lvd142m",
+      "device": "cpu",
+      "image_size": 224,
+      "batch_size": 32,
+      "dimension": 384
+    },
+    "examples": 24981,
+    "dimension": 384,
+    "minutes": 55.3,
+    "path": "D:\\Fakultet\\IV godina\\Diplomski\\pipeline\\.work\\fingerprints\\difference-dinov2.npz"
+  },
+  "difference-dinov2-518": {
+    "arm": "difference",
+    "name": "difference-dinov2-518",
+    "encoder": {
+      "name": "dinov2",
+      "model": "vit_small_patch14_dinov2.lvd142m",
+      "device": "cpu",
+      "image_size": 518,
+      "batch_size": 32,
+      "dimension": 384
+    },
+    "examples": 4304,
+    "dimension": 384,
+    "minutes": 70.5,
+    "path": "D:\\Fakultet\\IV godina\\Diplomski\\pipeline\\.work\\fingerprints\\difference-dinov2-518.npz"
+  },
+  "search-dinov2": {
+    "kind": "search",
+    "name": "search-dinov2",
+    "encoder": {
+      "name": "dinov2",
+      "model": "vit_small_patch14_dinov2.lvd142m",
+      "device": "cpu",
+      "image_size": 224,
+      "batch_size": 32,
+      "dimension": 384
+    },
+    "photographs": 5000,
+    "dimension": 384,
+    "minutes": 11.0,
+    "path": "D:\\Fakultet\\IV godina\\Diplomski\\pipeline\\.work\\fingerprints\\search-dinov2.npz"
+  }
+}

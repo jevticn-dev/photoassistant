@@ -181,3 +181,35 @@ def test_a_vector_of_the_wrong_width_is_refused() -> None:
 
     with pytest.raises(ValueError, match="30 components"):
         scaling.apply(np.zeros(29, dtype=np.float64))
+
+
+def test_inverting_a_stack_gives_the_raw_values_back() -> None:
+    """The trick the phase 3 leakage measurement rests on.
+
+    The column stores ``(raw - mean) / deviation``, so the raw numbers can be
+    recovered arithmetically and the constants re-measured over any subset of the
+    rows — without reading a single image (notes §B57).
+    """
+    generator = np.random.default_rng(0)
+    raw = generator.normal(size=(64, FINGERPRINT_DIMENSION)) * 7.0 + 3.0
+    scaling = Scaling.fit(raw)
+
+    recovered = scaling.invert_stack(scaling.apply_stack(raw))
+
+    assert np.allclose(recovered, raw)
+
+
+def test_one_vector_and_a_stack_of_one_scale_identically() -> None:
+    """Two entry points, one formula — the single-vector path delegates."""
+    generator = np.random.default_rng(1)
+    raw = generator.normal(size=(16, FINGERPRINT_DIMENSION))
+    scaling = Scaling.fit(raw)
+
+    assert np.allclose(scaling.apply(raw[0]), scaling.apply_stack(raw)[0])
+
+
+def test_a_stack_of_the_wrong_width_is_refused() -> None:
+    scaling = Scaling.fit(np.zeros((4, FINGERPRINT_DIMENSION)))
+
+    with pytest.raises(ValueError, match=str(FINGERPRINT_DIMENSION)):
+        scaling.invert_stack(np.zeros((4, FINGERPRINT_DIMENSION - 1)))

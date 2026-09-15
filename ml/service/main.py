@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 
 from photoassistant import __version__
-from service.routes import health
+from service.routes import health, recommend
 
 app = FastAPI(
     title="PhotoAssistant ML service",
@@ -15,3 +15,4 @@ app = FastAPI(
 )
 
 app.include_router(health.router)
+app.include_router(recommend.router)
