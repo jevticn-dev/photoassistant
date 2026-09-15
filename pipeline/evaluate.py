@@ -725,11 +725,27 @@ def arm_expert_scales(connection, references: list[str], arm: str | None) -> dic
         )
 
     scales: dict[str, float] = {}
+    incomplete = 0
     for reference, candidates in grouped.items():
-        vectors = [transform(candidate) for candidate in candidates]
+        try:
+            vectors = [transform(candidate) for candidate in candidates]
+        except KeyError:
+            # This arm has no vector for one of the five experts on this
+            # photograph — `probe-518` is the case, deliberately run over a subset.
+            # The scale is the spread **between the five**, so a partial set would
+            # not be a smaller sample of it but a different quantity. Drop the
+            # photograph from the scale rather than compute a flattering one.
+            incomplete += 1
+            continue
         spread = mean_pairwise_distance(vectors)
         if spread:
             scales[reference] = spread
+
+    if incomplete:
+        print(
+            f"  scale: {incomplete} photographs have no complete expert set in this arm",
+            file=sys.stderr,
+        )
     return scales
 
 
@@ -759,9 +775,19 @@ def reaggregate(connection, labels: dict[str, str]) -> list[dict]:
         arm_name = path.stem.removesuffix("-no-exclusion")
         composition = ARMS[arm_name].fingerprint if arm_name in ARMS else None
         if composition not in scale_cache:
-            scale_cache[composition] = arm_expert_scales(
-                connection, [row["reference"] for row in rows], composition
-            )
+            try:
+                scale_cache[composition] = arm_expert_scales(
+                    connection, [row["reference"] for row in rows], composition
+                )
+            except FileNotFoundError:
+                # The arm's vectors are not on this machine (pipeline/.work is not
+                # committed). Everything else in the summary is measured in ΔE on
+                # screen and re-aggregates fine; only this one column cannot.
+                print(
+                    f"  {path.stem}: arm vectors absent, fingerprint ratio left empty",
+                    file=sys.stderr,
+                )
+                scale_cache[composition] = {}
         scales = scale_cache[composition]
 
         for row in rows:

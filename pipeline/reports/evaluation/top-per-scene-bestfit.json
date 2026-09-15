@@ -6,12 +6,12 @@
   "exclusion_applied": true,
   "seconds": 130.7,
   "seconds_per_photograph": 0.261,
+  "photographs": 500,
+  "hit_rate": 0.908,
   "latency": {
     "median": 0.07257789999130182,
     "p95": 0.08535069995268708
   },
-  "photographs": 500,
-  "hit_rate": 0.908,
   "closeness_delta_e": {
     "count": 500,
     "p10": 2.4584164973607567,
