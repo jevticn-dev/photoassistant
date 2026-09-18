@@ -1,0 +1,57 @@
+<!--
+  Every visible string goes through the translate pipe, including aria-label.
+  The one exception is a validation message the server worded: it arrives as
+  data, and inventing a translation key for text we did not write would be a
+  lie about where it came from.
+-->
+<section class="auth">
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <h1 class="auth-card__title">{{ 'auth.login.title' | translate }}</h1>
+
+    @if (failure()?.summaryKey; as summaryKey) {
+      <!-- role="alert" so the message is announced, not just drawn. -->
+      <p class="auth-summary" role="alert">{{ summaryKey | translate }}</p>
+    }
+
+    <div class="field">
+      <label class="label" for="login-email">{{ 'auth.login.email' | translate }}</label>
+      <input
+        class="field__input"
+        id="login-email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        [attr.aria-invalid]="errorFor('email') ? 'true' : null"
+        [attr.aria-describedby]="errorFor('email') ? 'login-email-error' : null"
+      />
+      @if (errorFor('email'); as message) {
+        <p class="field__error" id="login-email-error">{{ message }}</p>
+      }
+    </div>
+
+    <div class="field">
+      <label class="label" for="login-password">{{ 'auth.login.password' | translate }}</label>
+      <input
+        class="field__input"
+        id="login-password"
+        type="password"
+        formControlName="password"
+        autocomplete="current-password"
+        [attr.aria-invalid]="errorFor('password') ? 'true' : null"
+        [attr.aria-describedby]="errorFor('password') ? 'login-password-error' : null"
+      />
+      @if (errorFor('password'); as message) {
+        <p class="field__error" id="login-password-error">{{ message }}</p>
+      }
+    </div>
+
+    <button class="auth-submit" type="submit" [disabled]="form.invalid || submitting()">
+      {{ (submitting() ? 'common.loading' : 'auth.login.submit') | translate }}
+    </button>
+
+    <p class="auth-alternative">
+      {{ 'auth.login.noAccount' | translate }}
+      <a routerLink="/auth/register">{{ 'auth.register.title' | translate }}</a>
+    </p>
+  </form>
+</section>

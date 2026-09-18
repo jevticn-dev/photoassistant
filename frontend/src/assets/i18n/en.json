@@ -1,7 +1,6 @@
 {
   "app": {
-    "title": "PhotoAssistant",
-    "tagline": "Three edit suggestions for every photograph"
+    "title": "PhotoAssistant"
   },
   "nav": {
     "projects": "Projects",
@@ -21,7 +20,13 @@
       "email": "Email",
       "password": "Password",
       "submit": "Create account",
-      "haveAccount": "Already have an account?"
+      "haveAccount": "Already have an account?",
+      "passwordHint": "At least {{count}} characters, with a digit and a capital letter"
+    },
+    "errors": {
+      "invalidCredentials": "That email and password do not match an account.",
+      "unreachable": "Could not reach the server. Check your connection and try again.",
+      "unexpected": "Something went wrong. Try again in a moment."
     }
   },
   "projects": {

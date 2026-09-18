@@ -2,12 +2,19 @@
   Every visible string goes through the translate pipe, without exception —
   including aria-label, placeholder and title attributes. Adding Serbian later
   must stay a matter of one JSON file, not of editing templates.
--->
-<header class="app-header">
-  <h1>{{ 'app.title' | translate }}</h1>
-  <p>{{ 'app.tagline' | translate }}</p>
-</header>
 
-<main>
-  <router-outlet />
-</main>
+  The zone class sits on the wrapper rather than on <body>: the tokens are
+  redefined by that class, so everything inside inherits the right surface
+  without a single component naming a colour.
+-->
+<div class="app-shell" [class]="zoneClass()">
+  @if (!isDisplay()) {
+    <header class="app-header">
+      <span class="app-header__mark label">{{ 'app.title' | translate }}</span>
+    </header>
+  }
+
+  <main class="app-main" [class.app-main--full]="isDisplay()">
+    <router-outlet />
+  </main>
+</div>

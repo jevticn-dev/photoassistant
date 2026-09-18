@@ -1,0 +1,115 @@
+// Design tokens. The single place where the visual direction is written down.
+//
+// The direction is Teenage Engineering: the look of a measuring instrument —
+// monospace labels, sharp edges, one saturated accent, numeric readouts as part
+// of the design rather than decoration. It was chosen when the thesis was
+// planned but lived only inside docs/mentor/prototype.html until 2026-09-18;
+// this file is its first machine-readable record (notes phase-4 §B93).
+//
+// **Two zones, not two themes.** A physical instrument has a light casing that
+// carries the controls and a dark display that shows the work. The application
+// is organised the same way: everything except the editor is the casing, and any
+// screen showing a photograph under edit is the display. There is no switch, no
+// prefers-color-scheme and no remembered preference — each screen is fixed as
+// one or the other. Placing a photograph on neutral dark is craft rather than
+// taste: judging exposure and colour depends on what surrounds the image.
+//
+// Components must never name a hex value. They use the semantic tokens below,
+// which are redefined inside .zone-display, so the same markup is correct in
+// both zones (notes phase-4 §B91).
+
+:root {
+  // -- Casing: the default zone ---------------------------------------------
+  --surface-base: #ededeb;
+  --surface-panel: #e0e0dd;
+  --surface-inset: #d6d6d2;
+  --line: #c7c7c3;
+  --text-primary: #191918;
+  --text-secondary: #7a7a76;
+  --accent: #ff4d00;
+  --accent-contrast: #ffffff;
+
+  // The focus ring is the accent, darkened — same hue, nothing else changed.
+  //
+  // It needs its own token because the accent and these light surfaces sit at
+  // almost the same brightness: measured against the field it outlines, #FF4D00
+  // reaches 2.28:1 where a focus indicator needs 3:1, so someone navigating by
+  // keyboard can lose their place on a poor screen or in sunlight. Darkening the
+  // same hue to #CC3D00 gives 3.40:1 without introducing a second colour.
+  //
+  // The dark zone redefines this back to its own accent, which already clears
+  // the bar at 4.60:1 — the palette was built that way, with a lighter orange
+  // for the darker surface. This is that principle followed through.
+  --focus-ring: #cc3d00;
+
+  // -- Status: identical in both zones, and used sparingly ------------------
+  // "Sparingly" is a constraint, not a description. Everything that is not
+  // neutral must be the accent or a status colour; when everything is
+  // highlighted, nothing is.
+  --status-success: #3daa6d;
+  --status-warning: #e0a81e;
+  --status-error: #c13939;
+
+  // -- Typography -----------------------------------------------------------
+  // Self-hosted through @fontsource, never a CDN: the delivery must not make
+  // requests to third parties, and a font that fails to load changes every
+  // measurement of the layout.
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --text-xs: 0.6875rem; // 11px — mono labels, meta
+  --text-sm: 0.8125rem; // 13px — secondary text
+  --text-md: 0.875rem; //  14px — body
+  --text-lg: 1.125rem; //  18px — section titles
+  --text-xl: 1.5rem; //    24px — screen titles
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+
+  // Labels are spaced out and written in capitals, as on a front panel. The
+  // capitals are typed into the string, not produced by text-transform, so that
+  // a screen reader announces the word rather than the letters.
+  --tracking-label: 0.05em;
+
+  // -- Space: a 4px step, so that nothing lands off the grid ----------------
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  // -- Edges ----------------------------------------------------------------
+  // Tight radii carry most of the instrument feel; 8px exists for the few large
+  // surfaces where 3px reads as an accident.
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 8px;
+
+  // Hairlines only. A thicker rule reads as a seam in a moulded case.
+  --border-width: 1px;
+
+  // -- Touch ----------------------------------------------------------------
+  // Plan §11: the smallest target that stays usable with a finger.
+  --touch-target: 44px;
+}
+
+// -- Display: the editor and anything showing a photograph under edit -------
+//
+// Only the values change. Every token keeps its name, so a component written
+// once is correct in both zones.
+.zone-display {
+  --surface-base: #161615;
+  --surface-panel: #211f1e;
+  --surface-inset: #2b2a28;
+  --line: #33312f;
+  --text-primary: #edeae4;
+  --text-secondary: #a6a29c;
+  --accent: #ff5a1f;
+  --accent-contrast: #ffffff;
+
+  // No darkening needed here: on these surfaces the accent already reaches
+  // 4.60:1, which is the whole reason the dark zone was given a lighter orange.
+  --focus-ring: #ff5a1f;
+}

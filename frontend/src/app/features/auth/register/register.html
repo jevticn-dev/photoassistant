@@ -1,0 +1,63 @@
+<!--
+  Every visible string goes through the translate pipe. Server-worded validation
+  messages are the exception: they arrive as data (see login.html).
+-->
+<section class="auth">
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <h1 class="auth-card__title">{{ 'auth.register.title' | translate }}</h1>
+
+    @if (failure()?.summaryKey; as summaryKey) {
+      <p class="auth-summary" role="alert">{{ summaryKey | translate }}</p>
+    }
+
+    <div class="field">
+      <label class="label" for="register-email">{{ 'auth.register.email' | translate }}</label>
+      <input
+        class="field__input"
+        id="register-email"
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        [attr.aria-invalid]="errorFor('email') ? 'true' : null"
+        [attr.aria-describedby]="errorFor('email') ? 'register-email-error' : null"
+      />
+      @if (errorFor('email'); as message) {
+        <p class="field__error" id="register-email-error">{{ message }}</p>
+      }
+    </div>
+
+    <div class="field">
+      <label class="label" for="register-password">{{
+        'auth.register.password' | translate
+      }}</label>
+      <input
+        class="field__input"
+        id="register-password"
+        type="password"
+        formControlName="password"
+        autocomplete="new-password"
+        [attr.aria-invalid]="errorFor('password') ? 'true' : null"
+        aria-describedby="register-password-hint"
+      />
+      <!--
+        The rule is stated before it is broken, not after: a hint that only
+        appears once the password is rejected makes the user guess twice.
+      -->
+      <p class="field__hint readout" id="register-password-hint">
+        {{ 'auth.register.passwordHint' | translate: { count: minimumPasswordLength } }}
+      </p>
+      @if (errorFor('password'); as message) {
+        <p class="field__error">{{ message }}</p>
+      }
+    </div>
+
+    <button class="auth-submit" type="submit" [disabled]="form.invalid || submitting()">
+      {{ (submitting() ? 'common.loading' : 'auth.register.submit') | translate }}
+    </button>
+
+    <p class="auth-alternative">
+      {{ 'auth.register.haveAccount' | translate }}
+      <a routerLink="/auth/login">{{ 'auth.login.title' | translate }}</a>
+    </p>
+  </form>
+</section>

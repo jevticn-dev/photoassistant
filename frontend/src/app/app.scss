@@ -1,21 +1,54 @@
-// Layout only. Visual design is chosen after phase 4, when the editor exists and
-// there is something to design around (plan §13).
+// The shell only. Everything visual is expressed in tokens; no hex value
+// appears in this file or in any component (styles/_tokens.scss).
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background: var(--surface-base);
+  color: var(--text-primary);
+}
 
 .app-header {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgb(0 0 0 / 12%);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: var(--border-width) solid var(--line);
+  background: var(--surface-base);
 
-  h1 {
-    margin: 0;
-    font-size: 1.25rem;
-  }
+  // The bar stays put while a long list scrolls under it.
+  position: sticky;
+  top: 0;
+  z-index: 5;
 
-  p {
-    margin: 0.25rem 0 0;
-    opacity: 0.7;
+  &__mark {
+    // .label already supplies the monospace, the spacing and the small size;
+    // only the colour differs, because the product name is not secondary text.
+    color: var(--text-primary);
   }
 }
 
-main {
-  padding: 1.5rem;
+.app-main {
+  flex: 1;
+  padding: var(--space-5);
+
+  // The editor draws its own full-bleed surface: a photograph with a gutter
+  // around it wastes the screen the work happens on, and on a phone the gutter
+  // is a noticeable share of the width.
+  &--full {
+    padding: 0;
+  }
+}
+
+// 360px is a requirement, not a nicety (plan §11): no screen may scroll
+// sideways there. The gutter shrinks before anything else does.
+@media (width <= 480px) {
+  .app-header {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .app-main {
+    padding: var(--space-4);
+  }
 }
