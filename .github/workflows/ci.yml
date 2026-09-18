@@ -69,9 +69,16 @@ jobs:
 
       # Started as a step rather than as a service container: MinIO needs a
       # command (`server /data`) and service containers cannot set one.
+      #
+      # quay.io, not Docker Hub — `minio/minio` there is no longer pullable
+      # without credentials. Same tag, same build, verified by the release
+      # label and creation timestamp.
       - name: Start MinIO
         run: |
-          docker run -d --name minio -p 9000:9000             -e MINIO_ROOT_USER=photoassistant             -e MINIO_ROOT_PASSWORD=ci-password             minio/minio:RELEASE.2025-09-07T16-13-09Z server /data
+          docker run -d --name minio -p 9000:9000 \
+            -e MINIO_ROOT_USER=photoassistant \
+            -e MINIO_ROOT_PASSWORD=ci-password \
+            quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z server /data
           until curl -sf http://localhost:9000/minio/health/live; do sleep 1; done
 
       - uses: actions/setup-dotnet@v6
