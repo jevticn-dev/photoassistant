@@ -1,0 +1,20 @@
+{
+  "measured_at": "2026-09-18T16:50:54+00:00",
+  "first": "top-per-scene",
+  "second": "top-per-scene-bestfit",
+  "metric": "closeness_delta_e",
+  "photographs": 300,
+  "only_in_first": [],
+  "only_in_second": [],
+  "median_first": 4.934274943061897,
+  "median_second": 4.246064186924384,
+  "median_difference": 0.16879651031620002,
+  "mean_difference": 0.7195745184545266,
+  "confidence": 0.95,
+  "mean_difference_low": 0.3999702626125287,
+  "mean_difference_high": 1.0391787742965244,
+  "second_better": 158,
+  "first_better": 90,
+  "identical": 52,
+  "p_value": 1.872119117883919e-05
+}

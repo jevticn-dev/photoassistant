@@ -1,0 +1,1678 @@
+{
+  "arm": "top-per-scene",
+  "note": "baseline: one edit per scene",
+  "measured_at": "2026-09-18T16:47:44+00:00",
+  "photographs_asked": 300,
+  "exclusion_applied": true,
+  "seconds": 81.5,
+  "seconds_per_photograph": 0.272,
+  "latency": {
+    "median": 0.07901020004646853,
+    "p95": 0.0961366550589446
+  },
+  "photographs": 300,
+  "hit_rate": 0.84,
+  "closeness_delta_e": {
+    "count": 300,
+    "p10": 2.827068915290799,
+    "median": 4.934274943061897,
+    "mean": 5.647549254241259,
+    "p90": 9.489691046970298
+  },
+  "closeness_recipe": {
+    "count": 300,
+    "p10": 0.364633366580131,
+    "median": 0.5287063467484816,
+    "mean": 0.5616746071009534,
+    "p90": 0.7891964435978209
+  },
+  "diversity_rendered": {
+    "count": 300,
+    "p10": 6.179670357305391,
+    "median": 12.52925688443781,
+    "mean": 13.239044616466288,
+    "p90": 20.66770879200262
+  },
+  "diversity_ratio": {
+    "count": 300,
+    "p10": 0.7198570260862148,
+    "median": 1.3239252146394596,
+    "mean": 1.5142348207884526,
+    "p90": 2.6086030809213807
+  },
+  "diversity_fingerprint": {
+    "count": 300,
+    "p10": 4.734000206386301,
+    "median": 6.701809189562452,
+    "mean": 6.983978194976379,
+    "p90": 9.27207869853412
+  },
+  "fingerprint_ratio": {
+    "count": 300,
+    "p10": 0.8773894977884639,
+    "median": 1.329337667069908,
+    "mean": 1.3904022443314916,
+    "p90": 2.0304120981772256
+  },
+  "pool_size": {
+    "count": 300,
+    "p10": 250.0,
+    "median": 250.0,
+    "mean": 249.82666666666665,
+    "p90": 250.0
+  },
+  "suggestions_returned": {
+    "count": 300,
+    "p10": 3.0,
+    "median": 3.0,
+    "mean": 3.0,
+    "p90": 3.0
+  },
+  "distinct_sources": {
+    "count": 300,
+    "p10": 3.0,
+    "median": 3.0,
+    "mean": 3.0,
+    "p90": 3.0
+  },
+  "diversity_gap": {
+    "count": 300,
+    "p10": -0.7916503195392591,
+    "median": -0.037142688043039995,
+    "mean": -0.1238325764569611,
+    "p90": 0.42641016917139407
+  },
+  "hit_rate_curve": [
+    {
+      "threshold": 0.5,
+      "rate": 0.0
+    },
+    {
+      "threshold": 1.0,
+      "rate": 0.0
+    },
+    {
+      "threshold": 1.5,
+      "rate": 0.0033333333333333335
+    },
+    {
+      "threshold": 2.0,
+      "rate": 0.016666666666666666
+    },
+    {
+      "threshold": 2.5,
+      "rate": 0.05333333333333334
+    },
+    {
+      "threshold": 3.0,
+      "rate": 0.14
+    },
+    {
+      "threshold": 3.5,
+      "rate": 0.24
+    },
+    {
+      "threshold": 4.0,
+      "rate": 0.36
+    },
+    {
+      "threshold": 4.5,
+      "rate": 0.44
+    },
+    {
+      "threshold": 5.0,
+      "rate": 0.5133333333333333
+    },
+    {
+      "threshold": 5.5,
+      "rate": 0.5933333333333334
+    },
+    {
+      "threshold": 6.0,
+      "rate": 0.6733333333333333
+    },
+    {
+      "threshold": 6.5,
+      "rate": 0.7266666666666667
+    },
+    {
+      "threshold": 7.0,
+      "rate": 0.77
+    },
+    {
+      "threshold": 7.5,
+      "rate": 0.8033333333333333
+    },
+    {
+      "threshold": 8.0,
+      "rate": 0.8333333333333334
+    },
+    {
+      "threshold": 8.5,
+      "rate": 0.8666666666666667
+    },
+    {
+      "threshold": 9.0,
+      "rate": 0.8866666666666667
+    },
+    {
+      "threshold": 9.5,
+      "rate": 0.9
+    },
+    {
+      "threshold": 10.0,
+      "rate": 0.9133333333333333
+    },
+    {
+      "threshold": 10.5,
+      "rate": 0.9233333333333333
+    },
+    {
+      "threshold": 11.0,
+      "rate": 0.93
+    },
+    {
+      "threshold": 11.5,
+      "rate": 0.9433333333333334
+    },
+    {
+      "threshold": 12.0,
+      "rate": 0.95
+    },
+    {
+      "threshold": 12.5,
+      "rate": 0.97
+    },
+    {
+      "threshold": 13.0,
+      "rate": 0.9733333333333334
+    },
+    {
+      "threshold": 13.5,
+      "rate": 0.9766666666666667
+    },
+    {
+      "threshold": 14.0,
+      "rate": 0.9766666666666667
+    },
+    {
+      "threshold": 14.5,
+      "rate": 0.9766666666666667
+    },
+    {
+      "threshold": 15.0,
+      "rate": 0.98
+    },
+    {
+      "threshold": 15.5,
+      "rate": 0.98
+    },
+    {
+      "threshold": 16.0,
+      "rate": 0.9866666666666667
+    },
+    {
+      "threshold": 16.5,
+      "rate": 0.9866666666666667
+    },
+    {
+      "threshold": 17.0,
+      "rate": 0.9866666666666667
+    },
+    {
+      "threshold": 17.5,
+      "rate": 0.9866666666666667
+    },
+    {
+      "threshold": 18.0,
+      "rate": 0.9866666666666667
+    },
+    {
+      "threshold": 18.5,
+      "rate": 0.99
+    },
+    {
+      "threshold": 19.0,
+      "rate": 0.99
+    },
+    {
+      "threshold": 19.5,
+      "rate": 0.9933333333333333
+    },
+    {
+      "threshold": 20.0,
+      "rate": 0.9966666666666667
+    }
+  ],
+  "slices": {
+    "abstract": {
+      "n": 4,
+      "indicative_only": true,
+      "photographs": 4,
+      "hit_rate": 1.0,
+      "closeness_delta_e": {
+        "count": 4,
+        "p10": 3.869425471809143,
+        "median": 4.891468156078272,
+        "mean": 5.593238957730822,
+        "p90": 7.87846908497454
+      },
+      "closeness_recipe": {
+        "count": 4,
+        "p10": 0.3957857105298511,
+        "median": 0.6128123773986452,
+        "mean": 0.5731922939086407,
+        "p90": 0.7189028104954266
+      },
+      "diversity_rendered": {
+        "count": 4,
+        "p10": 10.028889318249636,
+        "median": 14.406491403234986,
+        "mean": 14.536376607215514,
+        "p90": 19.147772059365813
+      },
+      "diversity_ratio": {
+        "count": 4,
+        "p10": 0.8449695439470195,
+        "median": 1.15336800169439,
+        "mean": 1.3055546303629613,
+        "p90": 1.8878890197137606
+      },
+      "diversity_fingerprint": {
+        "count": 4,
+        "p10": 5.729347505981695,
+        "median": 7.83089011386225,
+        "mean": 8.441328128354423,
+        "p90": 11.641659162320888
+      },
+      "fingerprint_ratio": {
+        "count": 4,
+        "p10": 0.827815971579484,
+        "median": 1.0690318280097169,
+        "mean": 1.1689860795483427,
+        "p90": 1.5901195887481026
+      },
+      "pool_size": {
+        "count": 4,
+        "p10": 250.0,
+        "median": 250.0,
+        "mean": 250.0,
+        "p90": 250.0
+      },
+      "suggestions_returned": {
+        "count": 4,
+        "p10": 3.0,
+        "median": 3.0,
+        "mean": 3.0,
+        "p90": 3.0
+      },
+      "distinct_sources": {
+        "count": 4,
+        "p10": 3.0,
+        "median": 3.0,
+        "mean": 3.0,
+        "p90": 3.0
+      },
+      "diversity_gap": {
+        "count": 4,
+        "p10": -0.2977694309656579,
+        "median": -0.08433617368467305,
+        "mean": -0.13656855081461858,
+        "p90": -0.017153572367535636
+      },
+      "hit_rate_curve": [
+        {
+          "threshold": 0.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 1.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 1.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 2.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 2.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 3.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 3.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 4.0,
+          "rate": 0.25
+        },
+        {
+          "threshold": 4.5,
+          "rate": 0.5
+        },
+        {
+          "threshold": 5.0,
+          "rate": 0.5
+        },
+        {
+          "threshold": 5.5,
+          "rate": 0.75
+        },
+        {
+          "threshold": 6.0,
+          "rate": 0.75
+        },
+        {
+          "threshold": 6.5,
+          "rate": 0.75
+        },
+        {
+          "threshold": 7.0,
+          "rate": 0.75
+        },
+        {
+          "threshold": 7.5,
+          "rate": 0.75
+        },
+        {
+          "threshold": 8.0,
+          "rate": 0.75
+        },
+        {
+          "threshold": 8.5,
+          "rate": 0.75
+        },
+        {
+          "threshold": 9.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 9.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 10.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 10.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 11.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 11.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 12.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 12.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 13.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 13.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 14.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 14.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 15.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 15.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 16.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 16.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 17.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 17.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 18.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 18.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 19.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 19.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 20.0,
+          "rate": 1.0
+        }
+      ]
+    },
+    "animal": {
+      "n": 10,
+      "indicative_only": true,
+      "photographs": 10,
+      "hit_rate": 1.0,
+      "closeness_delta_e": {
+        "count": 10,
+        "p10": 3.3633573826817913,
+        "median": 4.763602720961737,
+        "mean": 5.37920279894398,
+        "p90": 7.248420678011047
+      },
+      "closeness_recipe": {
+        "count": 10,
+        "p10": 0.3459183105387189,
+        "median": 0.63380085105269,
+        "mean": 0.605974034321629,
+        "p90": 0.8111917121780761
+      },
+      "diversity_rendered": {
+        "count": 10,
+        "p10": 8.551432831957658,
+        "median": 13.736257517931223,
+        "mean": 13.508234771022924,
+        "p90": 19.149580913581012
+      },
+      "diversity_ratio": {
+        "count": 10,
+        "p10": 0.8804274071428209,
+        "median": 1.3798780147319007,
+        "mean": 1.6156060136079133,
+        "p90": 2.876298196790571
+      },
+      "diversity_fingerprint": {
+        "count": 10,
+        "p10": 5.6196387308530396,
+        "median": 7.222230517117268,
+        "mean": 7.152301920380711,
+        "p90": 8.900029447121156
+      },
+      "fingerprint_ratio": {
+        "count": 10,
+        "p10": 1.2699009616049104,
+        "median": 1.5038547695820657,
+        "mean": 1.5694675612880178,
+        "p90": 1.8718097222368268
+      },
+      "pool_size": {
+        "count": 10,
+        "p10": 249.0,
+        "median": 250.0,
+        "mean": 249.8,
+        "p90": 250.0
+      },
+      "suggestions_returned": {
+        "count": 10,
+        "p10": 3.0,
+        "median": 3.0,
+        "mean": 3.0,
+        "p90": 3.0
+      },
+      "distinct_sources": {
+        "count": 10,
+        "p10": 3.0,
+        "median": 3.0,
+        "mean": 3.0,
+        "p90": 3.0
+      },
+      "diversity_gap": {
+        "count": 10,
+        "p10": -0.6129568370876909,
+        "median": 0.11458620074501513,
+        "mean": -0.046138452319895704,
+        "p90": 0.4162828620268588
+      },
+      "hit_rate_curve": [
+        {
+          "threshold": 0.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 1.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 1.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 2.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 2.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 3.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 3.5,
+          "rate": 0.2
+        },
+        {
+          "threshold": 4.0,
+          "rate": 0.3
+        },
+        {
+          "threshold": 4.5,
+          "rate": 0.3
+        },
+        {
+          "threshold": 5.0,
+          "rate": 0.6
+        },
+        {
+          "threshold": 5.5,
+          "rate": 0.6
+        },
+        {
+          "threshold": 6.0,
+          "rate": 0.8
+        },
+        {
+          "threshold": 6.5,
+          "rate": 0.8
+        },
+        {
+          "threshold": 7.0,
+          "rate": 0.9
+        },
+        {
+          "threshold": 7.5,
+          "rate": 0.9
+        },
+        {
+          "threshold": 8.0,
+          "rate": 0.9
+        },
+        {
+          "threshold": 8.5,
+          "rate": 0.9
+        },
+        {
+          "threshold": 9.0,
+          "rate": 0.9
+        },
+        {
+          "threshold": 9.5,
+          "rate": 0.9
+        },
+        {
+          "threshold": 10.0,
+          "rate": 0.9
+        },
+        {
+          "threshold": 10.5,
+          "rate": 0.9
+        },
+        {
+          "threshold": 11.0,
+          "rate": 0.9
+        },
+        {
+          "threshold": 11.5,
+          "rate": 0.9
+        },
+        {
+          "threshold": 12.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 12.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 13.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 13.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 14.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 14.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 15.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 15.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 16.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 16.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 17.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 17.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 18.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 18.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 19.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 19.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 20.0,
+          "rate": 1.0
+        }
+      ]
+    },
+    "architecture": {
+      "n": 29,
+      "indicative_only": true,
+      "photographs": 29,
+      "hit_rate": 0.8620689655172413,
+      "closeness_delta_e": {
+        "count": 29,
+        "p10": 2.8048146491554693,
+        "median": 5.339189959604454,
+        "mean": 5.622577061573166,
+        "p90": 10.255021841356973
+      },
+      "closeness_recipe": {
+        "count": 29,
+        "p10": 0.36706887201565463,
+        "median": 0.5336856569465502,
+        "mean": 0.5475810050010814,
+        "p90": 0.7628292787498047
+      },
+      "diversity_rendered": {
+        "count": 29,
+        "p10": 6.1221742435258655,
+        "median": 13.526736484248433,
+        "mean": 13.543049382853534,
+        "p90": 20.66993261956135
+      },
+      "diversity_ratio": {
+        "count": 29,
+        "p10": 0.8982390837021456,
+        "median": 1.4472762564508954,
+        "mean": 1.4743875746473405,
+        "p90": 2.118290114380694
+      },
+      "diversity_fingerprint": {
+        "count": 29,
+        "p10": 4.924508374365475,
+        "median": 6.840085339148558,
+        "mean": 7.022222776586434,
+        "p90": 9.220675107591727
+      },
+      "fingerprint_ratio": {
+        "count": 29,
+        "p10": 0.8912001927413497,
+        "median": 1.3614292280396352,
+        "mean": 1.397434851204764,
+        "p90": 1.8854248699230476
+      },
+      "pool_size": {
+        "count": 29,
+        "p10": 250.0,
+        "median": 250.0,
+        "mean": 249.82758620689654,
+        "p90": 250.0
+      },
+      "suggestions_returned": {
+        "count": 29,
+        "p10": 3.0,
+        "median": 3.0,
+        "mean": 3.0,
+        "p90": 3.0
+      },
+      "distinct_sources": {
+        "count": 29,
+        "p10": 3.0,
+        "median": 3.0,
+        "mean": 3.0,
+        "p90": 3.0
+      },
+      "diversity_gap": {
+        "count": 29,
+        "p10": -0.5902622404826112,
+        "median": -0.007675296243038865,
+        "mean": -0.07695272344257663,
+        "p90": 0.4177560275500171
+      },
+      "hit_rate_curve": [
+        {
+          "threshold": 0.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 1.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 1.5,
+          "rate": 0.034482758620689655
+        },
+        {
+          "threshold": 2.0,
+          "rate": 0.06896551724137931
+        },
+        {
+          "threshold": 2.5,
+          "rate": 0.06896551724137931
+        },
+        {
+          "threshold": 3.0,
+          "rate": 0.20689655172413793
+        },
+        {
+          "threshold": 3.5,
+          "rate": 0.27586206896551724
+        },
+        {
+          "threshold": 4.0,
+          "rate": 0.3793103448275862
+        },
+        {
+          "threshold": 4.5,
+          "rate": 0.4482758620689655
+        },
+        {
+          "threshold": 5.0,
+          "rate": 0.4482758620689655
+        },
+        {
+          "threshold": 5.5,
+          "rate": 0.5517241379310345
+        },
+        {
+          "threshold": 6.0,
+          "rate": 0.5862068965517241
+        },
+        {
+          "threshold": 6.5,
+          "rate": 0.6551724137931034
+        },
+        {
+          "threshold": 7.0,
+          "rate": 0.6896551724137931
+        },
+        {
+          "threshold": 7.5,
+          "rate": 0.7931034482758621
+        },
+        {
+          "threshold": 8.0,
+          "rate": 0.8275862068965517
+        },
+        {
+          "threshold": 8.5,
+          "rate": 0.8620689655172413
+        },
+        {
+          "threshold": 9.0,
+          "rate": 0.8620689655172413
+        },
+        {
+          "threshold": 9.5,
+          "rate": 0.8620689655172413
+        },
+        {
+          "threshold": 10.0,
+          "rate": 0.8620689655172413
+        },
+        {
+          "threshold": 10.5,
+          "rate": 0.9310344827586207
+        },
+        {
+          "threshold": 11.0,
+          "rate": 0.9310344827586207
+        },
+        {
+          "threshold": 11.5,
+          "rate": 0.9655172413793104
+        },
+        {
+          "threshold": 12.0,
+          "rate": 0.9655172413793104
+        },
+        {
+          "threshold": 12.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 13.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 13.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 14.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 14.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 15.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 15.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 16.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 16.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 17.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 17.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 18.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 18.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 19.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 19.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 20.0,
+          "rate": 1.0
+        }
+      ]
+    },
+    "flower": {
+      "n": 7,
+      "indicative_only": true,
+      "photographs": 7,
+      "hit_rate": 0.8571428571428571,
+      "closeness_delta_e": {
+        "count": 7,
+        "p10": 3.110631339516643,
+        "median": 3.9671796708689184,
+        "mean": 4.759148718667512,
+        "p90": 7.056698075548807
+      },
+      "closeness_recipe": {
+        "count": 7,
+        "p10": 0.4647118427005663,
+        "median": 0.7036082996093281,
+        "mean": 0.6731279645610833,
+        "p90": 0.9062921366015584
+      },
+      "diversity_rendered": {
+        "count": 7,
+        "p10": 6.566762398786637,
+        "median": 11.291393307865256,
+        "mean": 12.28850874310235,
+        "p90": 18.498753014918762
+      },
+      "diversity_ratio": {
+        "count": 7,
+        "p10": 0.6831364040050819,
+        "median": 1.0968343608061095,
+        "mean": 1.3905089483793351,
+        "p90": 2.156738631525704
+      },
+      "diversity_fingerprint": {
+        "count": 7,
+        "p10": 5.895784547015248,
+        "median": 6.903590493951458,
+        "mean": 6.8742251110732155,
+        "p90": 7.874068188591379
+      },
+      "fingerprint_ratio": {
+        "count": 7,
+        "p10": 0.7007757777149694,
+        "median": 0.9922424775472909,
+        "mean": 1.101658377200541,
+        "p90": 1.5822645436128189
+      },
+      "pool_size": {
+        "count": 7,
+        "p10": 249.6,
+        "median": 250.0,
+        "mean": 249.85714285714286,
+        "p90": 250.0
+      },
+      "suggestions_returned": {
+        "count": 7,
+        "p10": 3.0,
+        "median": 3.0,
+        "mean": 3.0,
+        "p90": 3.0
+      },
+      "distinct_sources": {
+        "count": 7,
+        "p10": 3.0,
+        "median": 3.0,
+        "mean": 3.0,
+        "p90": 3.0
+      },
+      "diversity_gap": {
+        "count": 7,
+        "p10": -0.7858115855631729,
+        "median": -0.20129149721404593,
+        "mean": -0.28885057117879415,
+        "p90": 0.09348112072102154
+      },
+      "hit_rate_curve": [
+        {
+          "threshold": 0.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 1.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 1.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 2.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 2.5,
+          "rate": 0.14285714285714285
+        },
+        {
+          "threshold": 3.0,
+          "rate": 0.14285714285714285
+        },
+        {
+          "threshold": 3.5,
+          "rate": 0.14285714285714285
+        },
+        {
+          "threshold": 4.0,
+          "rate": 0.5714285714285714
+        },
+        {
+          "threshold": 4.5,
+          "rate": 0.5714285714285714
+        },
+        {
+          "threshold": 5.0,
+          "rate": 0.5714285714285714
+        },
+        {
+          "threshold": 5.5,
+          "rate": 0.7142857142857143
+        },
+        {
+          "threshold": 6.0,
+          "rate": 0.7142857142857143
+        },
+        {
+          "threshold": 6.5,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 7.0,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 7.5,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 8.0,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 8.5,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 9.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 9.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 10.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 10.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 11.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 11.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 12.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 12.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 13.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 13.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 14.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 14.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 15.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 15.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 16.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 16.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 17.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 17.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 18.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 18.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 19.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 19.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 20.0,
+          "rate": 1.0
+        }
+      ]
+    },
+    "nature": {
+      "n": 18,
+      "indicative_only": true,
+      "photographs": 18,
+      "hit_rate": 1.0,
+      "closeness_delta_e": {
+        "count": 18,
+        "p10": 2.8766485501926353,
+        "median": 3.833444048040813,
+        "mean": 4.584121341952502,
+        "p90": 6.916545605892036
+      },
+      "closeness_recipe": {
+        "count": 18,
+        "p10": 0.4300548619607632,
+        "median": 0.5255260264484702,
+        "mean": 0.5617087381678294,
+        "p90": 0.7175309094428037
+      },
+      "diversity_rendered": {
+        "count": 18,
+        "p10": 6.686924438368043,
+        "median": 12.006071416371071,
+        "mean": 13.942804949113444,
+        "p90": 24.484912531046042
+      },
+      "diversity_ratio": {
+        "count": 18,
+        "p10": 0.5922872802334213,
+        "median": 0.9536508197624416,
+        "mean": 1.2904364880400863,
+        "p90": 2.340708434003011
+      },
+      "diversity_fingerprint": {
+        "count": 18,
+        "p10": 5.714126812388405,
+        "median": 6.777907328383513,
+        "mean": 7.024986394410185,
+        "p90": 8.508470150100258
+      },
+      "fingerprint_ratio": {
+        "count": 18,
+        "p10": 0.8645663395603256,
+        "median": 1.1285477182780934,
+        "mean": 1.1767352132793076,
+        "p90": 1.4559644625975505
+      },
+      "pool_size": {
+        "count": 18,
+        "p10": 250.0,
+        "median": 250.0,
+        "mean": 250.0,
+        "p90": 250.0
+      },
+      "suggestions_returned": {
+        "count": 18,
+        "p10": 3.0,
+        "median": 3.0,
+        "mean": 3.0,
+        "p90": 3.0
+      },
+      "distinct_sources": {
+        "count": 18,
+        "p10": 3.0,
+        "median": 3.0,
+        "mean": 3.0,
+        "p90": 3.0
+      },
+      "diversity_gap": {
+        "count": 18,
+        "p10": -0.9227354818006088,
+        "median": 0.062000333756227766,
+        "mean": -0.11370127476077868,
+        "p90": 0.44219172224897096
+      },
+      "hit_rate_curve": [
+        {
+          "threshold": 0.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 1.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 1.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 2.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 2.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 3.0,
+          "rate": 0.2777777777777778
+        },
+        {
+          "threshold": 3.5,
+          "rate": 0.3333333333333333
+        },
+        {
+          "threshold": 4.0,
+          "rate": 0.5555555555555556
+        },
+        {
+          "threshold": 4.5,
+          "rate": 0.6111111111111112
+        },
+        {
+          "threshold": 5.0,
+          "rate": 0.6666666666666666
+        },
+        {
+          "threshold": 5.5,
+          "rate": 0.7222222222222222
+        },
+        {
+          "threshold": 6.0,
+          "rate": 0.7222222222222222
+        },
+        {
+          "threshold": 6.5,
+          "rate": 0.7777777777777778
+        },
+        {
+          "threshold": 7.0,
+          "rate": 0.8888888888888888
+        },
+        {
+          "threshold": 7.5,
+          "rate": 0.9444444444444444
+        },
+        {
+          "threshold": 8.0,
+          "rate": 0.9444444444444444
+        },
+        {
+          "threshold": 8.5,
+          "rate": 0.9444444444444444
+        },
+        {
+          "threshold": 9.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 9.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 10.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 10.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 11.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 11.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 12.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 12.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 13.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 13.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 14.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 14.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 15.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 15.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 16.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 16.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 17.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 17.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 18.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 18.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 19.0,
+          "rate": 1.0
+        },
+        {
+          "threshold": 19.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 20.0,
+          "rate": 1.0
+        }
+      ]
+    },
+    "people": {
+      "n": 7,
+      "indicative_only": true,
+      "photographs": 7,
+      "hit_rate": 0.2857142857142857,
+      "closeness_delta_e": {
+        "count": 7,
+        "p10": 4.1932819307801354,
+        "median": 9.214697212858468,
+        "mean": 9.726127882178588,
+        "p90": 14.935956786967942
+      },
+      "closeness_recipe": {
+        "count": 7,
+        "p10": 0.35381430005724596,
+        "median": 0.5855254696004801,
+        "mean": 0.6972769993449246,
+        "p90": 1.0676513841584128
+      },
+      "diversity_rendered": {
+        "count": 7,
+        "p10": 8.175529277779715,
+        "median": 14.42828705104634,
+        "mean": 13.456099500303738,
+        "p90": 16.94974519203372
+      },
+      "diversity_ratio": {
+        "count": 7,
+        "p10": 0.9026619294191368,
+        "median": 1.1662307213531593,
+        "mean": 1.334025905343219,
+        "p90": 2.031768928672292
+      },
+      "diversity_fingerprint": {
+        "count": 7,
+        "p10": 5.478871569172329,
+        "median": 6.997471937734566,
+        "mean": 6.760943580379492,
+        "p90": 7.626741471315991
+      },
+      "fingerprint_ratio": {
+        "count": 7,
+        "p10": 0.7144952840536787,
+        "median": 1.0260389690503666,
+        "mean": 1.2275977868635388,
+        "p90": 1.8675729936198422
+      },
+      "pool_size": {
+        "count": 7,
+        "p10": 250.0,
+        "median": 250.0,
+        "mean": 250.0,
+        "p90": 250.0
+      },
+      "suggestions_returned": {
+        "count": 7,
+        "p10": 3.0,
+        "median": 3.0,
+        "mean": 3.0,
+        "p90": 3.0
+      },
+      "distinct_sources": {
+        "count": 7,
+        "p10": 3.0,
+        "median": 3.0,
+        "mean": 3.0,
+        "p90": 3.0
+      },
+      "diversity_gap": {
+        "count": 7,
+        "p10": -0.2781346084958852,
+        "median": -0.0442908483369322,
+        "mean": -0.1064281184796803,
+        "p90": 0.025485157944845852
+      },
+      "hit_rate_curve": [
+        {
+          "threshold": 0.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 1.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 1.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 2.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 2.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 3.0,
+          "rate": 0.0
+        },
+        {
+          "threshold": 3.5,
+          "rate": 0.0
+        },
+        {
+          "threshold": 4.0,
+          "rate": 0.14285714285714285
+        },
+        {
+          "threshold": 4.5,
+          "rate": 0.14285714285714285
+        },
+        {
+          "threshold": 5.0,
+          "rate": 0.2857142857142857
+        },
+        {
+          "threshold": 5.5,
+          "rate": 0.2857142857142857
+        },
+        {
+          "threshold": 6.0,
+          "rate": 0.2857142857142857
+        },
+        {
+          "threshold": 6.5,
+          "rate": 0.2857142857142857
+        },
+        {
+          "threshold": 7.0,
+          "rate": 0.2857142857142857
+        },
+        {
+          "threshold": 7.5,
+          "rate": 0.2857142857142857
+        },
+        {
+          "threshold": 8.0,
+          "rate": 0.2857142857142857
+        },
+        {
+          "threshold": 8.5,
+          "rate": 0.42857142857142855
+        },
+        {
+          "threshold": 9.0,
+          "rate": 0.42857142857142855
+        },
+        {
+          "threshold": 9.5,
+          "rate": 0.5714285714285714
+        },
+        {
+          "threshold": 10.0,
+          "rate": 0.5714285714285714
+        },
+        {
+          "threshold": 10.5,
+          "rate": 0.5714285714285714
+        },
+        {
+          "threshold": 11.0,
+          "rate": 0.5714285714285714
+        },
+        {
+          "threshold": 11.5,
+          "rate": 0.7142857142857143
+        },
+        {
+          "threshold": 12.0,
+          "rate": 0.7142857142857143
+        },
+        {
+          "threshold": 12.5,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 13.0,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 13.5,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 14.0,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 14.5,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 15.0,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 15.5,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 16.0,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 16.5,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 17.0,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 17.5,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 18.0,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 18.5,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 19.0,
+          "rate": 0.8571428571428571
+        },
+        {
+          "threshold": 19.5,
+          "rate": 1.0
+        },
+        {
+          "threshold": 20.0,
+          "rate": 1.0
+        }
+      ]
+    }
+  },
+  "failures": []
+}

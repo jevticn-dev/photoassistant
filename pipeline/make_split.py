@@ -3,6 +3,20 @@
     uv run --project ml python -m pipeline.make_split
     uv run --project ml python -m pipeline.make_split --verify
 
+A second, smaller split can be drawn later for a confirmation run, and it must not
+overlap the first — a photograph the system was already measured on is not a fresh
+question. ``--count`` sets its size and ``--disjoint-from`` names the earlier
+split(s) whose photographs are off limits; ``EVALUATION_SPLIT`` says where the new
+one is written, so the committed artefact is never touched:
+
+    EVALUATION_SPLIT=pipeline/reports/holdout_split.json EVAL_SEED=... \\
+      uv run --project ml python -m pipeline.make_split \\
+        --count 300 --disjoint-from pipeline/reports/evaluation_split.json
+
+``--verify`` takes the same two options and then also checks the disjointness it
+was drawn under, because an invariant nobody re-checks is an invariant only on the
+day it was established.
+
 The sample is drawn from the photographs that can actually serve as an exam
 question: those with **at least two fitted examples**. Two, not one, because the
 diversity threshold is read from how far the experts on the same photograph are
@@ -74,25 +88,47 @@ def eligible_references(handle) -> list[str]:
         return [reference for (reference,) in cursor.fetchall()]
 
 
-def draw(references: list[str], seed: int, count: int) -> EvaluationSplit:
+def draw(
+    references: list[str],
+    seed: int,
+    count: int,
+    *,
+    excluded: frozenset[str] = frozenset(),
+) -> EvaluationSplit:
     """Pick ``count`` references at random, then sort them.
 
     Sorting the result changes nothing about which photographs were chosen — a
     split is a set — and makes the file readable and its diffs meaningful.
-    """
-    if len(references) < count:
-        sys.exit(f"only {len(references)} eligible photographs, need {count}")
 
-    chosen = random.Random(seed).sample(references, count)
+    ``excluded`` are photographs an earlier split already holds. They are removed
+    before sampling rather than rejected afterwards, so ``count`` still means what
+    it says; ``drawn_from`` keeps counting the whole eligible corpus and the size
+    of the exclusion is recorded beside it.
+    """
+    available = [reference for reference in references if reference not in excluded]
+    if len(available) < count:
+        sys.exit(
+            f"only {len(available)} eligible photographs after excluding "
+            f"{len(references) - len(available)}, need {count}"
+        )
+
+    chosen = random.Random(seed).sample(available, count)
     return EvaluationSplit(
         seed=seed,
         created_at=datetime.now(UTC).isoformat(timespec="seconds"),
         drawn_from=len(references),
         held_out=tuple(sorted(chosen)),
+        excluded_count=len(references) - len(available),
     )
 
 
-def verify(split: EvaluationSplit, references: list[str]) -> list[str]:
+def verify(
+    split: EvaluationSplit,
+    references: list[str],
+    *,
+    expected_count: int = HELD_OUT_COUNT,
+    excluded: frozenset[str] = frozenset(),
+) -> list[str]:
     """Check the split still describes this corpus. Returns the problems found."""
     eligible = set(references)
     problems = []
@@ -108,8 +144,24 @@ def verify(split: EvaluationSplit, references: list[str]) -> list[str]:
             "the build set is no longer the one that was measured"
         )
 
-    if len(split.held_out) != HELD_OUT_COUNT:
-        problems.append(f"split holds {len(split.held_out)} references, expected {HELD_OUT_COUNT}")
+    if len(split.held_out) != expected_count:
+        problems.append(f"split holds {len(split.held_out)} references, expected {expected_count}")
+
+    # Checked against the earlier split as it stands now, not against the count
+    # recorded when this one was drawn: an overlap that appeared afterwards is the
+    # failure worth catching, and it is the one a recorded number cannot see.
+    overlap = sorted(set(split.held_out) & excluded)
+    if overlap:
+        shown = ", ".join(overlap[:5])
+        problems.append(
+            f"{len(overlap)} references are also in a split this one must not overlap: {shown} ..."
+        )
+
+    if split.excluded_count != len(excluded):
+        problems.append(
+            f"drawn while {split.excluded_count} photographs were off limits, but "
+            f"{len(excluded)} are now; --disjoint-from does not name the same splits"
+        )
 
     return problems
 
@@ -117,6 +169,11 @@ def verify(split: EvaluationSplit, references: list[str]) -> list[str]:
 def report(split: EvaluationSplit, eligible: int) -> None:
     print(f"eligible   {eligible}")
     print(f"held out   {len(split.held_out)}   seed {split.seed}   drawn {split.created_at}")
+    if split.excluded_count:
+        print(f"off limits {split.excluded_count}   (an earlier split; not drawn from)")
+    # Everything eligible that this split does not hide. Photographs an earlier
+    # split holds are *not* subtracted: they were off limits as questions here,
+    # which says nothing about their being available as answers.
     print(f"build set  {split.drawn_from - len(split.held_out)}")
     print(f"first five {', '.join(split.held_out[:5])}")
 
@@ -133,10 +190,33 @@ def main() -> int:
         action="store_true",
         help="draw again and overwrite the existing split (this invalidates earlier results)",
     )
+    parser.add_argument(
+        "--count",
+        type=int,
+        default=HELD_OUT_COUNT,
+        help=f"how many photographs to hide (default {HELD_OUT_COUNT})",
+    )
+    parser.add_argument(
+        "--disjoint-from",
+        action="append",
+        metavar="SPLIT.json",
+        default=[],
+        help="an earlier split whose photographs are off limits here (repeatable)",
+    )
     arguments = parser.parse_args()
 
     load()
     config = DatabaseConfig.from_environment()
+
+    try:
+        excluded = frozenset(
+            reference
+            for path in arguments.disjoint_from
+            for reference in EvaluationSplit.load(Path(path)).held_out
+        )
+    except SplitError as error:
+        print(f"FAILED  --disjoint-from: {error}", file=sys.stderr)
+        return 1
 
     with connection(config) as handle:
         references = eligible_references(handle)
@@ -148,7 +228,9 @@ def main() -> int:
             print(f"FAILED  {error}", file=sys.stderr)
             return 1
 
-        problems = verify(split, references)
+        problems = verify(
+            split, references, expected_count=arguments.count, excluded=excluded
+        )
         report(split, len(references))
         if problems:
             print("\nFAILED", file=sys.stderr)
@@ -171,7 +253,7 @@ def main() -> int:
         )
         return 1
 
-    split = draw(references, seed_from_environment(), HELD_OUT_COUNT)
+    split = draw(references, seed_from_environment(), arguments.count, excluded=excluded)
     split.save(SPLIT_PATH)
     report(split, len(references))
     print(f"\nwritten to {SPLIT_PATH}")

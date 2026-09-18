@@ -84,6 +84,40 @@ def test_drawing_more_than_there_is_exits_rather_than_returning_a_short_split():
         draw(REFERENCES[:10], 1, 500)
 
 
+# -- drawing a second split, disjoint from the first --------------------------
+
+
+def test_nothing_off_limits_is_ever_drawn():
+    first = draw(REFERENCES, 1, 500)
+    second = draw(REFERENCES, 2, 300, excluded=first.held_out_set)
+
+    assert not (set(second.held_out) & first.held_out_set)
+    assert len(second.held_out) == 300
+
+
+def test_the_exclusion_is_recorded_beside_the_corpus_size():
+    """``drawn_from`` keeps meaning the corpus, or the staleness check stops working."""
+    first = draw(REFERENCES, 1, 500)
+    second = draw(REFERENCES, 2, 300, excluded=first.held_out_set)
+
+    assert second.drawn_from == len(REFERENCES)
+    assert second.excluded_count == 500
+
+
+def test_excluding_too_much_to_leave_a_sample_exits():
+    with pytest.raises(SystemExit, match="after excluding 995"):
+        draw(REFERENCES, 1, 50, excluded=frozenset(REFERENCES[:995]))
+
+
+def test_an_exclusion_that_touches_nothing_leaves_the_draw_alone():
+    """A guard against the exclusion being applied by position rather than by name."""
+    plain = draw(REFERENCES, 4, 100)
+    with_absent = draw(REFERENCES, 4, 100, excluded=frozenset({"z9999"}))
+
+    assert with_absent.held_out == plain.held_out
+    assert with_absent.excluded_count == 0
+
+
 # -- staleness ----------------------------------------------------------------
 
 
@@ -120,6 +154,37 @@ def test_a_corpus_that_changed_size_is_reported():
 def test_a_split_of_the_wrong_size_is_reported():
     problems = verify(fixed(REFERENCES[:10]), REFERENCES)
     assert any(f"expected {HELD_OUT_COUNT}" in problem for problem in problems)
+
+
+def test_a_smaller_split_is_fine_when_that_size_was_asked_for():
+    split = draw(REFERENCES, 1, 300)
+    assert verify(split, REFERENCES, expected_count=300) == []
+
+
+def test_an_overlap_with_the_split_it_must_avoid_is_reported():
+    first = draw(REFERENCES, 1, 500)
+    overlapping = draw(REFERENCES, 2, 300)  # drawn without the exclusion, on purpose
+
+    problems = verify(
+        overlapping, REFERENCES, expected_count=300, excluded=first.held_out_set
+    )
+    assert any("must not overlap" in problem for problem in problems)
+
+
+def test_verifying_against_a_different_exclusion_than_it_was_drawn_under_is_reported():
+    """Passing the wrong --disjoint-from would otherwise check a weaker claim, quietly."""
+    first = draw(REFERENCES, 1, 500)
+    second = draw(REFERENCES, 2, 300, excluded=first.held_out_set)
+
+    problems = verify(second, REFERENCES, expected_count=300, excluded=frozenset())
+    assert any("does not name the same splits" in problem for problem in problems)
+
+
+def test_a_second_split_verified_under_its_own_exclusion_reports_nothing():
+    first = draw(REFERENCES, 1, 500)
+    second = draw(REFERENCES, 2, 300, excluded=first.held_out_set)
+
+    assert verify(second, REFERENCES, expected_count=300, excluded=first.held_out_set) == []
 
 
 # -- against the real corpus --------------------------------------------------
