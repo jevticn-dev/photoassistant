@@ -21,7 +21,9 @@ pipeline/.work/
 # follow deterministically from the code, the committed split and the frozen
 # expert scales, so a single command reproduces them. Kept on disk, where
 # `pipeline.evaluate --re-aggregate` reads them without rerunning the exam.
-pipeline/reports/evaluation/rows/
+# Matches the holdout run too, which writes the same rows under its own
+# EVALUATION_DIR — the rule follows the decision, not one directory name.
+pipeline/reports/*/rows/
 
 .venv/
 venv/

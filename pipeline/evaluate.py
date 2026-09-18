@@ -77,7 +77,14 @@ from pipeline import derivative_cache  # noqa: E402
 from pipeline.environment import REPOSITORY_ROOT, load  # noqa: E402
 from pipeline.make_split import SPLIT_PATH  # noqa: E402
 
-AGREEMENT = REPOSITORY_ROOT / "pipeline/reports/expert_agreement.json"
+# Overridable under the same name ``measure_expert_agreement`` writes it with, so
+# that a second split can be scored against its own thresholds. Without this the
+# two scripts disagree about where the artefact lives, and the one that cannot be
+# pointed elsewhere silently decides for both.
+AGREEMENT = Path(
+    os.environ.get("AGREEMENT_REPORT")
+    or REPOSITORY_ROOT / "pipeline/reports/expert_agreement.json"
+)
 
 RESULTS = Path(
     os.environ.get("EVALUATION_DIR") or REPOSITORY_ROOT / "pipeline/reports/evaluation"

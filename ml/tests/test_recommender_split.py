@@ -12,12 +12,13 @@ import pytest
 from photoassistant.recommender import EvaluationSplit, SplitError
 
 
-def make(held_out=("a0001", "a0002", "a0003"), drawn_from=10) -> EvaluationSplit:
+def make(held_out=("a0001", "a0002", "a0003"), drawn_from=10, excluded_count=0) -> EvaluationSplit:
     return EvaluationSplit(
         seed=1,
         created_at="2026-09-13T12:00:00+00:00",
         drawn_from=drawn_from,
         held_out=tuple(held_out),
+        excluded_count=excluded_count,
     )
 
 
@@ -48,12 +49,46 @@ def test_sample_larger_than_the_corpus_is_refused():
         make(held_out=("a", "b", "c"), drawn_from=2)
 
 
+def test_a_sample_larger_than_what_the_exclusions_leave_is_refused():
+    """Ten eligible minus eight off limits cannot yield three."""
+    with pytest.raises(SplitError, match="2 photographs were available"):
+        make(drawn_from=10, excluded_count=8)
+
+
+def test_a_negative_exclusion_is_refused():
+    with pytest.raises(SplitError, match="negative"):
+        make(excluded_count=-1)
+
+
+def test_a_split_drawn_from_the_whole_corpus_excludes_nothing():
+    assert make().excluded_count == 0
+
+
 def test_round_trip_through_a_file_preserves_everything(tmp_path):
     path = tmp_path / "split.json"
-    original = make()
+    original = make(drawn_from=10, excluded_count=5)
     original.save(path)
 
     assert EvaluationSplit.load(path) == original
+
+
+def test_a_file_without_the_exclusion_field_reads_as_excluding_nothing(tmp_path):
+    """The phase 3 artefact predates the field and must keep loading unchanged."""
+    path = tmp_path / "split.json"
+    path.write_text(
+        json.dumps(
+            {
+                "seed": 1,
+                "created_at": "2026-09-13T12:00:00+00:00",
+                "drawn_from": 10,
+                "held_out_count": 3,
+                "held_out": ["a0001", "a0002", "a0003"],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    assert EvaluationSplit.load(path) == make()
 
 
 def test_saved_file_is_readable_by_a_human(tmp_path):

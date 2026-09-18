@@ -1,0 +1,2463 @@
+{
+  "measured_at": "2026-09-18T16:44:44+00:00",
+  "split_seed": 20260918,
+  "held_out": {
+    "photographs": 300,
+    "human_mean": {
+      "count": 300,
+      "min": 3.5787313999907964,
+      "p10": 6.003722096854498,
+      "median": 8.844704393517208,
+      "mean": 9.445812505142834,
+      "p90": 13.565116324726189,
+      "max": 22.969975307029316
+    },
+    "human_median": {
+      "count": 300,
+      "min": 3.5907315640347517,
+      "p10": 5.535714755376699,
+      "median": 8.727698916306293,
+      "mean": 9.017804984356854,
+      "p90": 12.660764616458927,
+      "max": 26.283419071599504
+    },
+    "reachable_mean": {
+      "count": 300,
+      "min": 3.2681659067098687,
+      "p10": 5.86534285897147,
+      "median": 8.704961525102533,
+      "mean": 9.301649145349861,
+      "p90": 13.24647284374277,
+      "max": 22.53978574894881
+    },
+    "reachable_median": {
+      "count": 300,
+      "min": 3.354923250837505,
+      "p10": 5.4236467151250745,
+      "median": 8.491671301930909,
+      "mean": 8.867647007941851,
+      "p90": 12.525388481215254,
+      "max": 25.930778818865093
+    },
+    "fingerprint_mean": {
+      "count": 300,
+      "min": 2.7125811997895353,
+      "p10": 3.7436153865684294,
+      "median": 5.066354983757457,
+      "mean": 5.330494063146297,
+      "p90": 7.234413268493221,
+      "max": 13.881941360117674
+    }
+  },
+  "control": {
+    "photographs": 0,
+    "human_mean": {},
+    "human_median": {},
+    "reachable_mean": {},
+    "reachable_median": {},
+    "fingerprint_mean": {}
+  },
+  "per_photograph": {
+    "a0022-IMG_2380": {
+      "experts": 5,
+      "human_mean": 14.559114667271794,
+      "human_median": 12.686512067282454,
+      "reachable_mean": 14.366366592289946,
+      "reachable_median": 12.525127543798625,
+      "fingerprint_mean": 6.307892700415428
+    },
+    "a0079-IMG_4099": {
+      "experts": 5,
+      "human_mean": 10.908055018386479,
+      "human_median": 9.566534896480837,
+      "reachable_mean": 10.776923687224304,
+      "reachable_median": 9.415430828350217,
+      "fingerprint_mean": 5.172064594671218
+    },
+    "a0142-IMG_2048": {
+      "experts": 5,
+      "human_mean": 8.790353634759494,
+      "human_median": 8.398334984725672,
+      "reachable_mean": 8.659763491760511,
+      "reachable_median": 8.333426004739996,
+      "fingerprint_mean": 3.8208201741891346
+    },
+    "a0143-kme_060": {
+      "experts": 5,
+      "human_mean": 9.182897745109283,
+      "human_median": 8.741424530716213,
+      "reachable_mean": 9.090506927733802,
+      "reachable_median": 8.679620442227064,
+      "fingerprint_mean": 4.847451926981071
+    },
+    "a0149-tc_DSC3938": {
+      "experts": 5,
+      "human_mean": 10.02703320857134,
+      "human_median": 8.766926477992683,
+      "reachable_mean": 9.926851077248832,
+      "reachable_median": 8.636968728796028,
+      "fingerprint_mean": 6.725251017756089
+    },
+    "a0154-IMG_4393": {
+      "experts": 5,
+      "human_mean": 11.396274841516348,
+      "human_median": 10.600032256350902,
+      "reachable_mean": 11.271940415898127,
+      "reachable_median": 10.436383742389188,
+      "fingerprint_mean": 7.582370715456949
+    },
+    "a0164-kme_446": {
+      "experts": 5,
+      "human_mean": 10.232476763756688,
+      "human_median": 10.057333613417008,
+      "reachable_mean": 10.224801261199705,
+      "reachable_median": 10.02242432360191,
+      "fingerprint_mean": 5.155237100127758
+    },
+    "a0169-jn_20081025_Kent_Shelter_168": {
+      "experts": 5,
+      "human_mean": 7.098471136384445,
+      "human_median": 4.673504089122559,
+      "reachable_mean": 7.108634803122659,
+      "reachable_median": 4.730132302510421,
+      "fingerprint_mean": 4.181660107130201
+    },
+    "a0191-jmac_DSC2666": {
+      "experts": 5,
+      "human_mean": 8.05799806947035,
+      "human_median": 6.316103090280419,
+      "reachable_mean": 7.998492203052296,
+      "reachable_median": 6.322012272967655,
+      "fingerprint_mean": 5.598486603648526
+    },
+    "a0249-kme_392": {
+      "experts": 5,
+      "human_mean": 6.109394787402406,
+      "human_median": 6.457263169888236,
+      "reachable_mean": 5.992092624139646,
+      "reachable_median": 6.368357356234693,
+      "fingerprint_mean": 4.013768319419215
+    },
+    "a0256-LS051026_day_2_arive51": {
+      "experts": 5,
+      "human_mean": 8.771560120678917,
+      "human_median": 8.222732817562516,
+      "reachable_mean": 8.710062520555452,
+      "reachable_median": 8.200413192747728,
+      "fingerprint_mean": 4.376881976456394
+    },
+    "a0266-_DSC0297": {
+      "experts": 5,
+      "human_mean": 7.127432979674383,
+      "human_median": 7.720145045525636,
+      "reachable_mean": 7.0672177584331495,
+      "reachable_median": 7.70143851794602,
+      "fingerprint_mean": 3.5131292412411717
+    },
+    "a0284-NKIM_MG_6192": {
+      "experts": 5,
+      "human_mean": 4.702092609622218,
+      "human_median": 4.866078170707656,
+      "reachable_mean": 4.611586430740359,
+      "reachable_median": 4.887255342193468,
+      "fingerprint_mean": 3.280477486408293
+    },
+    "a0285-IMG_2044": {
+      "experts": 5,
+      "human_mean": 8.992920629256282,
+      "human_median": 7.581796751274737,
+      "reachable_mean": 8.85510015827115,
+      "reachable_median": 7.443743565321591,
+      "fingerprint_mean": 4.378458793685254
+    },
+    "a0289-kme_504": {
+      "experts": 5,
+      "human_mean": 9.183543635645282,
+      "human_median": 9.489615221559678,
+      "reachable_mean": 9.010762079512524,
+      "reachable_median": 9.229660032452925,
+      "fingerprint_mean": 5.547830965703723
+    },
+    "a0308-jmac_DSC3379": {
+      "experts": 5,
+      "human_mean": 8.81789259856663,
+      "human_median": 9.211156611145466,
+      "reachable_mean": 8.579227071912353,
+      "reachable_median": 8.94346089034643,
+      "fingerprint_mean": 5.231495513733794
+    },
+    "a0347-07-08-11-at-18h17m09s-N0000221": {
+      "experts": 5,
+      "human_mean": 9.516390878920523,
+      "human_median": 10.382150443749218,
+      "reachable_mean": 9.421534422119823,
+      "reachable_median": 10.304302313042733,
+      "fingerprint_mean": 6.559704452716375
+    },
+    "a0354-07-07-17-at-23h28m36s-_MG_2372": {
+      "experts": 5,
+      "human_mean": 18.99077815891576,
+      "human_median": 17.58289227261021,
+      "reachable_mean": 18.819479118958675,
+      "reachable_median": 17.48666211987447,
+      "fingerprint_mean": 7.9884001058132394
+    },
+    "a0364-LS20050429d650001": {
+      "experts": 5,
+      "human_mean": 15.851539834081077,
+      "human_median": 15.102537430338334,
+      "reachable_mean": 15.81498100390569,
+      "reachable_median": 14.964495052801855,
+      "fingerprint_mean": 8.00863086629318
+    },
+    "a0409-_MG_0111": {
+      "experts": 5,
+      "human_mean": 10.167596345209414,
+      "human_median": 10.03782736547858,
+      "reachable_mean": 10.094243798611377,
+      "reachable_median": 10.140992103333026,
+      "fingerprint_mean": 5.029361812312734
+    },
+    "a0410-jmac_DSC2754": {
+      "experts": 5,
+      "human_mean": 7.873118761411777,
+      "human_median": 7.616840842940208,
+      "reachable_mean": 7.870128774963166,
+      "reachable_median": 7.63301566514833,
+      "fingerprint_mean": 5.255334025416104
+    },
+    "a0423-07-06-02-at-07h35m36-s_MG_1355": {
+      "experts": 5,
+      "human_mean": 10.353968952549462,
+      "human_median": 10.79231553026457,
+      "reachable_mean": 10.290697564037293,
+      "reachable_median": 10.730576184395655,
+      "fingerprint_mean": 7.8720115537694015
+    },
+    "a0459-jmac_MG_0866": {
+      "experts": 5,
+      "human_mean": 11.28168726109004,
+      "human_median": 10.401008474544124,
+      "reachable_mean": 11.220397366038956,
+      "reachable_median": 10.322551705489484,
+      "fingerprint_mean": 5.196418634355462
+    },
+    "a0482-NKIM_MG_6625": {
+      "experts": 5,
+      "human_mean": 11.912506535633291,
+      "human_median": 12.411981082904529,
+      "reachable_mean": 11.862298929856786,
+      "reachable_median": 12.267255119121836,
+      "fingerprint_mean": 6.910845999246762
+    },
+    "a0495-WP_CRW_9591": {
+      "experts": 5,
+      "human_mean": 4.385977887026152,
+      "human_median": 4.077755724659458,
+      "reachable_mean": 4.173947806493365,
+      "reachable_median": 3.8201679363730423,
+      "fingerprint_mean": 3.7227138980744847
+    },
+    "a0526-IMG_4233": {
+      "experts": 5,
+      "human_mean": 14.154784725701694,
+      "human_median": 15.346111820049465,
+      "reachable_mean": 13.246225034744697,
+      "reachable_median": 15.092530455075622,
+      "fingerprint_mean": 9.996793930611307
+    },
+    "a0529-jmac_MG_0267": {
+      "experts": 5,
+      "human_mean": 19.520301777670724,
+      "human_median": 14.826822142161948,
+      "reachable_mean": 19.399922098842385,
+      "reachable_median": 14.700977924613792,
+      "fingerprint_mean": 9.592846922563853
+    },
+    "a0531-dgw_067": {
+      "experts": 5,
+      "human_mean": 9.28368766403698,
+      "human_median": 8.62015113120027,
+      "reachable_mean": 9.173955424556114,
+      "reachable_median": 8.391871543215524,
+      "fingerprint_mean": 4.817279845297856
+    },
+    "a0545-_DSC2170": {
+      "experts": 5,
+      "human_mean": 7.547089151752071,
+      "human_median": 6.980317512251958,
+      "reachable_mean": 7.337385392942069,
+      "reachable_median": 6.840534449706515,
+      "fingerprint_mean": 4.214201916505101
+    },
+    "a0557-kme_589": {
+      "experts": 5,
+      "human_mean": 5.036109902454274,
+      "human_median": 5.368757391943096,
+      "reachable_mean": 4.917579055921927,
+      "reachable_median": 5.33108616773973,
+      "fingerprint_mean": 4.279650648630728
+    },
+    "a0575-kme_040": {
+      "experts": 5,
+      "human_mean": 6.253740617597122,
+      "human_median": 5.509626196911732,
+      "reachable_mean": 5.97601508671164,
+      "reachable_median": 5.199763797358083,
+      "fingerprint_mean": 3.86165212641571
+    },
+    "a0586-JI2E4687": {
+      "experts": 5,
+      "human_mean": 12.065512443464637,
+      "human_median": 10.526285337067119,
+      "reachable_mean": 11.938789790627258,
+      "reachable_median": 10.437145478144942,
+      "fingerprint_mean": 4.831048141578171
+    },
+    "a0596-NKIM_135": {
+      "experts": 5,
+      "human_mean": 6.887223606933179,
+      "human_median": 6.504047413755314,
+      "reachable_mean": 6.8506143782989595,
+      "reachable_median": 6.514097133631621,
+      "fingerprint_mean": 4.241282107711261
+    },
+    "a0601-07-11-26-at-12h45m09s-_MG_7055": {
+      "experts": 5,
+      "human_mean": 6.46457461775073,
+      "human_median": 6.8680296057952726,
+      "reachable_mean": 6.30896131625143,
+      "reachable_median": 6.6988644322164745,
+      "fingerprint_mean": 3.8349010700393884
+    },
+    "a0609-_MG_3231": {
+      "experts": 5,
+      "human_mean": 8.763572221736778,
+      "human_median": 10.388733939405766,
+      "reachable_mean": 8.714194842077115,
+      "reachable_median": 10.368845107600142,
+      "fingerprint_mean": 5.26346383104586
+    },
+    "a0615-IMG_4025": {
+      "experts": 5,
+      "human_mean": 11.754947738088237,
+      "human_median": 10.6286846973689,
+      "reachable_mean": 11.63098569478176,
+      "reachable_median": 10.557983826974528,
+      "fingerprint_mean": 5.931513185329682
+    },
+    "a0629-MB_20030906_100": {
+      "experts": 5,
+      "human_mean": 5.771962370509313,
+      "human_median": 5.522025898150187,
+      "reachable_mean": 5.339056713276287,
+      "reachable_median": 5.275784459247651,
+      "fingerprint_mean": 3.196823431228048
+    },
+    "a0637-IMG_4277": {
+      "experts": 5,
+      "human_mean": 12.618431001564467,
+      "human_median": 12.481177854587788,
+      "reachable_mean": 12.497306611901376,
+      "reachable_median": 12.52773691796492,
+      "fingerprint_mean": 6.302359221714758
+    },
+    "a0645-kme_581": {
+      "experts": 5,
+      "human_mean": 13.235155137044675,
+      "human_median": 12.264047051453183,
+      "reachable_mean": 13.186724936175793,
+      "reachable_median": 12.18158597176031,
+      "fingerprint_mean": 7.958372325173885
+    },
+    "a0685-_DSC0102": {
+      "experts": 5,
+      "human_mean": 13.564026707889942,
+      "human_median": 11.845080603321836,
+      "reachable_mean": 13.467180059490918,
+      "reachable_median": 11.70673366679183,
+      "fingerprint_mean": 6.753738919639753
+    },
+    "a0701-jn_2007_12_10__BU_CRUISE_001": {
+      "experts": 5,
+      "human_mean": 5.04030570426128,
+      "human_median": 4.669164711345825,
+      "reachable_mean": 4.975008949597335,
+      "reachable_median": 4.598257758270543,
+      "fingerprint_mean": 3.408400054005438
+    },
+    "a0722-tc_DSC1969": {
+      "experts": 5,
+      "human_mean": 14.858421975996194,
+      "human_median": 13.849916461490654,
+      "reachable_mean": 14.77882536029143,
+      "reachable_median": 13.769866117336672,
+      "fingerprint_mean": 7.1553164777425735
+    },
+    "a0723-NKIM_MG_6091": {
+      "experts": 5,
+      "human_mean": 13.100766818301485,
+      "human_median": 12.168524268942987,
+      "reachable_mean": 13.039113631066945,
+      "reachable_median": 12.05282766198668,
+      "fingerprint_mean": 7.546830388477224
+    },
+    "a0808-kme_147": {
+      "experts": 5,
+      "human_mean": 13.99244638367442,
+      "human_median": 12.50281256183844,
+      "reachable_mean": 13.967919526202587,
+      "reachable_median": 12.456006234701867,
+      "fingerprint_mean": 5.760031738559351
+    },
+    "a0845-NKIM_MG_7387": {
+      "experts": 5,
+      "human_mean": 9.695860564132712,
+      "human_median": 8.26660363289258,
+      "reachable_mean": 9.481163047345571,
+      "reachable_median": 8.042068617388917,
+      "fingerprint_mean": 5.60481258768006
+    },
+    "a0891-DSC_0012-1": {
+      "experts": 5,
+      "human_mean": 9.692069831182147,
+      "human_median": 8.77841598613563,
+      "reachable_mean": 9.580619504548277,
+      "reachable_median": 8.647548107835867,
+      "fingerprint_mean": 4.659447430957702
+    },
+    "a0893-IMG_5821": {
+      "experts": 5,
+      "human_mean": 11.99738670526433,
+      "human_median": 11.945022402600745,
+      "reachable_mean": 11.848197943975782,
+      "reachable_median": 11.815172252698932,
+      "fingerprint_mean": 7.436488031294718
+    },
+    "a0903-_DSC0025": {
+      "experts": 5,
+      "human_mean": 13.237859900126864,
+      "human_median": 15.569001349783104,
+      "reachable_mean": 13.061783717323621,
+      "reachable_median": 15.378940223451396,
+      "fingerprint_mean": 7.063332194579205
+    },
+    "a0928-_DSC3894": {
+      "experts": 5,
+      "human_mean": 3.5787313999907964,
+      "human_median": 3.5907315640347517,
+      "reachable_mean": 3.2681659067098687,
+      "reachable_median": 3.354923250837505,
+      "fingerprint_mean": 2.918766851456978
+    },
+    "a0972-IMG_4939": {
+      "experts": 5,
+      "human_mean": 9.040238081087299,
+      "human_median": 8.851676284619948,
+      "reachable_mean": 8.987384287620655,
+      "reachable_median": 8.758059361610414,
+      "fingerprint_mean": 4.442549590271928
+    },
+    "a0973-WP_CRW_8501": {
+      "experts": 5,
+      "human_mean": 8.741250163296423,
+      "human_median": 8.68083647583395,
+      "reachable_mean": 8.603992638532684,
+      "reachable_median": 8.58705973688214,
+      "fingerprint_mean": 4.413536000768337
+    },
+    "a0978-LSYD4O2491": {
+      "experts": 5,
+      "human_mean": 9.345995905962944,
+      "human_median": 9.92884542329795,
+      "reachable_mean": 9.10474751249031,
+      "reachable_median": 9.622085278456511,
+      "fingerprint_mean": 5.471267357161417
+    },
+    "a0997-jmac_MG_7637": {
+      "experts": 5,
+      "human_mean": 10.852446964075757,
+      "human_median": 10.58430071381224,
+      "reachable_mean": 10.795014096224488,
+      "reachable_median": 10.527853595323043,
+      "fingerprint_mean": 5.635366674575213
+    },
+    "a0998-IMG_4971": {
+      "experts": 5,
+      "human_mean": 6.617859478603433,
+      "human_median": 6.402248330369355,
+      "reachable_mean": 6.530072514903004,
+      "reachable_median": 6.266568658217555,
+      "fingerprint_mean": 3.410825932853977
+    },
+    "a1012-kme_280": {
+      "experts": 5,
+      "human_mean": 14.168963156212708,
+      "human_median": 12.669231893954015,
+      "reachable_mean": 13.999261983850221,
+      "reachable_median": 12.49790561224597,
+      "fingerprint_mean": 5.396975245141371
+    },
+    "a1020-IMG_5557": {
+      "experts": 5,
+      "human_mean": 7.544028687789127,
+      "human_median": 7.373027524395621,
+      "reachable_mean": 7.410224031307034,
+      "reachable_median": 7.221407159025889,
+      "fingerprint_mean": 3.6415340303762966
+    },
+    "a1028-_DSC6440": {
+      "experts": 5,
+      "human_mean": 6.322789451131781,
+      "human_median": 4.9177461570838075,
+      "reachable_mean": 6.247343242276733,
+      "reachable_median": 4.965468927851592,
+      "fingerprint_mean": 3.8979970278913805
+    },
+    "a1034-_I2E8160": {
+      "experts": 5,
+      "human_mean": 9.314290363553196,
+      "human_median": 9.29551605681175,
+      "reachable_mean": 9.263976043814335,
+      "reachable_median": 9.316914327816123,
+      "fingerprint_mean": 4.842514535788269
+    },
+    "a1039-IMG_3952": {
+      "experts": 5,
+      "human_mean": 11.632806227059366,
+      "human_median": 11.035911233366406,
+      "reachable_mean": 11.393025392972257,
+      "reachable_median": 10.644608040569292,
+      "fingerprint_mean": 6.441289603161711
+    },
+    "a1050-IMG_1683": {
+      "experts": 5,
+      "human_mean": 7.6169596574604785,
+      "human_median": 5.320337493504357,
+      "reachable_mean": 7.5809287140341315,
+      "reachable_median": 5.331496500953817,
+      "fingerprint_mean": 4.60252914409318
+    },
+    "a1095-DSC_0011-2": {
+      "experts": 5,
+      "human_mean": 6.012724361916193,
+      "human_median": 5.896377152411947,
+      "reachable_mean": 5.926893474945223,
+      "reachable_median": 5.703979505876056,
+      "fingerprint_mean": 3.718734434492371
+    },
+    "a1139-Ja_Pe-97": {
+      "experts": 5,
+      "human_mean": 8.609944961900327,
+      "human_median": 4.855943956950689,
+      "reachable_mean": 8.386056457417954,
+      "reachable_median": 4.567475666457868,
+      "fingerprint_mean": 6.3329046596279195
+    },
+    "a1146-_DSC0027-2": {
+      "experts": 5,
+      "human_mean": 13.960889285628365,
+      "human_median": 13.083986797227876,
+      "reachable_mean": 13.107377188476542,
+      "reachable_median": 12.052780633333825,
+      "fingerprint_mean": 13.881941360117674
+    },
+    "a1173-IMG_1748": {
+      "experts": 5,
+      "human_mean": 8.788270267526766,
+      "human_median": 6.474443430889403,
+      "reachable_mean": 8.406433318684929,
+      "reachable_median": 5.694426338017561,
+      "fingerprint_mean": 5.008545206959995
+    },
+    "a1184-jmacDSC_0202": {
+      "experts": 5,
+      "human_mean": 5.2281590284392285,
+      "human_median": 5.276712413707935,
+      "reachable_mean": 5.2253155071543285,
+      "reachable_median": 5.209691405630924,
+      "fingerprint_mean": 4.4300565460965124
+    },
+    "a1200-IMG_1677": {
+      "experts": 5,
+      "human_mean": 11.784909346238962,
+      "human_median": 11.843875346880647,
+      "reachable_mean": 11.634576422292316,
+      "reachable_median": 11.547250301703755,
+      "fingerprint_mean": 6.95867525922732
+    },
+    "a1206-07-11-11-at-10h31m23s-_MG_4451": {
+      "experts": 5,
+      "human_mean": 5.24106468184093,
+      "human_median": 5.124854567526841,
+      "reachable_mean": 5.195855993007669,
+      "reachable_median": 5.0295801013284365,
+      "fingerprint_mean": 3.808750528888094
+    },
+    "a1256-Ja_Pe-30": {
+      "experts": 5,
+      "human_mean": 7.497375781305135,
+      "human_median": 7.99781354865368,
+      "reachable_mean": 7.358075907408441,
+      "reachable_median": 7.770968234226545,
+      "fingerprint_mean": 4.56612744705991
+    },
+    "a1301-07-11-24-at-14h40m51s-_MG_6711": {
+      "experts": 5,
+      "human_mean": 10.232224098504997,
+      "human_median": 8.845509251238804,
+      "reachable_mean": 10.18385238958168,
+      "reachable_median": 8.841506972986082,
+      "fingerprint_mean": 5.024194573079508
+    },
+    "a1317-20061213_150840__MG_3797": {
+      "experts": 5,
+      "human_mean": 12.819734768621874,
+      "human_median": 11.94408750774162,
+      "reachable_mean": 12.687994894534805,
+      "reachable_median": 11.743680070130964,
+      "fingerprint_mean": 6.038575360268848
+    },
+    "a1359-NKIM_MG_6126": {
+      "experts": 5,
+      "human_mean": 10.228492511669403,
+      "human_median": 8.983908213233635,
+      "reachable_mean": 10.218156971909865,
+      "reachable_median": 9.02071340927035,
+      "fingerprint_mean": 5.004231768754626
+    },
+    "a1380-jmac_DSC0493": {
+      "experts": 5,
+      "human_mean": 15.882427377092933,
+      "human_median": 15.308366650444809,
+      "reachable_mean": 15.601714092464068,
+      "reachable_median": 15.20573956059297,
+      "fingerprint_mean": 7.43242257289414
+    },
+    "a1395-jmac_DSC3020": {
+      "experts": 5,
+      "human_mean": 8.705466747141719,
+      "human_median": 6.979613358259517,
+      "reachable_mean": 8.547745427268675,
+      "reachable_median": 6.874613930659651,
+      "fingerprint_mean": 5.31685783820687
+    },
+    "a1408-kme_605": {
+      "experts": 5,
+      "human_mean": 13.192427992710781,
+      "human_median": 14.471020188957946,
+      "reachable_mean": 13.017188110315672,
+      "reachable_median": 14.418236446230331,
+      "fingerprint_mean": 6.099905670386255
+    },
+    "a1410-IMG_0002": {
+      "experts": 5,
+      "human_mean": 6.5254357937927905,
+      "human_median": 5.666146790718453,
+      "reachable_mean": 6.42587166742431,
+      "reachable_median": 5.547680467681552,
+      "fingerprint_mean": 4.671752596924777
+    },
+    "a1431-dgw_089": {
+      "experts": 5,
+      "human_mean": 8.59860410254987,
+      "human_median": 6.780471936167501,
+      "reachable_mean": 8.455573466997382,
+      "reachable_median": 6.596269554736153,
+      "fingerprint_mean": 4.4615881312577725
+    },
+    "a1449-MB_060909_016": {
+      "experts": 5,
+      "human_mean": 8.459188123568936,
+      "human_median": 8.000751090333353,
+      "reachable_mean": 8.456422396882923,
+      "reachable_median": 7.904462259750263,
+      "fingerprint_mean": 4.616194434451279
+    },
+    "a1461-NKIM_MG_3096": {
+      "experts": 5,
+      "human_mean": 7.603469170539277,
+      "human_median": 7.905340072464508,
+      "reachable_mean": 7.439098901738338,
+      "reachable_median": 7.751238050762126,
+      "fingerprint_mean": 3.745888560391202
+    },
+    "a1476-IMG_2647": {
+      "experts": 5,
+      "human_mean": 9.359306128026267,
+      "human_median": 9.153697580946162,
+      "reachable_mean": 9.10515678667147,
+      "reachable_median": 8.938268248345043,
+      "fingerprint_mean": 4.698862576219538
+    },
+    "a1487-20081226_at_16h52m49__MG_3920": {
+      "experts": 5,
+      "human_mean": 6.77720149047902,
+      "human_median": 6.6122588272506615,
+      "reachable_mean": 6.597993442522655,
+      "reachable_median": 6.428439854335508,
+      "fingerprint_mean": 4.072258504680045
+    },
+    "a1489-IMG_4766": {
+      "experts": 5,
+      "human_mean": 10.224958468938746,
+      "human_median": 10.345512680824088,
+      "reachable_mean": 9.999640225290799,
+      "reachable_median": 10.18054023914772,
+      "fingerprint_mean": 5.438019310274845
+    },
+    "a1492-jn_2007_05_14__776": {
+      "experts": 5,
+      "human_mean": 10.386083073111516,
+      "human_median": 11.005194868379665,
+      "reachable_mean": 10.27369021455017,
+      "reachable_median": 10.901750997596992,
+      "fingerprint_mean": 6.932627403951535
+    },
+    "a1502-NKIM_MG_6279": {
+      "experts": 5,
+      "human_mean": 13.63832469131206,
+      "human_median": 10.51664388023133,
+      "reachable_mean": 13.584160050922259,
+      "reachable_median": 10.45663905157046,
+      "fingerprint_mean": 6.2432549047118915
+    },
+    "a1505-Ja_Pe-4": {
+      "experts": 5,
+      "human_mean": 8.478278281981202,
+      "human_median": 9.608883752861473,
+      "reachable_mean": 8.431692608168404,
+      "reachable_median": 9.234069053095588,
+      "fingerprint_mean": 4.640235787069281
+    },
+    "a1531-IMG_1678": {
+      "experts": 5,
+      "human_mean": 8.08617847607728,
+      "human_median": 6.254850319185865,
+      "reachable_mean": 7.877143222789316,
+      "reachable_median": 6.302205726992947,
+      "fingerprint_mean": 6.538404197943611
+    },
+    "a1534-kme_586": {
+      "experts": 5,
+      "human_mean": 10.959068364449514,
+      "human_median": 10.367432000746458,
+      "reachable_mean": 10.884413499431755,
+      "reachable_median": 10.273745616998266,
+      "fingerprint_mean": 4.750553562360583
+    },
+    "a1571-IMG_0403": {
+      "experts": 5,
+      "human_mean": 10.943785482605836,
+      "human_median": 10.86669273355903,
+      "reachable_mean": 10.8681572904487,
+      "reachable_median": 10.786359264974024,
+      "fingerprint_mean": 4.578160384094033
+    },
+    "a1632-IMG_4283": {
+      "experts": 5,
+      "human_mean": 4.275080004592513,
+      "human_median": 4.275162554035656,
+      "reachable_mean": 4.100747638404155,
+      "reachable_median": 4.0769299999671595,
+      "fingerprint_mean": 4.475375210507828
+    },
+    "a1667-jmacDSC_0246": {
+      "experts": 5,
+      "human_mean": 5.92270171129924,
+      "human_median": 5.735960521359307,
+      "reachable_mean": 5.87819612853944,
+      "reachable_median": 5.756486932046321,
+      "fingerprint_mean": 4.652362466082768
+    },
+    "a1673-_DSC2658": {
+      "experts": 5,
+      "human_mean": 10.641803862477996,
+      "human_median": 9.799772159338817,
+      "reachable_mean": 10.294401993607215,
+      "reachable_median": 9.419411654235502,
+      "fingerprint_mean": 5.778934295359553
+    },
+    "a1674-DSC_0013": {
+      "experts": 5,
+      "human_mean": 7.614073536330006,
+      "human_median": 8.713973301896374,
+      "reachable_mean": 7.499530614910968,
+      "reachable_median": 8.458645226478108,
+      "fingerprint_mean": 4.279283095218735
+    },
+    "a1696-Ja_Pe-64": {
+      "experts": 5,
+      "human_mean": 5.775385574300696,
+      "human_median": 5.5661327607420334,
+      "reachable_mean": 5.6203227604052115,
+      "reachable_median": 5.429016187900791,
+      "fingerprint_mean": 4.419454743765004
+    },
+    "a1720-07-06-01-at-14h14m20-s_MG_1282": {
+      "experts": 5,
+      "human_mean": 4.99404000861592,
+      "human_median": 5.196309154355083,
+      "reachable_mean": 4.875260341782044,
+      "reachable_median": 5.0355057664652705,
+      "fingerprint_mean": 2.908344738933373
+    },
+    "a1744-jmac_MG_0369": {
+      "experts": 5,
+      "human_mean": 7.099921857778668,
+      "human_median": 5.924664344382762,
+      "reachable_mean": 6.882841837189645,
+      "reachable_median": 5.621813867581914,
+      "fingerprint_mean": 5.082242264884144
+    },
+    "a1755-NKIM_MG_2646": {
+      "experts": 5,
+      "human_mean": 11.337663320214794,
+      "human_median": 8.225517766756166,
+      "reachable_mean": 11.244884184427892,
+      "reachable_median": 8.186254136596702,
+      "fingerprint_mean": 6.481480304550736
+    },
+    "a1761-JI2E4450": {
+      "experts": 5,
+      "human_mean": 10.078256371555163,
+      "human_median": 9.349812894570412,
+      "reachable_mean": 9.954980758682147,
+      "reachable_median": 9.152302570323403,
+      "fingerprint_mean": 5.452327051730463
+    },
+    "a1790-07-06-28-at-12h47m57s-_MG_1831": {
+      "experts": 5,
+      "human_mean": 5.440855829890863,
+      "human_median": 5.537235739512979,
+      "reachable_mean": 5.3036681904929655,
+      "reachable_median": 5.396286874700763,
+      "fingerprint_mean": 3.5097417061545237
+    },
+    "a1800-kme_456": {
+      "experts": 5,
+      "human_mean": 8.340529415171051,
+      "human_median": 8.936151894068155,
+      "reachable_mean": 8.171805686827112,
+      "reachable_median": 8.67373245447692,
+      "fingerprint_mean": 4.064020139190345
+    },
+    "a1803-kme_508": {
+      "experts": 5,
+      "human_mean": 10.699764188968738,
+      "human_median": 10.128827856030309,
+      "reachable_mean": 10.628064834370761,
+      "reachable_median": 10.087925922544956,
+      "fingerprint_mean": 5.306118736268724
+    },
+    "a1828-060330_071502__MG_7620": {
+      "experts": 5,
+      "human_mean": 5.804059636673837,
+      "human_median": 5.9999699677867735,
+      "reachable_mean": 5.71310118619392,
+      "reachable_median": 5.856834638726481,
+      "fingerprint_mean": 4.455471366056847
+    },
+    "a1838-NKIM_034": {
+      "experts": 5,
+      "human_mean": 7.446861657846158,
+      "human_median": 6.525263832072283,
+      "reachable_mean": 7.351226913486814,
+      "reachable_median": 6.470813814619395,
+      "fingerprint_mean": 3.9962893551745147
+    },
+    "a1839-jmac_DSC1608": {
+      "experts": 5,
+      "human_mean": 10.987302748318895,
+      "human_median": 10.703594605294409,
+      "reachable_mean": 10.682906151288472,
+      "reachable_median": 10.464252267042532,
+      "fingerprint_mean": 5.332169590216632
+    },
+    "a1844-kme_188": {
+      "experts": 5,
+      "human_mean": 12.967818290984013,
+      "human_median": 11.033423648253574,
+      "reachable_mean": 12.90680547921841,
+      "reachable_median": 10.92266444509489,
+      "fingerprint_mean": 8.217238311371398
+    },
+    "a1870-jmac_MG_6385": {
+      "experts": 5,
+      "human_mean": 11.791882633025132,
+      "human_median": 12.329843360921146,
+      "reachable_mean": 11.725945739455984,
+      "reachable_median": 12.325363141728019,
+      "fingerprint_mean": 7.101719604818922
+    },
+    "a1875-_DGW6410": {
+      "experts": 5,
+      "human_mean": 8.62492384152277,
+      "human_median": 8.565723395269988,
+      "reachable_mean": 8.410466104364707,
+      "reachable_median": 8.43278056190882,
+      "fingerprint_mean": 8.514582916760721
+    },
+    "a1879-jn_2007_12_11__BU_CRUISE_044": {
+      "experts": 5,
+      "human_mean": 13.471307212441284,
+      "human_median": 13.882840892892752,
+      "reachable_mean": 13.21594433230048,
+      "reachable_median": 13.592841095731147,
+      "fingerprint_mean": 7.229351160685766
+    },
+    "a1916-dvf_065": {
+      "experts": 5,
+      "human_mean": 7.624461659740538,
+      "human_median": 7.1017512742842595,
+      "reachable_mean": 7.5046604324784285,
+      "reachable_median": 7.105628186699477,
+      "fingerprint_mean": 3.6606122495756006
+    },
+    "a1969-_DGW6290": {
+      "experts": 5,
+      "human_mean": 8.3991859184293,
+      "human_median": 8.201615693389185,
+      "reachable_mean": 8.348452000490193,
+      "reachable_median": 8.164003220768967,
+      "fingerprint_mean": 4.225870077469733
+    },
+    "a1979-kme_084": {
+      "experts": 5,
+      "human_mean": 7.258023072878113,
+      "human_median": 6.794229322850402,
+      "reachable_mean": 7.213706284109574,
+      "reachable_median": 6.9040266063434474,
+      "fingerprint_mean": 3.7231568221634754
+    },
+    "a1980-07-11-08-at-01h16m15s-_MG_4131": {
+      "experts": 5,
+      "human_mean": 11.433300940238983,
+      "human_median": 10.208316607328317,
+      "reachable_mean": 11.249757809679739,
+      "reachable_median": 10.074412695243968,
+      "fingerprint_mean": 7.132279874180678
+    },
+    "a1988-kme_235": {
+      "experts": 5,
+      "human_mean": 5.780822349657126,
+      "human_median": 4.357344150929229,
+      "reachable_mean": 5.603797797646903,
+      "reachable_median": 4.1860143906238605,
+      "fingerprint_mean": 3.418142986928058
+    },
+    "a1998-20080426_112951__MG_9254": {
+      "experts": 5,
+      "human_mean": 7.168483271880492,
+      "human_median": 5.997992160080815,
+      "reachable_mean": 6.933054124310229,
+      "reachable_median": 5.846858484311047,
+      "fingerprint_mean": 4.872911428806698
+    },
+    "a1999-jmac_DSC3078": {
+      "experts": 5,
+      "human_mean": 9.559086964836212,
+      "human_median": 9.95225650172906,
+      "reachable_mean": 9.38300407312165,
+      "reachable_median": 9.451516040630334,
+      "fingerprint_mean": 6.627701316501129
+    },
+    "a2009-jn_20080129_Las_Vegas_0123": {
+      "experts": 5,
+      "human_mean": 9.252461517691021,
+      "human_median": 10.9070707370411,
+      "reachable_mean": 7.534263498243078,
+      "reachable_median": 7.93641840488227,
+      "fingerprint_mean": 5.455685009926002
+    },
+    "a2013-MB_060909_009": {
+      "experts": 5,
+      "human_mean": 7.892930921458335,
+      "human_median": 8.356685208268026,
+      "reachable_mean": 7.813097014585812,
+      "reachable_median": 8.26159963713365,
+      "fingerprint_mean": 3.7735839708428536
+    },
+    "a2033-jn_20070927_0022": {
+      "experts": 5,
+      "human_mean": 6.454662231961788,
+      "human_median": 5.256818230476467,
+      "reachable_mean": 6.321055102273957,
+      "reachable_median": 5.101811679016429,
+      "fingerprint_mean": 3.923386227006412
+    },
+    "a2042-dgw_038": {
+      "experts": 5,
+      "human_mean": 13.578410897895509,
+      "human_median": 7.132426863995795,
+      "reachable_mean": 14.017946133227998,
+      "reachable_median": 7.708148840160815,
+      "fingerprint_mean": 9.465327897298131
+    },
+    "a2045-Ja_Pe-93": {
+      "experts": 5,
+      "human_mean": 6.271164525782714,
+      "human_median": 6.126360527197216,
+      "reachable_mean": 6.103165828462552,
+      "reachable_median": 6.046088372441193,
+      "fingerprint_mean": 3.829262699538865
+    },
+    "a2046-WP_IMG_0994": {
+      "experts": 5,
+      "human_mean": 9.32111678450807,
+      "human_median": 8.608792315185513,
+      "reachable_mean": 9.23857861412138,
+      "reachable_median": 8.540599929532661,
+      "fingerprint_mean": 6.80251343946229
+    },
+    "a2055-IMG_4247": {
+      "experts": 5,
+      "human_mean": 13.01914297791473,
+      "human_median": 12.648959512272429,
+      "reachable_mean": 12.878176286306282,
+      "reachable_median": 12.575999340717063,
+      "fingerprint_mean": 6.539137642465635
+    },
+    "a2060-kme_192": {
+      "experts": 5,
+      "human_mean": 7.4250079038812515,
+      "human_median": 6.565036836018976,
+      "reachable_mean": 7.244412417908038,
+      "reachable_median": 6.319031828306482,
+      "fingerprint_mean": 3.6779010619735972
+    },
+    "a2074-IMG_4475": {
+      "experts": 5,
+      "human_mean": 8.49300679724789,
+      "human_median": 8.777392811013929,
+      "reachable_mean": 8.300578825143118,
+      "reachable_median": 8.665559172665272,
+      "fingerprint_mean": 4.179135002957026
+    },
+    "a2087-IMG_1560": {
+      "experts": 5,
+      "human_mean": 8.214163968696347,
+      "human_median": 8.423921515287951,
+      "reachable_mean": 7.854236940882203,
+      "reachable_median": 7.994098470485833,
+      "fingerprint_mean": 4.741846022253941
+    },
+    "a2121-jn_20080509_189": {
+      "experts": 5,
+      "human_mean": 17.989918686557253,
+      "human_median": 17.390600275868508,
+      "reachable_mean": 17.828500559615822,
+      "reachable_median": 16.94637773881565,
+      "fingerprint_mean": 6.6920953493747195
+    },
+    "a2140-dgw_021": {
+      "experts": 5,
+      "human_mean": 6.315210288731251,
+      "human_median": 5.168585959631696,
+      "reachable_mean": 6.411957301991103,
+      "reachable_median": 5.461192049717679,
+      "fingerprint_mean": 4.925413758427078
+    },
+    "a2146-IMG_4970": {
+      "experts": 5,
+      "human_mean": 8.088879382104412,
+      "human_median": 8.891623023693281,
+      "reachable_mean": 7.89499720494361,
+      "reachable_median": 8.841130552664744,
+      "fingerprint_mean": 5.4419933433541186
+    },
+    "a2167-20050602_183119__MG_2842": {
+      "experts": 5,
+      "human_mean": 8.097861657333388,
+      "human_median": 7.087016173392861,
+      "reachable_mean": 7.893876885868146,
+      "reachable_median": 6.849055939915645,
+      "fingerprint_mean": 5.849929799239393
+    },
+    "a2176-DSC_0117": {
+      "experts": 5,
+      "human_mean": 9.915906743210618,
+      "human_median": 9.187852757679721,
+      "reachable_mean": 9.843706007576257,
+      "reachable_median": 9.247971667043187,
+      "fingerprint_mean": 4.841857174024866
+    },
+    "a2192-IMG_2045": {
+      "experts": 5,
+      "human_mean": 11.142767567228487,
+      "human_median": 10.463330068913995,
+      "reachable_mean": 10.903056488122392,
+      "reachable_median": 10.138694756722591,
+      "fingerprint_mean": 5.778871060415882
+    },
+    "a2198-Ja_Pe-48": {
+      "experts": 5,
+      "human_mean": 6.587332024233618,
+      "human_median": 6.587242851018338,
+      "reachable_mean": 6.449450099000662,
+      "reachable_median": 6.467967909181703,
+      "fingerprint_mean": 4.153129447778192
+    },
+    "a2199-IMG_5108": {
+      "experts": 5,
+      "human_mean": 11.637695812235938,
+      "human_median": 12.702409820780922,
+      "reachable_mean": 11.574265333246014,
+      "reachable_median": 12.826411831810963,
+      "fingerprint_mean": 6.4005568152000505
+    },
+    "a2206-_I2E7986": {
+      "experts": 5,
+      "human_mean": 18.256844981158743,
+      "human_median": 16.759170008845466,
+      "reachable_mean": 18.122370141480936,
+      "reachable_median": 16.65472675516319,
+      "fingerprint_mean": 10.065010358618013
+    },
+    "a2210-dgw_149": {
+      "experts": 5,
+      "human_mean": 12.60886909098221,
+      "human_median": 10.263563847174538,
+      "reachable_mean": 12.43270432989711,
+      "reachable_median": 10.080973683383544,
+      "fingerprint_mean": 7.1025387344793645
+    },
+    "a2224-MB_070908_032": {
+      "experts": 5,
+      "human_mean": 7.987762009612257,
+      "human_median": 6.821178089406251,
+      "reachable_mean": 7.706828848936101,
+      "reachable_median": 6.559169966447273,
+      "fingerprint_mean": 4.6195626005757475
+    },
+    "a2227-IMG_4911": {
+      "experts": 5,
+      "human_mean": 10.074103268698428,
+      "human_median": 10.283812826216534,
+      "reachable_mean": 9.998484521830033,
+      "reachable_median": 10.11785970215677,
+      "fingerprint_mean": 6.215574243309139
+    },
+    "a2230-20060616_082451__MG_8195": {
+      "experts": 5,
+      "human_mean": 11.67535541405125,
+      "human_median": 12.844593860020948,
+      "reachable_mean": 11.556096662976302,
+      "reachable_median": 12.94995828818049,
+      "fingerprint_mean": 5.5435629713563
+    },
+    "a2232-_DSC0088": {
+      "experts": 5,
+      "human_mean": 11.7616651480447,
+      "human_median": 11.623899886582425,
+      "reachable_mean": 11.67986744166298,
+      "reachable_median": 11.515448425550424,
+      "fingerprint_mean": 5.617190927954432
+    },
+    "a2258-NKIM_027": {
+      "experts": 5,
+      "human_mean": 5.462419215258026,
+      "human_median": 6.000985945992779,
+      "reachable_mean": 5.2358697359273645,
+      "reachable_median": 5.426686697394443,
+      "fingerprint_mean": 3.292711750038378
+    },
+    "a2299-20060617_172354__MG_8709": {
+      "experts": 5,
+      "human_mean": 9.951498855929277,
+      "human_median": 7.959753484569632,
+      "reachable_mean": 9.748380900915715,
+      "reachable_median": 7.776308580999757,
+      "fingerprint_mean": 7.469428785886075
+    },
+    "a2309-NKIM_MG_7495": {
+      "experts": 5,
+      "human_mean": 9.027405660491903,
+      "human_median": 8.68376624607495,
+      "reachable_mean": 8.750907498109731,
+      "reachable_median": 8.371965904437438,
+      "fingerprint_mean": 4.422441959140178
+    },
+    "a2314-20080426_111248__MG_9227": {
+      "experts": 5,
+      "human_mean": 7.9537425168332145,
+      "human_median": 7.1363185055566785,
+      "reachable_mean": 7.483362440115654,
+      "reachable_median": 6.7092898888194785,
+      "fingerprint_mean": 7.848035767841941
+    },
+    "a2325-jn_2007_12_15__BU_CRUISE_237": {
+      "experts": 5,
+      "human_mean": 9.753479087601706,
+      "human_median": 8.87820270476533,
+      "reachable_mean": 9.956978828326823,
+      "reachable_median": 9.05526919951386,
+      "fingerprint_mean": 7.487360545056932
+    },
+    "a2336-IMG_1392": {
+      "experts": 5,
+      "human_mean": 10.313516509964911,
+      "human_median": 10.15989687210623,
+      "reachable_mean": 10.180723263032446,
+      "reachable_median": 10.131483085622243,
+      "fingerprint_mean": 4.5625047967566426
+    },
+    "a2337-_MG_1729": {
+      "experts": 5,
+      "human_mean": 12.094752528914373,
+      "human_median": 12.78876334008541,
+      "reachable_mean": 11.977003490496596,
+      "reachable_median": 12.655848352120884,
+      "fingerprint_mean": 7.140002583799107
+    },
+    "a2338-MB_080628_696": {
+      "experts": 5,
+      "human_mean": 5.6114806229017,
+      "human_median": 6.2423670492403085,
+      "reachable_mean": 5.7264174481206425,
+      "reachable_median": 5.746203774657378,
+      "fingerprint_mean": 3.9648744241301648
+    },
+    "a2380-20060208_203256__MG_2849": {
+      "experts": 5,
+      "human_mean": 16.79860123069812,
+      "human_median": 15.590890439785682,
+      "reachable_mean": 16.58733953557108,
+      "reachable_median": 15.566143387028172,
+      "fingerprint_mean": 8.880846760348376
+    },
+    "a2384-IMG_2883": {
+      "experts": 5,
+      "human_mean": 4.956928714293803,
+      "human_median": 4.772984330177959,
+      "reachable_mean": 4.870404533220039,
+      "reachable_median": 4.684111258970822,
+      "fingerprint_mean": 3.2339761416676067
+    },
+    "a2405-NKIM_MG_6615": {
+      "experts": 5,
+      "human_mean": 11.56164318727096,
+      "human_median": 11.002571489628195,
+      "reachable_mean": 11.467915697778377,
+      "reachable_median": 10.837590705874547,
+      "fingerprint_mean": 5.1271741357486595
+    },
+    "a2429-kme_315": {
+      "experts": 5,
+      "human_mean": 10.087807399633688,
+      "human_median": 6.551503167646695,
+      "reachable_mean": 9.984994635780188,
+      "reachable_median": 6.437066408808025,
+      "fingerprint_mean": 5.121101434405921
+    },
+    "a2459-_MG_7774": {
+      "experts": 5,
+      "human_mean": 10.694034532031068,
+      "human_median": 10.313466749117719,
+      "reachable_mean": 10.554777524301155,
+      "reachable_median": 10.011532955017394,
+      "fingerprint_mean": 6.993789129351242
+    },
+    "a2484-dgw_011": {
+      "experts": 5,
+      "human_mean": 13.574922876252412,
+      "human_median": 11.961270591230333,
+      "reachable_mean": 13.476828751882843,
+      "reachable_median": 12.113929970174594,
+      "fingerprint_mean": 7.137464497431641
+    },
+    "a2491-_DGW6342": {
+      "experts": 5,
+      "human_mean": 8.630937267916135,
+      "human_median": 7.802371224303068,
+      "reachable_mean": 8.466312890798942,
+      "reachable_median": 7.632136353384881,
+      "fingerprint_mean": 4.689319488709497
+    },
+    "a2499-_DSC1385": {
+      "experts": 5,
+      "human_mean": 8.97726050855265,
+      "human_median": 9.864030361020049,
+      "reachable_mean": 8.849850027105461,
+      "reachable_median": 9.84670297301652,
+      "fingerprint_mean": 4.154305802972149
+    },
+    "a2507-IMG_5137": {
+      "experts": 5,
+      "human_mean": 9.635775816317974,
+      "human_median": 10.301957941654322,
+      "reachable_mean": 9.588684371144973,
+      "reachable_median": 10.304967049797515,
+      "fingerprint_mean": 5.623254931272287
+    },
+    "a2515-dvf_072": {
+      "experts": 5,
+      "human_mean": 7.228316523245404,
+      "human_median": 7.1505591576804495,
+      "reachable_mean": 7.112179004181984,
+      "reachable_median": 6.999786945821368,
+      "fingerprint_mean": 4.285099622902573
+    },
+    "a2524-kme_045": {
+      "experts": 5,
+      "human_mean": 9.312076114080709,
+      "human_median": 8.191331621789864,
+      "reachable_mean": 9.175862815907399,
+      "reachable_median": 8.105363318980835,
+      "fingerprint_mean": 5.719158146692058
+    },
+    "a2525-jn_2007_12_12__BU_CRUISE_090": {
+      "experts": 5,
+      "human_mean": 7.640126286166003,
+      "human_median": 7.970518839220219,
+      "reachable_mean": 7.543788896370747,
+      "reachable_median": 7.862628069118047,
+      "fingerprint_mean": 4.586233072508573
+    },
+    "a2528-IMG_1655": {
+      "experts": 5,
+      "human_mean": 7.450130113137279,
+      "human_median": 6.028971157683815,
+      "reachable_mean": 7.357211690571381,
+      "reachable_median": 5.9471794267074305,
+      "fingerprint_mean": 5.528984753087478
+    },
+    "a2530-WP_CRW_4634": {
+      "experts": 5,
+      "human_mean": 9.969124446729715,
+      "human_median": 8.5746342751772,
+      "reachable_mean": 9.721291911552315,
+      "reachable_median": 8.21427974086828,
+      "fingerprint_mean": 5.632164425012971
+    },
+    "a2531-Ja_Pe-42": {
+      "experts": 5,
+      "human_mean": 6.343963721028403,
+      "human_median": 6.751058553572532,
+      "reachable_mean": 6.060234193253586,
+      "reachable_median": 6.636192348987208,
+      "fingerprint_mean": 5.233062301383148
+    },
+    "a2557-_DGW6396": {
+      "experts": 5,
+      "human_mean": 7.129574881687695,
+      "human_median": 6.485672534728884,
+      "reachable_mean": 7.04990193599796,
+      "reachable_median": 6.474144865940598,
+      "fingerprint_mean": 4.1478619031484625
+    },
+    "a2627-IMG_0043": {
+      "experts": 5,
+      "human_mean": 7.337187657827288,
+      "human_median": 6.3856226639439075,
+      "reachable_mean": 7.242494183631749,
+      "reachable_median": 6.214436282772491,
+      "fingerprint_mean": 3.81064651745329
+    },
+    "a2634-IMG_5073": {
+      "experts": 5,
+      "human_mean": 12.555621419747652,
+      "human_median": 13.982003801153304,
+      "reachable_mean": 12.374010245945694,
+      "reachable_median": 13.959831624453926,
+      "fingerprint_mean": 7.71028003512879
+    },
+    "a2641-_MG_2569": {
+      "experts": 5,
+      "human_mean": 11.869849636436186,
+      "human_median": 12.774611286282418,
+      "reachable_mean": 11.847489710790056,
+      "reachable_median": 12.742075724263909,
+      "fingerprint_mean": 6.99791308564504
+    },
+    "a2646-050801_143748__I2E5549": {
+      "experts": 5,
+      "human_mean": 9.12437831675614,
+      "human_median": 8.83739744901073,
+      "reachable_mean": 8.88161439513161,
+      "reachable_median": 8.467759400781475,
+      "fingerprint_mean": 4.621557305536127
+    },
+    "a2666-IMG_4377": {
+      "experts": 5,
+      "human_mean": 6.167862573869655,
+      "human_median": 6.282549868758603,
+      "reachable_mean": 6.055503129448537,
+      "reachable_median": 6.193244070771558,
+      "fingerprint_mean": 4.495762572055444
+    },
+    "a2667-NKIM_MG_4329": {
+      "experts": 5,
+      "human_mean": 6.14693054664793,
+      "human_median": 5.99256896309773,
+      "reachable_mean": 5.867990089682115,
+      "reachable_median": 5.672381693283649,
+      "fingerprint_mean": 4.21682252290072
+    },
+    "a2707-kme_553": {
+      "experts": 5,
+      "human_mean": 6.255328200779784,
+      "human_median": 5.305993345418665,
+      "reachable_mean": 6.114027924338819,
+      "reachable_median": 5.125413290257672,
+      "fingerprint_mean": 5.158792248179976
+    },
+    "a2711-MB_070908_106": {
+      "experts": 5,
+      "human_mean": 7.814000817437133,
+      "human_median": 7.624782136692547,
+      "reachable_mean": 7.797759111570175,
+      "reachable_median": 7.119535357298803,
+      "fingerprint_mean": 5.999179938309537
+    },
+    "a2714-IMG_4408": {
+      "experts": 5,
+      "human_mean": 7.449199857890908,
+      "human_median": 5.081435021909396,
+      "reachable_mean": 7.297440117615059,
+      "reachable_median": 4.952292934595036,
+      "fingerprint_mean": 4.145251696956283
+    },
+    "a2792-IMG_4043": {
+      "experts": 5,
+      "human_mean": 7.85805326138001,
+      "human_median": 7.945427252581025,
+      "reachable_mean": 7.695281560830172,
+      "reachable_median": 7.717868628892159,
+      "fingerprint_mean": 4.931352225157705
+    },
+    "a2798-kme_383": {
+      "experts": 5,
+      "human_mean": 7.541728183556879,
+      "human_median": 6.838639587365253,
+      "reachable_mean": 7.377107548338036,
+      "reachable_median": 6.654713596163942,
+      "fingerprint_mean": 4.566458261032436
+    },
+    "a2808-20080516_072208__MG_0018": {
+      "experts": 5,
+      "human_mean": 7.402829786907034,
+      "human_median": 7.101185037495874,
+      "reachable_mean": 7.383487056157355,
+      "reachable_median": 7.112377059813987,
+      "fingerprint_mean": 3.297948689233329
+    },
+    "a2844-jmac_DSC3373": {
+      "experts": 5,
+      "human_mean": 13.665853755037281,
+      "human_median": 12.23256852201899,
+      "reachable_mean": 13.536877756931691,
+      "reachable_median": 12.103863478673906,
+      "fingerprint_mean": 6.196435847016253
+    },
+    "a2856-IMG_5016": {
+      "experts": 5,
+      "human_mean": 9.146729284193833,
+      "human_median": 9.305733750899487,
+      "reachable_mean": 9.06563818075421,
+      "reachable_median": 9.238642587208826,
+      "fingerprint_mean": 5.864946911539166
+    },
+    "a2862-_DSC0055": {
+      "experts": 5,
+      "human_mean": 8.625872149019772,
+      "human_median": 9.757593253856335,
+      "reachable_mean": 8.590225443231429,
+      "reachable_median": 9.711099497071476,
+      "fingerprint_mean": 4.361113921519882
+    },
+    "a2892-MB_060708_226": {
+      "experts": 5,
+      "human_mean": 10.343665517732932,
+      "human_median": 9.84904387791492,
+      "reachable_mean": 10.305996964729955,
+      "reachable_median": 9.773111010222383,
+      "fingerprint_mean": 5.496289956640128
+    },
+    "a2901-_DSC0013-4": {
+      "experts": 5,
+      "human_mean": 7.152747681563992,
+      "human_median": 7.138618369525954,
+      "reachable_mean": 7.132290201635749,
+      "reachable_median": 7.096987707090479,
+      "fingerprint_mean": 5.435578268500655
+    },
+    "a2917-jmac_DSC3800": {
+      "experts": 5,
+      "human_mean": 14.16786478045023,
+      "human_median": 13.671558830577007,
+      "reachable_mean": 14.096406512971317,
+      "reachable_median": 13.659317134087692,
+      "fingerprint_mean": 5.757619943072013
+    },
+    "a2944-IMG_0494": {
+      "experts": 5,
+      "human_mean": 6.9366547213305285,
+      "human_median": 5.918668857554056,
+      "reachable_mean": 6.795875658151074,
+      "reachable_median": 5.81577600804873,
+      "fingerprint_mean": 3.88638770800038
+    },
+    "a2949-IMG_3951": {
+      "experts": 5,
+      "human_mean": 6.768915963306666,
+      "human_median": 7.101307250510498,
+      "reachable_mean": 6.662329539496727,
+      "reachable_median": 6.9628092660679,
+      "fingerprint_mean": 3.356023832768352
+    },
+    "a2951-jmac_MG_5613": {
+      "experts": 5,
+      "human_mean": 11.814757478649238,
+      "human_median": 13.220502430859385,
+      "reachable_mean": 11.792375146547705,
+      "reachable_median": 13.171756077541986,
+      "fingerprint_mean": 7.047529414952041
+    },
+    "a2954-jmac_DSC3602": {
+      "experts": 5,
+      "human_mean": 16.407432870833635,
+      "human_median": 15.510359792456313,
+      "reachable_mean": 16.224331033791664,
+      "reachable_median": 15.435899998450768,
+      "fingerprint_mean": 6.7185658781065225
+    },
+    "a2987-20080708_at_22h33m08__78U9588": {
+      "experts": 5,
+      "human_mean": 12.065392435693628,
+      "human_median": 11.57938680300171,
+      "reachable_mean": 12.03482685485351,
+      "reachable_median": 11.443341178357253,
+      "fingerprint_mean": 5.291126950297626
+    },
+    "a3056-IMG_4331": {
+      "experts": 5,
+      "human_mean": 8.500756621161782,
+      "human_median": 8.875925195271687,
+      "reachable_mean": 8.29903942578355,
+      "reachable_median": 8.509620266089144,
+      "fingerprint_mean": 4.63553251933482
+    },
+    "a3099-_DGW6276": {
+      "experts": 5,
+      "human_mean": 9.393922906023223,
+      "human_median": 6.178724849219499,
+      "reachable_mean": 9.395309139809871,
+      "reachable_median": 6.152706998638191,
+      "fingerprint_mean": 4.926847236754805
+    },
+    "a3104-tc_DSC2387": {
+      "experts": 5,
+      "human_mean": 7.332332091344878,
+      "human_median": 7.7587742718713715,
+      "reachable_mean": 7.277158895760046,
+      "reachable_median": 7.691995854190621,
+      "fingerprint_mean": 4.323476501184772
+    },
+    "a3138-IMG_0790": {
+      "experts": 5,
+      "human_mean": 15.787494793956407,
+      "human_median": 14.610065234144463,
+      "reachable_mean": 15.740692434060099,
+      "reachable_median": 14.581914447196251,
+      "fingerprint_mean": 7.708833127496365
+    },
+    "a3145-_DSC0012": {
+      "experts": 5,
+      "human_mean": 12.448170610768097,
+      "human_median": 11.415966077434621,
+      "reachable_mean": 12.373259662057738,
+      "reachable_median": 11.343029416797563,
+      "fingerprint_mean": 5.676580863877951
+    },
+    "a3152-07-07-04-at-06h23m15s-_MG_2099": {
+      "experts": 5,
+      "human_mean": 8.719875055506614,
+      "human_median": 8.213067098053124,
+      "reachable_mean": 8.699860529649612,
+      "reachable_median": 8.174377624072466,
+      "fingerprint_mean": 5.901766226280481
+    },
+    "a3158-08-05-24-at-14h51m20s-_78U8129": {
+      "experts": 5,
+      "human_mean": 10.053153172560084,
+      "human_median": 9.500285305572937,
+      "reachable_mean": 9.909270877308359,
+      "reachable_median": 9.391029137307918,
+      "fingerprint_mean": 6.589537066846688
+    },
+    "a3162-dgw_140": {
+      "experts": 5,
+      "human_mean": 9.1670397400755,
+      "human_median": 8.935264307447248,
+      "reachable_mean": 8.64929007311605,
+      "reachable_median": 8.641025346716187,
+      "fingerprint_mean": 5.340154088276769
+    },
+    "a3172-050724_145616__MG_3619": {
+      "experts": 5,
+      "human_mean": 8.812608419034055,
+      "human_median": 8.544764468883463,
+      "reachable_mean": 8.42787431624666,
+      "reachable_median": 7.996930548315641,
+      "fingerprint_mean": 4.356717861326221
+    },
+    "a3188-IMG_4400": {
+      "experts": 5,
+      "human_mean": 6.851826680435988,
+      "human_median": 6.638997136142709,
+      "reachable_mean": 6.781874643571035,
+      "reachable_median": 6.572693798729253,
+      "fingerprint_mean": 3.804666111327458
+    },
+    "a3196-_DSC3328": {
+      "experts": 5,
+      "human_mean": 8.65000166226813,
+      "human_median": 8.155251689491537,
+      "reachable_mean": 8.268434515451036,
+      "reachable_median": 7.7198825771325295,
+      "fingerprint_mean": 5.2835356000647495
+    },
+    "a3212-_MG_1504": {
+      "experts": 5,
+      "human_mean": 6.559404633718157,
+      "human_median": 6.5914467737877525,
+      "reachable_mean": 6.432720245564838,
+      "reachable_median": 6.365087437805887,
+      "fingerprint_mean": 3.2379300386069345
+    },
+    "a3216-WP_IMG_0957": {
+      "experts": 5,
+      "human_mean": 9.09195805440026,
+      "human_median": 7.919385971095817,
+      "reachable_mean": 8.958614387515755,
+      "reachable_median": 7.819510452625542,
+      "fingerprint_mean": 4.428606159889634
+    },
+    "a3227-DSC_0080": {
+      "experts": 5,
+      "human_mean": 10.98621761281981,
+      "human_median": 9.590023802875988,
+      "reachable_mean": 10.935979934490595,
+      "reachable_median": 9.632245869421151,
+      "fingerprint_mean": 5.684829097915736
+    },
+    "a3233-MB_070908_021": {
+      "experts": 5,
+      "human_mean": 8.60894827248526,
+      "human_median": 8.6380835536644,
+      "reachable_mean": 8.411358534146059,
+      "reachable_median": 8.430399620534343,
+      "fingerprint_mean": 4.122890295973744
+    },
+    "a3236-IMG_5146": {
+      "experts": 5,
+      "human_mean": 8.214303499368643,
+      "human_median": 8.671001822150814,
+      "reachable_mean": 8.100128752971585,
+      "reachable_median": 8.473722337772674,
+      "fingerprint_mean": 5.339388098548323
+    },
+    "a3252-07-12-01-at-16h06m04s-_MG_8716": {
+      "experts": 5,
+      "human_mean": 14.868884313829753,
+      "human_median": 15.330398872864107,
+      "reachable_mean": 14.81511467981077,
+      "reachable_median": 15.194325240630437,
+      "fingerprint_mean": 6.56835836001949
+    },
+    "a3279-20060620_171222__MG_9575": {
+      "experts": 5,
+      "human_mean": 8.56404648673553,
+      "human_median": 8.276255007102288,
+      "reachable_mean": 8.53336000127167,
+      "reachable_median": 8.235398067548807,
+      "fingerprint_mean": 4.339891884785805
+    },
+    "a3282-_MG_6990": {
+      "experts": 5,
+      "human_mean": 15.746606274832496,
+      "human_median": 15.733063545962828,
+      "reachable_mean": 15.051122879368211,
+      "reachable_median": 13.919593013810719,
+      "fingerprint_mean": 7.279972238760303
+    },
+    "a3301-IMG_5187": {
+      "experts": 5,
+      "human_mean": 7.504679391526641,
+      "human_median": 7.5922849448856775,
+      "reachable_mean": 7.461809441421063,
+      "reachable_median": 7.515442693515879,
+      "fingerprint_mean": 3.8240368049676006
+    },
+    "a3303-_DSC0060": {
+      "experts": 5,
+      "human_mean": 5.623333668150801,
+      "human_median": 5.6008557455266015,
+      "reachable_mean": 5.5226740030217965,
+      "reachable_median": 5.483936804564716,
+      "fingerprint_mean": 6.311846241377979
+    },
+    "a3311-IMG_4500": {
+      "experts": 5,
+      "human_mean": 5.914635120262387,
+      "human_median": 5.910018000928346,
+      "reachable_mean": 5.84151778257567,
+      "reachable_median": 5.926809481722172,
+      "fingerprint_mean": 4.767331532004945
+    },
+    "a3325-050819_154342__MG_5227": {
+      "experts": 5,
+      "human_mean": 9.827252459716986,
+      "human_median": 9.205288015408973,
+      "reachable_mean": 9.765134627240235,
+      "reachable_median": 9.132009529546893,
+      "fingerprint_mean": 5.164483992292114
+    },
+    "a3330-DSC_0048": {
+      "experts": 5,
+      "human_mean": 11.529536435844614,
+      "human_median": 11.918880392185349,
+      "reachable_mean": 11.574482375266637,
+      "reachable_median": 11.97091872321015,
+      "fingerprint_mean": 5.177045913781661
+    },
+    "a3354-MB_070908_069": {
+      "experts": 5,
+      "human_mean": 8.881582585520336,
+      "human_median": 9.310207307981297,
+      "reachable_mean": 8.761521361009205,
+      "reachable_median": 9.08727830007823,
+      "fingerprint_mean": 5.8903129643699925
+    },
+    "a3358-kme_273": {
+      "experts": 5,
+      "human_mean": 8.116148818551046,
+      "human_median": 7.865705664462752,
+      "reachable_mean": 8.114637731074671,
+      "reachable_median": 7.903095854056814,
+      "fingerprint_mean": 4.0575393310412995
+    },
+    "a3360-IMG_0017": {
+      "experts": 5,
+      "human_mean": 7.763238459309025,
+      "human_median": 7.25078993968832,
+      "reachable_mean": 7.746215721420349,
+      "reachable_median": 7.2438023001250125,
+      "fingerprint_mean": 4.524592322387524
+    },
+    "a3378-IMG_4178": {
+      "experts": 5,
+      "human_mean": 8.806203683797174,
+      "human_median": 7.924402643333659,
+      "reachable_mean": 8.745244628911781,
+      "reachable_median": 7.7723590364511175,
+      "fingerprint_mean": 5.671056858903301
+    },
+    "a3407-DSC_0008-1": {
+      "experts": 5,
+      "human_mean": 14.333224878194594,
+      "human_median": 11.326594120597326,
+      "reachable_mean": 14.183687560837233,
+      "reachable_median": 11.109960540443872,
+      "fingerprint_mean": 8.616310683020645
+    },
+    "a3412-IMG_4112": {
+      "experts": 5,
+      "human_mean": 10.768725182053013,
+      "human_median": 9.350370386765672,
+      "reachable_mean": 10.571052758226498,
+      "reachable_median": 9.144196073070109,
+      "fingerprint_mean": 6.183210144822846
+    },
+    "a3432-jmac_DSC3184": {
+      "experts": 5,
+      "human_mean": 7.85432825809051,
+      "human_median": 7.175815979450821,
+      "reachable_mean": 7.832966130527781,
+      "reachable_median": 7.1394122025697655,
+      "fingerprint_mean": 4.357500870158578
+    },
+    "a3507-_DSC0299": {
+      "experts": 5,
+      "human_mean": 10.956943172654354,
+      "human_median": 11.868500504919016,
+      "reachable_mean": 10.879485372300953,
+      "reachable_median": 11.91743702051986,
+      "fingerprint_mean": 9.936141059368223
+    },
+    "a3515-IMG_2675": {
+      "experts": 5,
+      "human_mean": 9.587838151596333,
+      "human_median": 7.540276323007209,
+      "reachable_mean": 9.406738519791121,
+      "reachable_median": 7.161752777234829,
+      "fingerprint_mean": 4.609887388694919
+    },
+    "a3536-WP_IMG_0921": {
+      "experts": 5,
+      "human_mean": 8.320358036314442,
+      "human_median": 9.056013855764208,
+      "reachable_mean": 8.255268405424545,
+      "reachable_median": 8.986729287035821,
+      "fingerprint_mean": 7.21208049264861
+    },
+    "a3573-IMG_4284": {
+      "experts": 5,
+      "human_mean": 9.890530250558601,
+      "human_median": 9.28519202323092,
+      "reachable_mean": 9.609557768607385,
+      "reachable_median": 9.062990778899058,
+      "fingerprint_mean": 7.954404783251682
+    },
+    "a3582-dgw_015": {
+      "experts": 5,
+      "human_mean": 7.869382104253643,
+      "human_median": 7.916960695562494,
+      "reachable_mean": 7.786006145510832,
+      "reachable_median": 7.759990828561127,
+      "fingerprint_mean": 5.626976123965197
+    },
+    "a3594-IMG_5081": {
+      "experts": 5,
+      "human_mean": 13.266029054888909,
+      "human_median": 12.277000677265436,
+      "reachable_mean": 13.248703124725438,
+      "reachable_median": 12.277116184708806,
+      "fingerprint_mean": 5.661322650409227
+    },
+    "a3622-DSC_0047-2": {
+      "experts": 5,
+      "human_mean": 8.407315618038371,
+      "human_median": 8.960277551037265,
+      "reachable_mean": 8.064898404923884,
+      "reachable_median": 8.70256064318264,
+      "fingerprint_mean": 4.747772309457744
+    },
+    "a3671-jmac_MG_6191": {
+      "experts": 5,
+      "human_mean": 15.966271758870368,
+      "human_median": 12.288341665262852,
+      "reachable_mean": 15.73213601727537,
+      "reachable_median": 12.189285695969332,
+      "fingerprint_mean": 8.18458466122336
+    },
+    "a3676-IMG_5075": {
+      "experts": 5,
+      "human_mean": 8.314532399993189,
+      "human_median": 7.531555469626377,
+      "reachable_mean": 8.049203039007462,
+      "reachable_median": 7.441237529518876,
+      "fingerprint_mean": 3.7181291343157845
+    },
+    "a3734-IMG_4186": {
+      "experts": 5,
+      "human_mean": 15.733492554152667,
+      "human_median": 12.659823807848362,
+      "reachable_mean": 15.600253936503757,
+      "reachable_median": 12.937005310738186,
+      "fingerprint_mean": 9.88808478608704
+    },
+    "a3775-kme_473": {
+      "experts": 5,
+      "human_mean": 22.969975307029316,
+      "human_median": 26.283419071599504,
+      "reachable_mean": 22.53978574894881,
+      "reachable_median": 25.930778818865093,
+      "fingerprint_mean": 10.503460599956329
+    },
+    "a3791-_MG_1498": {
+      "experts": 5,
+      "human_mean": 4.504571226263986,
+      "human_median": 3.6327788950262194,
+      "reachable_mean": 4.425671500385009,
+      "reachable_median": 3.5248614820921826,
+      "fingerprint_mean": 3.128673964854253
+    },
+    "a3801-jmacDSC_0380": {
+      "experts": 5,
+      "human_mean": 9.400729754677034,
+      "human_median": 8.766188017789647,
+      "reachable_mean": 9.2774528935587,
+      "reachable_median": 8.604800644351318,
+      "fingerprint_mean": 5.066613759704302
+    },
+    "a3812-MB_20030906_003": {
+      "experts": 5,
+      "human_mean": 10.373816505635688,
+      "human_median": 9.86041372498976,
+      "reachable_mean": 10.407980823372526,
+      "reachable_median": 10.003797617624901,
+      "fingerprint_mean": 4.784301234598041
+    },
+    "a3824-LS051025_day_3_LL001": {
+      "experts": 5,
+      "human_mean": 9.836095024757345,
+      "human_median": 10.19731423719747,
+      "reachable_mean": 9.456764672788413,
+      "reachable_median": 9.720865519285319,
+      "fingerprint_mean": 5.883685186179919
+    },
+    "a3825-NKIM_MG_3084": {
+      "experts": 5,
+      "human_mean": 13.864836831616747,
+      "human_median": 13.955626246769569,
+      "reachable_mean": 13.681050705715768,
+      "reachable_median": 13.834372907707522,
+      "fingerprint_mean": 7.074579806562089
+    },
+    "a3904-LS_060715_8699": {
+      "experts": 5,
+      "human_mean": 12.12073944757096,
+      "human_median": 10.180747213911115,
+      "reachable_mean": 11.71593930463562,
+      "reachable_median": 9.90949421487455,
+      "fingerprint_mean": 6.498854141842346
+    },
+    "a3906-LS051025_day_3_LL003": {
+      "experts": 5,
+      "human_mean": 11.537609918424405,
+      "human_median": 12.074901852669377,
+      "reachable_mean": 11.497662060505036,
+      "reachable_median": 12.125878889920315,
+      "fingerprint_mean": 5.948620480404595
+    },
+    "a3917-NKIM_MG_6717": {
+      "experts": 5,
+      "human_mean": 6.282750655807143,
+      "human_median": 6.133134361736708,
+      "reachable_mean": 5.910723657302478,
+      "reachable_median": 5.538141183381462,
+      "fingerprint_mean": 5.3058888096654515
+    },
+    "a3918-kme_422": {
+      "experts": 5,
+      "human_mean": 8.205250341822993,
+      "human_median": 6.606281434467446,
+      "reachable_mean": 8.1295161933022,
+      "reachable_median": 6.442404611844212,
+      "fingerprint_mean": 5.624287633215867
+    },
+    "a3919-KE_-1608": {
+      "experts": 5,
+      "human_mean": 8.272672576399074,
+      "human_median": 6.652264532786404,
+      "reachable_mean": 8.115465856256174,
+      "reachable_median": 6.572389151163195,
+      "fingerprint_mean": 4.543223724355888
+    },
+    "a3929-IMG_0792": {
+      "experts": 5,
+      "human_mean": 10.881315160975973,
+      "human_median": 10.524261417495572,
+      "reachable_mean": 10.686579045647203,
+      "reachable_median": 10.370169496777088,
+      "fingerprint_mean": 5.468157960604534
+    },
+    "a3943-_DSC0054": {
+      "experts": 5,
+      "human_mean": 8.982571423146915,
+      "human_median": 7.7604340956571525,
+      "reachable_mean": 8.685723657193344,
+      "reachable_median": 7.554983667646766,
+      "fingerprint_mean": 4.891593811970617
+    },
+    "a3959-dvf_057": {
+      "experts": 5,
+      "human_mean": 6.983513924537098,
+      "human_median": 7.262353793717793,
+      "reachable_mean": 6.759026252939061,
+      "reachable_median": 7.093032241459287,
+      "fingerprint_mean": 4.347419574380648
+    },
+    "a4006-jn_20080524_020": {
+      "experts": 5,
+      "human_mean": 5.821920731341437,
+      "human_median": 5.893737608446943,
+      "reachable_mean": 5.688685997828518,
+      "reachable_median": 5.782362509044562,
+      "fingerprint_mean": 3.460990427999159
+    },
+    "a4015-kme_168": {
+      "experts": 5,
+      "human_mean": 9.739018657436137,
+      "human_median": 9.608668411897286,
+      "reachable_mean": 9.405662391507656,
+      "reachable_median": 9.621451230931324,
+      "fingerprint_mean": 5.636777129409168
+    },
+    "a4022-_DGW6330": {
+      "experts": 5,
+      "human_mean": 11.28270238968243,
+      "human_median": 11.218696238200224,
+      "reachable_mean": 11.206478736768956,
+      "reachable_median": 11.068549567847679,
+      "fingerprint_mean": 4.881895595408942
+    },
+    "a4061-kme_608": {
+      "experts": 5,
+      "human_mean": 5.052080044250365,
+      "human_median": 3.9120866071860854,
+      "reachable_mean": 4.923308043715131,
+      "reachable_median": 3.821236809136401,
+      "fingerprint_mean": 3.8468781013272157
+    },
+    "a4063-07-11-25-at-18h26m49s-_MG_7002": {
+      "experts": 5,
+      "human_mean": 10.944555137158265,
+      "human_median": 11.21460717737434,
+      "reachable_mean": 10.586633360662727,
+      "reachable_median": 10.639372992075844,
+      "fingerprint_mean": 5.847693549052824
+    },
+    "a4074-kme_428": {
+      "experts": 5,
+      "human_mean": 8.715776875533388,
+      "human_median": 8.761402822765488,
+      "reachable_mean": 8.475557309279258,
+      "reachable_median": 8.459235838545617,
+      "fingerprint_mean": 4.286902140444589
+    },
+    "a4102-07-06-30-at-11h38m56s-_MG_1997": {
+      "experts": 5,
+      "human_mean": 7.59635755551747,
+      "human_median": 7.554079653580562,
+      "reachable_mean": 7.585887744445479,
+      "reachable_median": 7.469409049723447,
+      "fingerprint_mean": 4.16719611956841
+    },
+    "a4114-jn_20080509_263": {
+      "experts": 5,
+      "human_mean": 5.313399305843838,
+      "human_median": 5.340063381248416,
+      "reachable_mean": 5.015970461621953,
+      "reachable_median": 5.14527469647094,
+      "fingerprint_mean": 3.231602201732893
+    },
+    "a4118-08-04-27-at-19h07m31s-_78U8070": {
+      "experts": 5,
+      "human_mean": 6.8882578983038725,
+      "human_median": 7.3438863893796,
+      "reachable_mean": 6.808769273986071,
+      "reachable_median": 7.227600509002782,
+      "fingerprint_mean": 4.186208321031616
+    },
+    "a4123-IMG_0070": {
+      "experts": 5,
+      "human_mean": 8.85301134868208,
+      "human_median": 8.824869076272932,
+      "reachable_mean": 8.630014066192004,
+      "reachable_median": 8.695029852171437,
+      "fingerprint_mean": 4.664781663302155
+    },
+    "a4134-IMG_0086": {
+      "experts": 5,
+      "human_mean": 8.545603252835502,
+      "human_median": 9.785081394808866,
+      "reachable_mean": 8.343730860177635,
+      "reachable_median": 9.685401579755748,
+      "fingerprint_mean": 5.515891589891955
+    },
+    "a4146-tc_DSC1940": {
+      "experts": 5,
+      "human_mean": 14.756613991449655,
+      "human_median": 12.218759672360958,
+      "reachable_mean": 14.605856541114864,
+      "reachable_median": 12.168451583417905,
+      "fingerprint_mean": 6.893942752476325
+    },
+    "a4162-IMG_3512": {
+      "experts": 5,
+      "human_mean": 5.481652230593576,
+      "human_median": 5.460937758436064,
+      "reachable_mean": 5.169445839949695,
+      "reachable_median": 5.136740828494508,
+      "fingerprint_mean": 4.326446983766548
+    },
+    "a4173-DSC_0018-2": {
+      "experts": 5,
+      "human_mean": 12.514305434227875,
+      "human_median": 12.52682555170213,
+      "reachable_mean": 12.309963405378307,
+      "reachable_median": 12.34891791990249,
+      "fingerprint_mean": 6.482639422094468
+    },
+    "a4205-20090328_at_03h38m11__MG_1173": {
+      "experts": 5,
+      "human_mean": 6.780985245673088,
+      "human_median": 8.787583487407357,
+      "reachable_mean": 6.72045128560858,
+      "reachable_median": 8.78072337017745,
+      "fingerprint_mean": 4.134276163524958
+    },
+    "a4212-Duggan_090321_5925": {
+      "experts": 5,
+      "human_mean": 10.122699649403241,
+      "human_median": 9.63356107806226,
+      "reachable_mean": 10.014055054192164,
+      "reachable_median": 9.58415096363311,
+      "fingerprint_mean": 4.362632547927241
+    },
+    "a4223-kme_00003": {
+      "experts": 5,
+      "human_mean": 8.763896127937695,
+      "human_median": 9.059693501141926,
+      "reachable_mean": 8.697664223975341,
+      "reachable_median": 9.036520742629605,
+      "fingerprint_mean": 3.862440476215113
+    },
+    "a4229-_DGW0240": {
+      "experts": 5,
+      "human_mean": 8.745972539807099,
+      "human_median": 8.09230830611207,
+      "reachable_mean": 8.679653310097555,
+      "reachable_median": 7.949109073737787,
+      "fingerprint_mean": 5.619065489328132
+    },
+    "a4232-Duggan_090323_6181": {
+      "experts": 5,
+      "human_mean": 10.82721624736366,
+      "human_median": 9.949829033252543,
+      "reachable_mean": 10.762408985170651,
+      "reachable_median": 9.862544698089668,
+      "fingerprint_mean": 5.066096207810612
+    },
+    "a4238-Duggan_090320_5609": {
+      "experts": 5,
+      "human_mean": 13.033951123037559,
+      "human_median": 13.417699581629874,
+      "reachable_mean": 12.946937991948763,
+      "reachable_median": 13.318540366116387,
+      "fingerprint_mean": 5.703918256560579
+    },
+    "a4248-DSC_0109": {
+      "experts": 5,
+      "human_mean": 8.582541063770433,
+      "human_median": 7.246680521283051,
+      "reachable_mean": 8.638305098908187,
+      "reachable_median": 7.298064554049441,
+      "fingerprint_mean": 5.785053830197403
+    },
+    "a4256-_DGW0339": {
+      "experts": 5,
+      "human_mean": 8.836397438352336,
+      "human_median": 8.100411681416936,
+      "reachable_mean": 8.866232138045515,
+      "reachable_median": 8.100239269310162,
+      "fingerprint_mean": 4.742210927603372
+    },
+    "a4273-_DGW0250": {
+      "experts": 5,
+      "human_mean": 5.160837023804249,
+      "human_median": 5.1744127864973954,
+      "reachable_mean": 5.134219305268294,
+      "reachable_median": 5.27961431663177,
+      "fingerprint_mean": 2.7125811997895353
+    },
+    "a4288-DSC_0137": {
+      "experts": 5,
+      "human_mean": 11.711300174374452,
+      "human_median": 11.981818090974095,
+      "reachable_mean": 11.609919830258676,
+      "reachable_median": 11.906044796585327,
+      "fingerprint_mean": 5.6517857465571195
+    },
+    "a4354-DSC_0347": {
+      "experts": 5,
+      "human_mean": 6.598544099656318,
+      "human_median": 7.18544581574724,
+      "reachable_mean": 6.423976706294267,
+      "reachable_median": 7.13603008654777,
+      "fingerprint_mean": 4.561016501377617
+    },
+    "a4412-20090417_at_18h17m13__MG_2017": {
+      "experts": 5,
+      "human_mean": 8.338449313067134,
+      "human_median": 7.529884263764448,
+      "reachable_mean": 8.161013510739238,
+      "reachable_median": 7.33306076765486,
+      "fingerprint_mean": 4.196989012359993
+    },
+    "a4450-_DGW0270": {
+      "experts": 5,
+      "human_mean": 5.037411333921016,
+      "human_median": 5.166185101885389,
+      "reachable_mean": 4.89020202033322,
+      "reachable_median": 4.937341709725736,
+      "fingerprint_mean": 3.1221064009932333
+    },
+    "a4454-DSC_0101": {
+      "experts": 5,
+      "human_mean": 5.801671513317791,
+      "human_median": 5.280605190568176,
+      "reachable_mean": 5.713657027692788,
+      "reachable_median": 5.160520612921315,
+      "fingerprint_mean": 3.662186913694005
+    },
+    "a4497-kme_1003": {
+      "experts": 5,
+      "human_mean": 5.226093363445197,
+      "human_median": 4.899957244934841,
+      "reachable_mean": 5.139515178300744,
+      "reachable_median": 4.8198268730112055,
+      "fingerprint_mean": 2.9617095840141614
+    },
+    "a4498-DSC_0098": {
+      "experts": 5,
+      "human_mean": 6.264536464510313,
+      "human_median": 6.194561309107524,
+      "reachable_mean": 6.142301017859935,
+      "reachable_median": 6.012547687908233,
+      "fingerprint_mean": 4.022485084137972
+    },
+    "a4523-_DSC0015": {
+      "experts": 5,
+      "human_mean": 8.550533286017423,
+      "human_median": 9.328775866282589,
+      "reachable_mean": 8.470493192006991,
+      "reachable_median": 9.275606267032021,
+      "fingerprint_mean": 4.273672119226706
+    },
+    "a4552-DSC_0188": {
+      "experts": 5,
+      "human_mean": 8.771821344421692,
+      "human_median": 8.192008085890661,
+      "reachable_mean": 8.529795319267155,
+      "reachable_median": 8.022804181955077,
+      "fingerprint_mean": 5.576324233049688
+    },
+    "a4554-DSC_0028-2": {
+      "experts": 5,
+      "human_mean": 10.271098254425167,
+      "human_median": 7.994313522444261,
+      "reachable_mean": 10.183595230574518,
+      "reachable_median": 7.996543217961412,
+      "fingerprint_mean": 5.017244723370359
+    },
+    "a4561-DSC_0332": {
+      "experts": 5,
+      "human_mean": 10.795430526723859,
+      "human_median": 11.404292857977453,
+      "reachable_mean": 10.62620223229694,
+      "reachable_median": 11.413908181683764,
+      "fingerprint_mean": 5.967049828579627
+    },
+    "a4562-_MG_7033": {
+      "experts": 5,
+      "human_mean": 15.817429621084074,
+      "human_median": 15.400110226652487,
+      "reachable_mean": 15.71692538590095,
+      "reachable_median": 15.480961872734774,
+      "fingerprint_mean": 7.041206032048223
+    },
+    "a4584-Duggan_080309_5404": {
+      "experts": 5,
+      "human_mean": 10.900323351113334,
+      "human_median": 10.374736869313914,
+      "reachable_mean": 10.848281152059991,
+      "reachable_median": 10.314233759182844,
+      "fingerprint_mean": 4.119490626143966
+    },
+    "a4603-Duggan_050714_1956": {
+      "experts": 5,
+      "human_mean": 9.416876616051802,
+      "human_median": 9.826462444275178,
+      "reachable_mean": 9.338056064255621,
+      "reachable_median": 9.763584897940717,
+      "fingerprint_mean": 4.78750786413652
+    },
+    "a4604-DSC_0003": {
+      "experts": 5,
+      "human_mean": 8.531444605341859,
+      "human_median": 8.691697472742803,
+      "reachable_mean": 8.480832309473236,
+      "reachable_median": 8.65912678948024,
+      "fingerprint_mean": 3.9272262678028467
+    },
+    "a4605-Duggan_090108_4208": {
+      "experts": 5,
+      "human_mean": 6.242732157391698,
+      "human_median": 5.820209090427704,
+      "reachable_mean": 6.149735910933347,
+      "reachable_median": 5.7147726878967875,
+      "fingerprint_mean": 3.8331855884489956
+    },
+    "a4618-_DSC0023-3": {
+      "experts": 5,
+      "human_mean": 7.591394647768877,
+      "human_median": 8.379017862741595,
+      "reachable_mean": 7.56849332077484,
+      "reachable_median": 8.27887423002935,
+      "fingerprint_mean": 3.902387994267405
+    },
+    "a4634-DSC_0335": {
+      "experts": 5,
+      "human_mean": 12.398507214960118,
+      "human_median": 11.595833174862442,
+      "reachable_mean": 12.213226347129917,
+      "reachable_median": 11.482296576851525,
+      "fingerprint_mean": 5.996209258449817
+    },
+    "a4654-Duggan_090221_5150": {
+      "experts": 5,
+      "human_mean": 9.483690477124085,
+      "human_median": 10.202237629235128,
+      "reachable_mean": 9.414771663554315,
+      "reachable_median": 10.068988487249364,
+      "fingerprint_mean": 4.352521085719465
+    },
+    "a4690-DSC_0005-1-2": {
+      "experts": 5,
+      "human_mean": 10.878603278211099,
+      "human_median": 11.689658179730085,
+      "reachable_mean": 10.59060211638659,
+      "reachable_median": 11.545674385662679,
+      "fingerprint_mean": 5.757638256232264
+    },
+    "a4691-20090503_at_05h29m47__MG_9401": {
+      "experts": 5,
+      "human_mean": 7.345392215458729,
+      "human_median": 7.363965573129857,
+      "reachable_mean": 7.266778780470562,
+      "reachable_median": 7.037484810981038,
+      "fingerprint_mean": 3.6544827209198862
+    },
+    "a4715-Duggan_090503_8760": {
+      "experts": 5,
+      "human_mean": 13.956023368316341,
+      "human_median": 12.17613259843305,
+      "reachable_mean": 13.865444183514166,
+      "reachable_median": 12.040126584882884,
+      "fingerprint_mean": 7.375720614819068
+    },
+    "a4721-09-05-19-at-19h00m30s-_MG_9558": {
+      "experts": 5,
+      "human_mean": 9.05068743331248,
+      "human_median": 6.3036669688282485,
+      "reachable_mean": 9.049754342314614,
+      "reachable_median": 6.3215678753202305,
+      "fingerprint_mean": 4.539165757922879
+    },
+    "a4753-kme_0177": {
+      "experts": 5,
+      "human_mean": 8.07188617612989,
+      "human_median": 8.980843275290763,
+      "reachable_mean": 7.81587702085096,
+      "reachable_median": 8.841458911842583,
+      "fingerprint_mean": 5.174111720179939
+    },
+    "a4761-Duggan_090504_8960": {
+      "experts": 5,
+      "human_mean": 11.649591861595749,
+      "human_median": 11.188262586865367,
+      "reachable_mean": 11.461199238269671,
+      "reachable_median": 11.045327300577922,
+      "fingerprint_mean": 6.471218244022779
+    },
+    "a4791-Duggan_090131_4873": {
+      "experts": 5,
+      "human_mean": 10.172844571375277,
+      "human_median": 10.413590017353197,
+      "reachable_mean": 9.924965759879859,
+      "reachable_median": 10.013900216268386,
+      "fingerprint_mean": 7.475559284681255
+    },
+    "a4798-_DSC0159": {
+      "experts": 5,
+      "human_mean": 10.473460812597619,
+      "human_median": 10.826058132766391,
+      "reachable_mean": 10.273340983389463,
+      "reachable_median": 10.499872599630383,
+      "fingerprint_mean": 6.917548118088992
+    },
+    "a4810-09-05-19-at-21h00m35s-_MG_9611": {
+      "experts": 5,
+      "human_mean": 8.836016010497355,
+      "human_median": 8.415207686994744,
+      "reachable_mean": 8.662409804999331,
+      "reachable_median": 8.311308269654614,
+      "fingerprint_mean": 5.398596851450934
+    },
+    "a4830-20090419_at_17h05m59__MG_2226": {
+      "experts": 5,
+      "human_mean": 9.974310394504624,
+      "human_median": 10.426003694206596,
+      "reachable_mean": 9.891654860071963,
+      "reachable_median": 10.299185994268925,
+      "fingerprint_mean": 5.504186248717586
+    },
+    "a4846-Duggan_050714_1952": {
+      "experts": 5,
+      "human_mean": 8.880854636794805,
+      "human_median": 8.155186320839896,
+      "reachable_mean": 8.751474504215283,
+      "reachable_median": 7.990763358217087,
+      "fingerprint_mean": 3.8851859937742175
+    },
+    "a4866-_DGW9039": {
+      "experts": 5,
+      "human_mean": 8.000288098202775,
+      "human_median": 8.075087971681596,
+      "reachable_mean": 7.943702546023746,
+      "reachable_median": 7.9900790345608845,
+      "fingerprint_mean": 3.865099637946552
+    },
+    "a4871-20090419_at_18h20m09__MG_2343": {
+      "experts": 5,
+      "human_mean": 5.606276375023002,
+      "human_median": 5.394925980740579,
+      "reachable_mean": 5.406103035964899,
+      "reachable_median": 5.229447349645612,
+      "fingerprint_mean": 3.0866596948245624
+    },
+    "a4896-kme_0104": {
+      "experts": 5,
+      "human_mean": 8.217656322313918,
+      "human_median": 9.661353997823491,
+      "reachable_mean": 8.120619459946436,
+      "reachable_median": 9.47954036104904,
+      "fingerprint_mean": 5.11623335841545
+    },
+    "a4954-Duggan_080312_5489": {
+      "experts": 5,
+      "human_mean": 7.565788869218475,
+      "human_median": 7.199273875844188,
+      "reachable_mean": 7.400918698321918,
+      "reachable_median": 7.0419995498910275,
+      "fingerprint_mean": 4.632146140468856
+    },
+    "a4974-Duggan_090226_5202": {
+      "experts": 5,
+      "human_mean": 6.782744343644465,
+      "human_median": 6.295835781620678,
+      "reachable_mean": 6.714868890571124,
+      "reachable_median": 6.008573487161838,
+      "fingerprint_mean": 4.249753577879925
+    },
+    "a4983-kme_0122": {
+      "experts": 5,
+      "human_mean": 8.507152406247744,
+      "human_median": 9.704474424652073,
+      "reachable_mean": 8.355463720988867,
+      "reachable_median": 9.621467126489495,
+      "fingerprint_mean": 4.440175911056022
+    },
+    "a4988-kme_0248": {
+      "experts": 5,
+      "human_mean": 6.229812787135542,
+      "human_median": 6.265299831929385,
+      "reachable_mean": 5.773242196194169,
+      "reachable_median": 5.626381861964937,
+      "fingerprint_mean": 3.861144214343517
+    },
+    "a4999-DSC_0035": {
+      "experts": 5,
+      "human_mean": 6.419861846110055,
+      "human_median": 6.416218871786263,
+      "reachable_mean": 6.272678888734495,
+      "reachable_median": 6.158817203929617,
+      "fingerprint_mean": 4.340492576971018
+    }
+  },
+  "failures": []
+}
