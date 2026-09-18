@@ -21,6 +21,19 @@
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.10" />
   </ItemGroup>
 
+  <ItemGroup Label="Object storage">
+    <!-- MinIO speaks the S3 API, so the AWS SDK is the client (ADR-12). Keeping
+         the official SDK rather than a MinIO-specific one is what makes the
+         move to R2 or B2 a configuration change. -->
+    <PackageVersion Include="AWSSDK.S3" Version="4.0.103.3" />
+    <!-- Pinned forward: the version AWSSDK.S3 resolves on its own is affected
+         by GHSA-9cvc-h2w8-phrp. Transitive pinning is on, and NU1901 is an
+         error here, so this is the fix rather than a suppression. -->
+    <PackageVersion Include="AWSSDK.Core" Version="4.0.102.6" />
+    <!-- Typed HttpClient for the ML service, with its handler lifetime managed. -->
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.10" />
+  </ItemGroup>
+
   <ItemGroup Label="Persistence">
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10" />

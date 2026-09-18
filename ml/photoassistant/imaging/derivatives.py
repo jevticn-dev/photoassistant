@@ -23,11 +23,11 @@ from dataclasses import dataclass
 
 import numpy as np
 from numpy.typing import NDArray
-from PIL import Image
+from PIL import Image, ImageFile
 
 from photoassistant.imaging.prophoto import prophoto_to_srgb
 from photoassistant.imaging.resample import resample_area
-from photoassistant.renderer.color import srgb_encode
+from photoassistant.renderer.color import srgb_decode, srgb_encode
 from photoassistant.renderer.pipeline import quantise
 
 FIT_SIZE = 512
@@ -99,17 +99,30 @@ def encode_jpeg(srgb: NDArray[np.floating], quality: int = PROXY_JPEG_QUALITY) -
     """8-bit JPEG from an sRGB float image. For images that are only displayed."""
     pixels = quantise(srgb)
     buffer = io.BytesIO()
-    Image.fromarray(pixels, mode="RGB").save(
-        buffer,
-        format="JPEG",
-        quality=quality,
-        # Chroma kept at full resolution. The default halves it, which is
-        # invisible on a photograph and very visible on the saturated edges this
-        # dataset is full of — and the proxy is what the editor shows while the
-        # user judges colour.
-        subsampling=0,
-        optimize=True,
-    )
+
+    # `optimize` makes Pillow build the whole scan in one buffer, sized by the
+    # module-level MAXBLOCK (64 KiB). An image that compresses badly overflows it
+    # and the save fails with "broken data stream" — not a corrupt file, a buffer
+    # too small. The corpus never hit it because a photograph compresses; a
+    # high-ISO night shot is close enough to noise that it can, and uploads are
+    # whatever a user sends. Three bytes a pixel is the worst case that cannot be
+    # exceeded, so this makes the failure unreachable rather than unlikely.
+    previous = ImageFile.MAXBLOCK
+    ImageFile.MAXBLOCK = max(previous, pixels.shape[0] * pixels.shape[1] * 3)
+    try:
+        Image.fromarray(pixels, mode="RGB").save(
+            buffer,
+            format="JPEG",
+            quality=quality,
+            # Chroma kept at full resolution. The default halves it, which is
+            # invisible on a photograph and very visible on the saturated edges
+            # this dataset is full of — and the proxy is what the editor shows
+            # while the user judges colour.
+            subsampling=0,
+            optimize=True,
+        )
+    finally:
+        ImageFile.MAXBLOCK = previous
     return Derivative(
         data=buffer.getvalue(),
         content_type="image/jpeg",
@@ -143,3 +156,36 @@ def make_derivatives(rendition: NDArray[np.integer], *, with_proxy: bool) -> Der
         proxy = encode_jpeg(srgb_encode(proxy_linear))
 
     return Derivatives(fit=fit, proxy=proxy, gamut_fraction=gamut_fraction)
+
+
+def derive_from_srgb(image: NDArray[np.integer]) -> Derivatives:
+    """The same two sizes, for a photograph a user uploaded (ADR-27).
+
+    Only the first step differs from :func:`make_derivatives`. A FiveK rendition
+    arrives as 16-bit ProPhoto and needs converting; an upload is already sRGB,
+    so it only needs decoding to linear light. Everything after that — the area
+    average, the sizes, PNG for the fit and JPEG q85 with full chroma for the
+    proxy — is shared code, which is the entire point of the decision.
+
+    **Why this function exists at all, rather than resizing in the API.** The
+    512px derivative is not just a small copy: it is the input to a comparison
+    against 25.000 images produced by the lines below. Resample in gamma space,
+    or let JPEG halve the chroma, and the upload is no longer the same kind of
+    image as the corpus it is matched against. Nothing fails; the search simply
+    returns slightly different neighbours, which is a defect nobody reports
+    (ADR-27, notes phase-4 §B99).
+
+    ``gamut_fraction`` is zero by construction. An sRGB file cannot hold a colour
+    outside sRGB, so there is nothing to clip and nothing to report — the field
+    stays in the shape for callers, rather than becoming an optional that every
+    one of them has to test.
+    """
+    linear = srgb_decode(np.asarray(image, dtype=np.float64) / 255.0)
+    height, width = linear.shape[:2]
+
+    fit = encode_png(srgb_encode(resample_area(linear, fit_size_for(height, width, FIT_SIZE))))
+    proxy = encode_jpeg(
+        srgb_encode(resample_area(linear, fit_size_for(height, width, PROXY_SIZE)))
+    )
+
+    return Derivatives(fit=fit, proxy=proxy, gamut_fraction=0.0)

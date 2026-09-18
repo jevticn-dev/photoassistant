@@ -1,16 +1,24 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/auth/auth-guard';
+import { guestGuard } from './core/auth/guest-guard';
 
 export const routes: Routes = [
   {
     path: 'auth',
+    // The mirror of authGuard below: signed in, these screens are a dead end.
+    canActivate: [guestGuard],
     loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
   },
   {
     path: 'projects',
     canActivate: [authGuard],
     loadChildren: () => import('./features/projects/projects.routes').then((m) => m.projectsRoutes),
+  },
+  {
+    path: 'upload',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/upload/upload.routes').then((m) => m.uploadRoutes),
   },
   {
     // The renderer test page. Not part of the product: it exists so the shader

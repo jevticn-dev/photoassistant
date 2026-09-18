@@ -1,0 +1,262 @@
+// Casing zone: choosing a file is a control, not a photograph under edit. The
+// waiting state is the exception and says so — see .working below.
+
+.upload {
+  max-width: 44rem;
+  margin: 0 auto;
+
+  &__error {
+    margin-top: var(--space-4);
+    padding: var(--space-3);
+    border: var(--border-width) solid var(--status-error);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: var(--status-error);
+  }
+}
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 16rem;
+  padding: var(--space-6);
+  background: var(--surface-panel);
+  color: var(--text-primary);
+
+  // Dashed, and the only dashed edge in the application: it reads as a place
+  // to put something rather than as a panel that is already full.
+  border: var(--border-width) dashed var(--text-secondary);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+
+  &--active {
+    border-color: var(--accent);
+    border-style: solid;
+    background: var(--surface-inset);
+  }
+
+  // Visually gone, still focusable and still announced. `display: none` would
+  // take it out of the tab order and make the screen unusable by keyboard.
+  &__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  // The ring belongs on the zone, which is what a person sees; the input it
+  // comes from is one pixel wide somewhere behind it.
+  &:has(&__input:focus-visible) {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 0;
+  }
+
+  &__title {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-medium);
+  }
+
+  &__hint {
+    text-align: center;
+  }
+}
+
+// The waiting state draws the photograph, so it carries .zone-display in the
+// template. Every token below therefore resolves to its dark value without a
+// single colour being named here.
+.working {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20rem;
+  overflow: hidden;
+  background: var(--surface-base);
+  border-radius: var(--radius-lg);
+
+  &__photo {
+    width: 100%;
+    max-height: 32rem;
+    object-fit: contain;
+
+    // Dimmed so the status line stays readable over any photograph, light or
+    // dark. Judging the image is not the job of this screen.
+    opacity: 0.45;
+  }
+
+  // A line crossing the photograph: repeating, so it says "working" and
+  // promises no fraction. It also happens to be true — the service is reading
+  // this photograph at that moment.
+  //
+  // Animated with `transform`, not `background-position`. The first version
+  // moved a 220%-wide gradient by percentage, and a percentage background
+  // position is measured against the *difference* between the element and the
+  // image — so with an image wider than the box the motion is non-linear and
+  // reads as the line lurching and skipping. A translated element moves by its
+  // own width, which is linear by definition, and stays on the compositor.
+  &__scan {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+
+    // One band, a fifth of the width, travelling the full box plus its own
+    // width so it enters and leaves completely rather than appearing mid-frame.
+    left: -20%;
+    width: 20%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--accent) 60%, transparent) 50%,
+      transparent 100%
+    );
+    animation: scan 1.8s linear infinite;
+    will-change: transform;
+  }
+
+  &__status {
+    position: absolute;
+    bottom: var(--space-5);
+    color: var(--text-primary);
+  }
+}
+
+@keyframes scan {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    // 600% of the band's own width carries it from just off the left edge to
+    // just past the right: the band is 20% of the box, so five widths cross it
+    // and one more clears the far side.
+    transform: translateX(600%);
+  }
+}
+
+// Motion is opt-out. The status line already carries everything the sweep
+// says, so removing it costs nothing; a full-width moving band is the kind of
+// effect that makes some people ill.
+@media (prefers-reduced-motion: reduce) {
+  .working__scan {
+    display: none;
+  }
+}
+
+// -- What the screen explains before anything is chosen ----------------------
+
+.upload__intro {
+  margin-bottom: var(--space-5);
+}
+
+.upload__heading {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+}
+
+.upload__lead {
+  margin: 0;
+  max-width: 36rem;
+  color: var(--text-secondary);
+}
+
+// The diagram: three rectangles and two arrows, drawn from tokens so it is
+// correct in either zone without a second copy.
+.flow {
+  display: block;
+  width: 100%;
+  max-width: 34rem;
+  height: auto;
+
+  // Centred rather than flush left. The heading and the steps are text and
+  // read from the left edge; the diagram is a figure, and a figure narrower
+  // than its column sits in the middle of it.
+  margin: 0 auto var(--space-5);
+
+  &__frame {
+    fill: none;
+    stroke: var(--text-secondary);
+    stroke-width: 1;
+
+    // The chosen one is the only accent in the drawing. Marking all three
+    // would say "three results" where the point is "three, then one".
+    &--chosen {
+      stroke: var(--accent);
+    }
+  }
+
+  &__mark {
+    fill: var(--text-secondary);
+  }
+
+  &__link,
+  &__slider {
+    fill: none;
+    stroke: var(--text-secondary);
+    stroke-width: 1;
+  }
+
+  &__knob {
+    fill: var(--accent);
+  }
+
+  &__count {
+    fill: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-4);
+  margin: 0 0 var(--space-5);
+  padding: 0;
+  list-style: none;
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-top: var(--space-3);
+
+    // A hairline above each step rather than a box around it: the panel is
+    // already a surface, and a card inside a card is one border too many.
+    border-top: var(--border-width) solid var(--line);
+  }
+
+  &__label {
+    color: var(--text-primary);
+  }
+
+  &__text {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+  }
+}
+
+@media (width <= 480px) {
+  .flow {
+    // The diagram is the first thing to go: at this width its labels and
+    // arrows are below the size where they explain anything, and the three
+    // steps below say the same in words.
+    display: none;
+  }
+
+  .dropzone {
+    min-height: 12rem;
+    padding: var(--space-4);
+  }
+
+  .working {
+    min-height: 14rem;
+  }
+}

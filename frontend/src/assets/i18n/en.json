@@ -31,7 +31,12 @@
   },
   "projects": {
     "title": "Projects",
-    "empty": "No projects yet. Upload a photograph to begin."
+    "empty": "No projects yet. Upload a photograph to begin.",
+    "new": "New project",
+    "detail": {
+      "title": "Project",
+      "pending": "The three suggestions and the editor arrive next."
+    }
   },
   "renderer": {
     "lab": {
@@ -67,5 +72,37 @@
   "common": {
     "loading": "Loading…",
     "retry": "Try again"
+  },
+  "upload": {
+    "title": "Drop a photograph here",
+    "hint": "OR CLICK TO CHOOSE  ·  JPEG, PNG OR WEBP  ·  UP TO 40 MB",
+    "choose": "Choose a photograph to upload",
+    "sending": "UPLOADING · {{percent}}%",
+    "processing": "READING THE PHOTOGRAPH",
+    "errors": {
+      "empty": "That file is empty.",
+      "tooLarge": "That file is larger than the 40 MB limit.",
+      "wrongType": "Only JPEG, PNG and WebP photographs can be uploaded.",
+      "signedOut": "Your session has expired. Sign in again to upload.",
+      "unreachable": "Could not reach the server. Check your connection and try again.",
+      "unexpected": "The upload did not finish. Try again in a moment."
+    },
+    "heading": "Start a project",
+    "lead": "One photograph in, three ways to finish it. Nothing is changed in the original.",
+    "steps": {
+      "one": {
+        "label": "UPLOAD",
+        "text": "The system reads the scene, the light and the subject."
+      },
+      "two": {
+        "label": "CHOOSE A DIRECTION",
+        "text": "Three edits from real photographers, each previewed on your own photograph."
+      },
+      "three": {
+        "label": "REFINE & EXPORT",
+        "text": "Adjust every parameter live, keep versions, export at full resolution."
+      }
+    },
+    "diagram": "A photograph becoming three suggested edits, then one finished result"
   }
 }
