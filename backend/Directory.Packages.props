@@ -15,10 +15,18 @@
   </PropertyGroup>
 
   <ItemGroup Label="ASP.NET Core">
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup Label="API documentation">
+    <!-- The interactive view over the document .NET already generates. Built for
+         the built-in OpenAPI rather than for Swashbuckle's own pipeline, and
+         registered only outside production (ADR-26 is unrelated; phase 4,
+         decision H). -->
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.17.6" />
   </ItemGroup>
 
   <ItemGroup Label="Object storage">
@@ -31,12 +39,12 @@
          error here, so this is the fix rather than a suppression. -->
     <PackageVersion Include="AWSSDK.Core" Version="4.0.102.6" />
     <!-- Typed HttpClient for the ML service, with its handler lifetime managed. -->
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.12" />
   </ItemGroup>
 
   <ItemGroup Label="Persistence">
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12" />
     <!-- snake_case table and column names without repeating them by hand -->
     <PackageVersion Include="EFCore.NamingConventions" Version="10.0.1" />
     <PackageVersion Include="Pgvector" Version="0.3.2" />
@@ -44,28 +52,16 @@
   </ItemGroup>
 
   <ItemGroup Label="Configuration">
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" />
     <!-- Loads the repository-root .env so `dotnet run` and docker compose read
          the same file. Development only; see Program.cs. -->
     <PackageVersion Include="DotNetEnv" Version="3.2.0" />
   </ItemGroup>
 
-  <ItemGroup Label="Transitive pins">
-    <!--
-      Microsoft.AspNetCore.OpenApi 10.0.10 resolves Microsoft.OpenApi 2.0.0,
-      which is affected by CVE-2026-49451 (uncontrolled recursion on a circular
-      schema reference, CVSS 7.5). Affected: 2.0.0-preview.11 .. 2.7.4; fixed in
-      2.7.5. Pinned forward inside the 2.x line, so the API surface ASP.NET Core
-      compiled against is unchanged.
-      Remove this pin once the framework package resolves a patched version.
-    -->
-    <PackageVersion Include="Microsoft.OpenApi" Version="2.11.0" />
-  </ItemGroup>
-
   <ItemGroup Label="Testing">
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.10" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.12" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="xunit" Version="2.9.3" />

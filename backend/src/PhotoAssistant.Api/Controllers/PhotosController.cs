@@ -19,8 +19,49 @@ namespace PhotoAssistant.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/photos")]
-public sealed class PhotosController(UploadPhotoHandler upload) : ControllerBase
+public sealed class PhotosController(
+    UploadPhotoHandler upload,
+    SuggestEditsHandler suggestions) : ControllerBase
 {
+    /// <summary>Three stylistically different edits for a photograph.</summary>
+    /// <remarks>
+    /// POST rather than GET: the work behind it is a CLIP encode and a vector
+    /// search, and the answer is not a resource sitting at an address. It is
+    /// also where the choice will be logged from (task 3).
+    /// </remarks>
+    [HttpPost("{id:guid}/recommendations")]
+    [ProducesResponseType<SuggestEditsResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status503ServiceUnavailable)]
+    public async Task<IActionResult> Recommendations(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await suggestions.SuggestAsync(id, CurrentUserId(), cancellationToken);
+
+        if (result.NotFound)
+        {
+            // 404 for someone else's photograph too, not 403: a 403 confirms
+            // that the identifier names something real.
+            return Problem(
+                title: "Not found",
+                detail: "No such photograph.",
+                statusCode: StatusCodes.Status404NotFound);
+        }
+
+        if (!result.Succeeded)
+        {
+            // The service being unavailable is our failure, and 503 says so —
+            // it also tells a client that retrying is the sensible response,
+            // which a 500 does not.
+            return Problem(
+                title: "Suggestions unavailable",
+                detail: result.Error,
+                statusCode: StatusCodes.Status503ServiceUnavailable);
+        }
+
+        return Ok(result.Response);
+    }
+
     /// <summary>Uploads a photograph and starts a project on it.</summary>
     [HttpPost]
     [ProducesResponseType<UploadPhotoResponse>(StatusCodes.Status201Created)]

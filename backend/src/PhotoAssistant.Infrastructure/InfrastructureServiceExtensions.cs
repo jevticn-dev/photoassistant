@@ -43,7 +43,9 @@ public static class InfrastructureServiceExtensions
     private static void AddPhotos(this IServiceCollection services)
     {
         services.AddScoped<IPhotoUploadRepository, PhotoUploadRepository>();
+        services.AddScoped<IPhotoRepository, PhotoRepository>();
         services.AddScoped<UploadPhotoHandler>();
+        services.AddScoped<SuggestEditsHandler>();
     }
 
     private static void AddObjectStorage(this IServiceCollection services, IConfiguration configuration)
@@ -101,6 +103,16 @@ public static class InfrastructureServiceExtensions
             // default of 100 seconds is long enough that a stuck request would
             // hold a browser far past the point of usefulness.
             client.Timeout = TimeSpan.FromSeconds(30);
+        });
+
+        // Measured at p95 262 ms in phase 3, against a budget of 1,5 s (§B82).
+        // Ten seconds is far above anything healthy and far below a browser
+        // giving up on its own, so a stalled service fails as a message rather
+        // than as a spinner nobody can explain.
+        services.AddHttpClient<IRecommendationService, MlRecommendationService>(client =>
+        {
+            client.BaseAddress = new Uri(address);
+            client.Timeout = TimeSpan.FromSeconds(10);
         });
     }
 

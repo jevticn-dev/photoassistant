@@ -6,11 +6,11 @@ what it should, resizes the way the corpus was built, and puts a real image in t
 response. Whether CLIP embeds well and whether pgvector searches correctly are
 proven where those things live.
 
-The one thing not substituted is the renderer: a preview is a rendered recipe, and
-a test that faked it would not notice if the endpoint returned a grey rectangle.
+Since phase 4 the response carries no rendered image at all (decision C), so what
+is left to prove is the contract: which recipes come back, in what shape, and that
+the upload reaches the recommender at the size the corpus was built at.
 """
 
-import base64
 import io
 
 import numpy as np
@@ -114,22 +114,21 @@ def test_three_suggestions_come_back_with_their_sources(client) -> None:
     assert body["pool_size"] == 250
 
 
-def test_each_preview_is_a_real_jpeg_of_the_upload(client) -> None:
-    """Not a placeholder: decoded, and the right size for the corpus it came from."""
+def test_the_response_carries_no_rendered_image(client) -> None:
+    """Phase 4, decision C: recipes only.
+
+    The route used to render a 512px preview of each suggestion, which was 157 ms
+    of a 239 ms request and 141 KB of its body (§B84). The browser runs the same
+    renderer over the proxy it loads anyway, so the image was more than half the
+    cost of the call for something the caller could already produce — and produce
+    at the resolution the person is about to edit at, rather than smaller.
+    """
     body = post(client, png(900, 600)).json()
 
     for entry in body["suggestions"]:
-        with Image.open(io.BytesIO(base64.b64decode(entry["preview"]))) as image:
-            assert image.format == "JPEG"
-            assert max(image.size) == route.PREVIEW_SIZE
-            assert image.size == (512, 341)  # aspect kept, long side at 512
-
-
-def test_the_previews_differ_because_the_recipes_do(client) -> None:
-    """Three identical previews would mean the recipes never reached the renderer."""
-    previews = {entry["preview"] for entry in post(client, png()).json()["suggestions"]}
-
-    assert len(previews) == 3
+        assert "preview" not in entry
+        # Nothing image-shaped smuggled in under another name either.
+        assert all(not isinstance(value, str) or len(value) < 512 for value in entry.values())
 
 
 def test_the_recipe_is_a_schema_document_the_editor_can_parse(client) -> None:
@@ -147,7 +146,7 @@ def test_the_image_reaches_the_recommender_at_the_measured_size(client) -> None:
     """512 on the long side: the resolution the recipes were fitted and judged at."""
     post(client, png(1600, 900))
 
-    assert max(FakeRecommender.last["image_shape"][:2]) == route.PREVIEW_SIZE
+    assert max(FakeRecommender.last["image_shape"][:2]) == route.SEARCH_SIZE
 
 
 def test_a_small_image_is_not_enlarged(client) -> None:
