@@ -10,7 +10,43 @@
 <div class="app-shell" [class]="zoneClass()">
   @if (!isDisplay()) {
     <header class="app-header">
-      <span class="app-header__mark label">{{ 'app.title' | translate }}</span>
+      <!--
+        The wordmark is the way home once there is a home to go to. Signed out
+        it is a plain label: the only casing screens then are the two forms,
+        and a link to a guarded address would bounce straight back to the one
+        being looked at.
+      -->
+      @if (isAuthenticated()) {
+        <a class="app-header__mark label" routerLink="/projects">
+          {{ 'app.title' | translate }}
+        </a>
+      } @else {
+        <span class="app-header__mark label">{{ 'app.title' | translate }}</span>
+      }
+
+      @if (isAuthenticated()) {
+        <nav class="app-header__nav">
+          <!--
+            Named rather than left to the wordmark. A brand in the corner is a
+            convention people follow once they know it; the word Projects is
+            the same destination said out loud, and aria-current marks it when
+            it is where you already are.
+          -->
+          <a
+            class="app-header__link label"
+            routerLink="/projects"
+            routerLinkActive="app-header__link--current"
+            [routerLinkActiveOptions]="{ exact: true }"
+            ariaCurrentWhenActive="page"
+          >
+            {{ 'nav.projects' | translate }}
+          </a>
+
+          <button class="app-header__link label" type="button" (click)="signOut()">
+            {{ 'nav.signOut' | translate }}
+          </button>
+        </nav>
+      }
     </header>
   }
 

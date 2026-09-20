@@ -19,9 +19,11 @@ export const projectsRoutes: Routes = [
     loadComponent: () => import('../suggestions/suggestions').then((m) => m.Suggestions),
   },
   {
-    // The editor arrives in task 4; until then this is where a choice lands.
+    // Where a choice lands, and where a project is reopened. The display zone
+    // for the same reason as the screen above it: this is a photograph being
+    // judged, and a light surround changes that judgement.
     path: ':id/edit',
     data: { zone: 'display' },
-    loadComponent: () => import('./project-detail/project-detail').then((m) => m.ProjectDetail),
+    loadComponent: () => import('../editor/editor').then((m) => m.Editor),
   },
 ];

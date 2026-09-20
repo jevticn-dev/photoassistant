@@ -18,7 +18,25 @@
     </p>
   } @else {
     <header class="suggestions__intro">
-      <h1 class="suggestions__heading">{{ 'suggestions.heading' | translate }}</h1>
+      <div class="suggestions__title">
+        <h1 class="suggestions__heading">{{ 'suggestions.heading' | translate }}</h1>
+
+        <!--
+          The way out. This screen is in the display zone, where the shell draws
+          no header of its own, so without this there is no way back to the
+          projects from here either. It shares the heading's row rather than
+          taking one of its own: the height on this screen is budgeted so that
+          all four photographs fit without scrolling.
+        -->
+        <a
+          class="suggestions__home label"
+          routerLink="/projects"
+          [attr.aria-label]="'nav.home' | translate"
+        >
+          {{ 'app.title' | translate }}
+        </a>
+      </div>
+
       <p class="suggestions__lead">{{ 'suggestions.lead' | translate }}</p>
     </header>
 

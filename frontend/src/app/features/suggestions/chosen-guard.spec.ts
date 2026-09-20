@@ -15,6 +15,7 @@ function project(hasChoice: boolean): Project {
     createdAt: '2026-09-20T10:00:00+00:00',
     versionCount: 0,
     hasChoice,
+    startingEdit: null,
   };
 }
 

@@ -1,3 +1,6 @@
+using System.Text.Json;
+using PhotoAssistant.Application.Photos;
+
 namespace PhotoAssistant.Application.Projects;
 
 /// <summary>One project, as a screen needs it.</summary>
@@ -27,6 +30,21 @@ public sealed record ProjectSummary
     /// </para>
     /// </summary>
     public required bool HasChoice { get; init; }
+
+    /// <summary>
+    /// The recipe the editor opens on, in edit schema v1, or null when there is
+    /// nothing to open on and the editor starts from the photograph unchanged.
+    ///
+    /// <para>
+    /// A <see cref="JsonElement"/> rather than a string, so that it arrives as
+    /// an object on the wire instead of a document escaped inside another one.
+    /// The API does not model the schema: the recipe is written by the ML
+    /// service, validated by the client against its own model of the same
+    /// schema, and stored whole (ADR-6). A third hand-maintained copy here
+    /// would be a fourth place to keep in step for no gain.
+    /// </para>
+    /// </summary>
+    public required JsonElement? StartingEdit { get; init; }
 }
 
 /// <summary>
@@ -41,9 +59,71 @@ public sealed record ProjectSummary
 /// </summary>
 public sealed class GetProjectHandler(IProjectRepository projects)
 {
-    public Task<ProjectSummary?> GetAsync(
+    public async Task<ProjectSummary?> GetAsync(
         Guid projectId,
         Guid userId,
-        CancellationToken cancellationToken) =>
-        projects.FindForUserAsync(projectId, userId, cancellationToken);
+        CancellationToken cancellationToken)
+    {
+        var project = await projects.FindForUserAsync(projectId, userId, cancellationToken);
+
+        if (project is null)
+        {
+            return null;
+        }
+
+        return new ProjectSummary
+        {
+            Id = project.Id,
+            Name = project.Name,
+            PhotoId = project.PhotoId,
+            CreatedAt = project.CreatedAt,
+            VersionCount = project.VersionCount,
+
+            // A choice log exists exactly when the screen has been passed, so
+            // the flag is that fact rather than a second query asking it again.
+            HasChoice = project.LatestChoiceLog is not null,
+            StartingEdit = StartingEdit(project),
+        };
+    }
+
+    /// <summary>
+    /// Where the editor picks up: the last thing saved, else what was chosen,
+    /// else nothing.
+    ///
+    /// <para>
+    /// The order is the point. A saved version is the person's own work and
+    /// outranks the suggestion it grew out of; the suggestion outranks the
+    /// untouched photograph. Reading it from the server rather than carrying it
+    /// through router state is what makes the editor survive a reload, which is
+    /// the same reason this endpoint exists at all.
+    /// </para>
+    /// </summary>
+    private static JsonElement? StartingEdit(ProjectRecord project)
+    {
+        if (project.LatestVersionEdit is { } saved)
+        {
+            return Parse(saved);
+        }
+
+        return project.LatestChoiceLog is { } log
+            ? ChoiceLog.ReadChosenRecipe(log)
+            : null;
+    }
+
+    /// <summary>
+    /// Both columns are <c>jsonb</c>, so the database has already refused
+    /// anything that is not JSON and this cannot throw. What it has not
+    /// checked is whether the JSON is a <em>recipe</em>: `{"schema": 99}` is
+    /// valid jsonb and nonsense to the editor. That check belongs to the
+    /// client, which owns a model of the schema and refuses what it cannot
+    /// apply; handing the document over unread keeps one validator rather
+    /// than two that can disagree.
+    /// </summary>
+    private static JsonElement Parse(string document)
+    {
+        using var parsed = JsonDocument.Parse(document);
+
+        // Cloned, because the element is only valid while its document is.
+        return parsed.RootElement.Clone();
+    }
 }

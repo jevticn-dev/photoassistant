@@ -69,7 +69,7 @@ describe('SuggestionsService', () => {
       .expectOne(`${environment.apiBaseUrl}/photos/${PHOTO}/recommendations`)
       .flush({ suggestions: [{ ...offered('a0002'), recipe: { schema: 99 } }], poolSize: 250 });
 
-    expect(failure?.summaryKey).toBe('suggestions.errors.unreadable');
+    expect(failure?.summaryKey).toBe('errors.unreadable');
   });
 
   it('asks for the proxy as a blob, so it can be decoded for the GPU', () => {
@@ -106,10 +106,10 @@ describe('SuggestionsService', () => {
   });
 
   it.each([
-    [404, 'suggestions.errors.missing'],
-    [401, 'suggestions.errors.signedOut'],
-    [503, 'suggestions.errors.unavailable'],
-    [500, 'suggestions.errors.unexpected'],
+    [404, 'errors.missing'],
+    [401, 'errors.signedOut'],
+    [503, 'errors.unavailable'],
+    [500, 'errors.unexpected'],
   ])('turns %i into its own message', (status, key) => {
     // 503 in particular: the ML service being down has to read as "try again"
     // rather than as "nothing was found for this photograph".

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 
@@ -31,7 +31,7 @@ interface Readout {
  */
 @Component({
   selector: 'app-suggestions',
-  imports: [SuggestionPreview, TranslatePipe],
+  imports: [RouterLink, SuggestionPreview, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './suggestions.html',
   styleUrl: './suggestions.scss',

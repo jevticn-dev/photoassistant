@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -108,11 +108,40 @@ public sealed class ChoiceAndProxyEndpointTests(ApiFactory factory)
 
     private static object Offered(string reference, string expert, double distance) => new
     {
-        recipe = new Dictionary<string, object> { ["schema"] = 1 },
+        // The exposure doubles as a marker: it is how a test tells which of the
+        // three came back out of the log.
+        recipe = new Dictionary<string, object>
+        {
+            ["schema"] = 1,
+            ["tone"] = new Dictionary<string, object> { ["exposure"] = distance },
+        },
         sourceReference = reference,
         expert,
         sceneDistance = distance,
     };
+
+    private static double? ExposureOf(JsonElement? edit) =>
+        edit?.GetProperty("tone").GetProperty("exposure").GetDouble();
+
+    /// <summary>
+    /// Writes a version straight to the database. Task 6 gives the editor a way
+    /// to do this; what these tests are about is the read path ahead of it.
+    /// </summary>
+    private async Task SaveVersionAsync(Guid projectId, double exposure = 0, string? edit = null)
+    {
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<PhotoAssistantDbContext>();
+
+        context.EditVersions.Add(new Domain.Entities.EditVersion
+        {
+            Id = Guid.CreateVersion7(),
+            ProjectId = projectId,
+            Edit = edit ?? JsonSerializer.Serialize(new { schema = 1, tone = new { exposure } }),
+            CreatedAt = DateTimeOffset.UtcNow,
+        });
+
+        await context.SaveChangesAsync();
+    }
 
     // -- the working copy -----------------------------------------------------
 
@@ -266,6 +295,84 @@ public sealed class ChoiceAndProxyEndpointTests(ApiFactory factory)
         var project = await client.GetFromJsonAsync<ProjectSummary>($"/api/projects/{projectId}");
 
         Assert.True(project!.HasChoice);
+    }
+
+    // -- where the editor picks up -------------------------------------------
+
+    [Fact]
+    public async Task The_editor_opens_on_the_suggestion_that_was_taken()
+    {
+        // Carrying the recipe through router state would work until the first
+        // reload, and reloading the editor is the most ordinary thing there is.
+        var client = await SignedInAsync(Arrange());
+        var photoId = await UploadAsync(client);
+        var projectId = await ProjectOfAsync(photoId);
+
+        await client.PostAsJsonAsync(
+            $"/api/photos/{photoId}/choices",
+            new { shown = ThreeSuggestions(), chosenIndex = 1 });
+
+        var project = await client.GetFromJsonAsync<ProjectSummary>($"/api/projects/{projectId}");
+
+        Assert.Equal(0.14, ExposureOf(project!.StartingEdit));
+    }
+
+    [Fact]
+    public async Task Skipping_leaves_the_editor_on_the_photograph_unchanged()
+    {
+        var client = await SignedInAsync(Arrange());
+        var photoId = await UploadAsync(client);
+        var projectId = await ProjectOfAsync(photoId);
+
+        await client.PostAsJsonAsync(
+            $"/api/photos/{photoId}/choices",
+            new { shown = ThreeSuggestions(), chosenIndex = (int?)null });
+
+        var project = await client.GetFromJsonAsync<ProjectSummary>($"/api/projects/{projectId}");
+
+        Assert.Null(project!.StartingEdit);
+    }
+
+    [Fact]
+    public async Task A_saved_version_outranks_the_suggestion_it_grew_out_of()
+    {
+        // The person's own work is newer than the suggestion it started from,
+        // and reopening the editor on the suggestion would throw it away.
+        var client = await SignedInAsync(Arrange());
+        var photoId = await UploadAsync(client);
+        var projectId = await ProjectOfAsync(photoId);
+
+        await client.PostAsJsonAsync(
+            $"/api/photos/{photoId}/choices",
+            new { shown = ThreeSuggestions(), chosenIndex = 1 });
+
+        await SaveVersionAsync(projectId, exposure: 0.9);
+
+        var project = await client.GetFromJsonAsync<ProjectSummary>($"/api/projects/{projectId}");
+
+        Assert.Equal(0.9, ExposureOf(project!.StartingEdit));
+        Assert.Equal(1, project.VersionCount);
+    }
+
+    [Fact]
+    public async Task A_document_that_is_valid_json_but_not_a_recipe_is_handed_over_anyway()
+    {
+        // The column is jsonb, so the database refuses anything that is not
+        // JSON and the API never sees it. It does not know what a recipe is,
+        // though, and this is where that line falls: the API passes the
+        // document on, and the client refuses what it cannot apply, because
+        // the client is the side that owns a model of the schema.
+        var client = await SignedInAsync(Arrange());
+        var photoId = await UploadAsync(client);
+        var projectId = await ProjectOfAsync(photoId);
+
+        await SaveVersionAsync(projectId, edit: """{"nonsense": true}""");
+
+        var response = await client.GetAsync($"/api/projects/{projectId}");
+        var project = await response.Content.ReadFromJsonAsync<ProjectSummary>();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.True(project!.StartingEdit!.Value.GetProperty("nonsense").GetBoolean());
     }
 
     [Fact]

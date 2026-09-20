@@ -12,7 +12,11 @@
 .app-header {
   display: flex;
   align-items: baseline;
-  gap: var(--space-3);
+
+  // The mark on one side, the navigation on the other, however few items it
+  // has — so a screen added later does not shift the ones already there.
+  justify-content: space-between;
+  gap: var(--space-4);
   padding: var(--space-4) var(--space-5);
   border-bottom: var(--border-width) solid var(--line);
   background: var(--surface-base);
@@ -26,6 +30,33 @@
     // .label already supplies the monospace, the spacing and the small size;
     // only the colour differs, because the product name is not secondary text.
     color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  &__nav {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+  }
+
+  &__link {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--text-primary);
+    }
+
+    // Where you already are. Marked by weight and colour rather than by an
+    // underline, which on a row of two items reads as a link that is somehow
+    // more of a link than its neighbour.
+    &--current {
+      color: var(--text-primary);
+    }
   }
 }
 

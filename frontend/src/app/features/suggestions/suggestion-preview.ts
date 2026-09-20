@@ -37,23 +37,8 @@ import { RendererError, WebGlRenderer, type EditRecipe } from '../../renderer';
 @Component({
   selector: 'app-suggestion-preview',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<canvas #canvas class="preview"></canvas>`,
-  styles: `
-    .preview {
-      display: block;
-
-      /* A height budget rather than a width: a portrait photograph given the
-         full column is tall enough to push the three cards off the screen,
-         and the whole point of this screen is seeing all four at once. The
-         parent sets the budget; width follows from the aspect ratio. */
-      max-height: var(--preview-max-height, none);
-      max-width: 100%;
-      width: auto;
-      height: auto;
-      margin: 0 auto;
-      background: var(--surface-inset);
-    }
-  `,
+  templateUrl: './suggestion-preview.html',
+  styleUrl: './suggestion-preview.scss',
 })
 export class SuggestionPreview implements OnDestroy {
   readonly image = input.required<ImageBitmap>();

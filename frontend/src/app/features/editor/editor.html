@@ -1,0 +1,169 @@
+<!-- Every visible string goes through the translate pipe, aria-label included. -->
+<section class="editor">
+  @if (failure(); as problem) {
+    <div class="editor__problem" role="alert">
+      <p>{{ problem.summaryKey | translate }}</p>
+      <button class="button" type="button" (click)="retry()">
+        {{ 'common.retry' | translate }}
+      </button>
+    </div>
+  } @else if (!ready()) {
+    <p class="editor__waiting label" role="status">{{ 'editor.loading' | translate }}</p>
+  } @else {
+    <header class="bar">
+      <div class="bar__identity">
+        <!--
+          The way out. The shell hides its own header in the display zone, so a
+          screen drawn full bleed has to carry its own way back or there is
+          none — which is what a reload into the editor leaves you with. The
+          label a screen reader hears names the destination rather than the
+          product, since the product name says nothing about where the link
+          goes.
+        -->
+        <a
+          class="bar__home label"
+          routerLink="/projects"
+          [attr.aria-label]="'nav.home' | translate"
+        >
+          {{ 'app.title' | translate }}
+        </a>
+        <span class="bar__divide" aria-hidden="true">/</span>
+
+        <span class="bar__name">{{ project()?.name }}</span>
+
+        <!--
+          Said out loud rather than left to be discovered. Saving is task 6, and
+          a screen that looks like an editor is assumed to keep what is done in
+          it unless it says otherwise.
+        -->
+        <span class="bar__state label">{{ 'editor.unsaved' | translate }}</span>
+      </div>
+
+      <div class="bar__actions">
+        <button class="control label" type="button" [disabled]="!canUndo()" (click)="undo()">
+          {{ 'editor.undo' | translate }}
+        </button>
+        <button class="control label" type="button" [disabled]="!canRedo()" (click)="redo()">
+          {{ 'editor.redo' | translate }}
+        </button>
+        <button
+          class="control label"
+          type="button"
+          [class.control--on]="comparing()"
+          [attr.aria-pressed]="comparing()"
+          (click)="toggleCompare()"
+        >
+          {{ 'editor.compare' | translate }}
+        </button>
+      </div>
+    </header>
+
+    @if (unsupported()) {
+      <p class="notice" role="alert">{{ 'editor.unsupported' | translate }}</p>
+    } @else if (degraded()) {
+      <p class="notice" role="status">{{ 'editor.degraded' | translate }}</p>
+    }
+
+    <div class="stage">
+      <!--
+        The frame owns the photograph's ratio, so the two layers cover the same
+        box to the pixel and the divider's percentage falls in the same place in
+        both of them.
+      -->
+      <div class="stage__frame" #frame [style.aspect-ratio]="aspectRatio(image()!)">
+        @if (comparing()) {
+          <!--
+            Underneath: the photograph as it was uploaded. The edited layer is
+            drawn over it and clipped, so what shows on the left is the original
+            and the seam between them is the divider.
+          -->
+          <app-editor-canvas
+            class="stage__layer"
+            [image]="image()!"
+            [recipe]="neutral"
+            [label]="'editor.canvasBefore' | translate"
+            (failed)="onCanvasFailure($event)"
+          />
+        }
+
+        <app-editor-canvas
+          class="stage__layer"
+          [image]="image()!"
+          [recipe]="recipe()"
+          [label]="'editor.canvas' | translate"
+          [style.clip-path]="clip()"
+          (failed)="onCanvasFailure($event)"
+        />
+
+        @if (comparing()) {
+          <span class="stage__tag stage__tag--before label">{{ 'editor.before' | translate }}</span>
+          <span class="stage__tag stage__tag--after label">{{ 'editor.after' | translate }}</span>
+
+          <!--
+            A slider rather than a decorated line: it is dragged with a pointer,
+            moved with the arrow keys, and announced with a position, and role
+            plus the three aria values are what make the last two true.
+          -->
+          <div
+            class="stage__divider"
+            role="slider"
+            tabindex="0"
+            [style.left.%]="divider()"
+            [attr.aria-label]="'editor.divider' | translate"
+            [attr.aria-valuenow]="dividerPosition()"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            (pointerdown)="startDividerDrag($event)"
+            (pointermove)="moveDivider($event)"
+            (pointerup)="endDividerDrag($event)"
+            (pointercancel)="endDividerDrag($event)"
+            (keydown)="onDividerKey($event)"
+          >
+            <span class="stage__grip" aria-hidden="true"></span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <aside class="panel" [class.panel--open]="controlsOpen()">
+      <!--
+        The drawer handle. It is in the markup at every width and hidden by the
+        stylesheet on wide screens, where the panel is simply there — one panel
+        written once rather than two that can disagree.
+      -->
+      <button
+        class="panel__handle"
+        type="button"
+        [attr.aria-expanded]="controlsOpen()"
+        aria-controls="editor-controls"
+        (click)="controlsOpen.set(!controlsOpen())"
+      >
+        <span class="label">{{ 'editor.controls' | translate }}</span>
+        <span class="panel__hint label">
+          {{ (controlsOpen() ? 'editor.hideControls' : 'editor.showControls') | translate }}
+        </span>
+      </button>
+
+      <div class="panel__body" id="editor-controls">
+        @for (section of sections; track section.group) {
+          <section class="group">
+            <h2 class="group__title label">
+              {{ 'editor.groups.' + section.group | translate }}
+            </h2>
+
+            @for (param of section.params; track param.key) {
+              <app-param-slider
+                [param]="param"
+                [value]="value(param)"
+                (changed)="setValue(param, $event)"
+                (resetRequested)="reset(param)"
+                (stepStart)="beginStep()"
+                (stepEnd)="endStep()"
+              />
+            }
+          </section>
+        }
+      </div>
+    </aside>
+  }
+</section>

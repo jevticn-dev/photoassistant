@@ -1,0 +1,338 @@
+// The editor. Everything visual is a token; no hex value appears here.
+//
+// The route declares `zone: 'display'`, so the tokens below already resolve to
+// the dark display palette and nothing in this file has to know that. Judging
+// exposure and colour depends on what surrounds the photograph, which is why
+// the editor is the one screen that is dark (§B91).
+
+.editor {
+  // Three rows the width of the screen, and the bottom one split between the
+  // photograph and the controls. The shell removes its own padding in the
+  // display zone, so this is the whole viewport.
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-areas:
+    'bar bar'
+    'notice notice'
+    'stage panel';
+
+  // dvh rather than vh: on a phone the address bar comes and goes, and vh is
+  // measured against the larger state, so the drawer would sit below the fold
+  // exactly when the bar is showing.
+  height: 100dvh;
+  background: var(--surface-base);
+  color: var(--text-primary);
+}
+
+// Loading and failure are single elements in an otherwise three-part grid, so
+// they are placed over the whole of it rather than into a cell that the layout
+// only has while there is something to show.
+.editor__waiting,
+.editor__problem {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  align-self: center;
+  justify-self: center;
+  text-align: center;
+}
+
+.editor__problem {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+}
+
+// -- the bar ----------------------------------------------------------------
+
+.bar {
+  grid-area: bar;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--line);
+
+  &__identity {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  // .label already supplies the monospace, the size and the spacing of a front
+  // panel legend; only what differs is written here.
+  &__home {
+    flex: none;
+    color: var(--text-primary);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+
+  &__divide {
+    flex: none;
+    color: var(--line);
+  }
+
+  &__name {
+    font-size: var(--text-md);
+
+    // A long project name shortens rather than pushing the controls off.
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__state {
+    flex: none;
+    padding: var(--space-1) var(--space-2);
+    border: var(--border-width) solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+
+  &__actions {
+    display: flex;
+    flex: none;
+    gap: var(--space-2);
+  }
+}
+
+// Carries .label in the markup for its typography; this is the button around it.
+.control {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-3);
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-panel);
+  color: var(--text-primary);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--surface-inset);
+  }
+
+  // Dimmed rather than removed: a control that disappears when it has nothing
+  // to do moves everything beside it, and undo comes and goes constantly.
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  &--on {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+.notice {
+  grid-area: notice;
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--line);
+  background: var(--surface-panel);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+// -- the photograph ---------------------------------------------------------
+
+.stage {
+  grid-area: stage;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  padding: var(--space-5);
+}
+
+.stage__frame {
+  // The photograph's own ratio, so the frame is exactly the picture and the
+  // divider's percentage means the same thing in both layers.
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+
+  // aspect-ratio needs one axis to push against. Without this the frame takes
+  // the full column width and a portrait photograph runs off the bottom.
+  height: 100%;
+}
+
+.stage__layer {
+  position: absolute;
+  inset: 0;
+}
+
+.stage__tag {
+  position: absolute;
+  bottom: var(--space-3);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+
+  // The photograph underneath is any colour at all, so the tag carries its own
+  // surface rather than trusting the contrast of whatever it lands on.
+  background: var(--surface-base);
+  color: var(--text-primary);
+
+  &--before {
+    left: var(--space-3);
+  }
+
+  &--after {
+    right: var(--space-3);
+  }
+}
+
+.stage__divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+
+  // The hit area is a finger wide and centred on the seam; the visible line is
+  // the child, one pixel of accent. Dragging must not also scroll the page,
+  // which is what touch-action prevents.
+  width: var(--touch-target);
+  margin-left: calc(var(--touch-target) / -2);
+  touch-action: none;
+  cursor: ew-resize;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    margin-left: -1px;
+    background: var(--accent);
+  }
+}
+
+.stage__grip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--space-5);
+  height: var(--space-5);
+  transform: translate(-50%, -50%);
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+}
+
+// -- the panel --------------------------------------------------------------
+
+.panel {
+  grid-area: panel;
+  display: flex;
+  flex-direction: column;
+  width: 19rem;
+  border-left: var(--border-width) solid var(--line);
+  background: var(--surface-base);
+
+  &__handle {
+    // Wide screens have the panel in view already, so the control that opens it
+    // would be a button that does nothing.
+    display: none;
+  }
+
+  &__body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: var(--space-4);
+  }
+}
+
+.group {
+  // The same hairline that divides the panel from the photograph, turned
+  // horizontal: where one group of parameters ends and the next begins is
+  // otherwise left to the reader to work out from the spacing alone. It is
+  // lighter than the rule between rows inside a group, so the two ranks of
+  // separator are told apart at a glance rather than compared.
+  & + & {
+    margin-top: var(--space-5);
+    padding-top: var(--space-5);
+    border-top: var(--border-width) solid var(--line);
+  }
+
+  &__title {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-xs);
+    color: var(--text-primary);
+  }
+}
+
+// -- narrow screens ---------------------------------------------------------
+//
+// 360px is a requirement, not a nicety (plan §10). The panel becomes a drawer
+// along the bottom and the photograph keeps everything above it, which is the
+// arrangement plan §11 asks for.
+
+@media (width <= 60rem) {
+  .editor {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'bar'
+      'notice'
+      'stage';
+  }
+
+  .stage {
+    padding: var(--space-3);
+
+    // Room for the closed drawer, which is fixed over this area.
+    padding-bottom: calc(var(--touch-target) + var(--space-4));
+  }
+
+  .panel {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    width: auto;
+    border-top: var(--border-width) solid var(--line);
+    border-left: none;
+
+    &__handle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      width: 100%;
+      min-height: var(--touch-target);
+      padding: 0 var(--space-4);
+      border: none;
+      background: var(--surface-panel);
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    &__hint {
+      color: var(--text-secondary);
+    }
+
+    &__body {
+      // Collapsed rather than removed, so the controls keep their state and the
+      // drawer has something to animate towards.
+      max-height: 0;
+      padding-block: 0;
+      overflow: hidden;
+      transition: max-height 0.18s ease-out;
+    }
+
+    &--open &__body {
+      // Half the screen at most: the photograph is what the adjustment is being
+      // judged against, so it never loses more than that.
+      max-height: 50dvh;
+      padding-block: var(--space-4);
+      overflow-y: auto;
+    }
+  }
+}

@@ -4,8 +4,8 @@
   },
   "nav": {
     "projects": "Projects",
-    "signIn": "Sign in",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "home": "PhotoAssistant — back to projects"
   },
   "auth": {
     "login": {
@@ -32,11 +32,7 @@
   "projects": {
     "title": "Projects",
     "empty": "No projects yet. Upload a photograph to begin.",
-    "new": "New project",
-    "detail": {
-      "title": "Editor",
-      "pending": "Your choice was recorded. The editor arrives next."
-    }
+    "new": "New project"
   },
   "renderer": {
     "lab": {
@@ -111,14 +107,49 @@
     "original": "YOUR PHOTOGRAPH",
     "working": "READING THE PHOTOGRAPH",
     "unchanged": "NO CHANGE",
-    "skip": "SKIP AND EDIT IT MYSELF",
-    "errors": {
-      "missing": "That project could not be found.",
-      "unavailable": "Suggestions are unavailable right now.",
-      "unreadable": "The suggestions could not be read. Try again in a moment.",
-      "signedOut": "Your session has expired. Sign in again.",
-      "unreachable": "Could not reach the server. Check your connection.",
-      "unexpected": "Something went wrong while preparing the suggestions."
+    "skip": "SKIP AND EDIT IT MYSELF"
+  },
+  "editor": {
+    "loading": "OPENING THE PHOTOGRAPH",
+    "canvas": "Your photograph with the current edit applied",
+    "canvasBefore": "Your photograph as it was uploaded",
+    "undo": "Undo",
+    "redo": "Redo",
+    "compare": "Compare with the original",
+    "before": "BEFORE",
+    "after": "AFTER",
+    "divider": "Move the divider between before and after",
+    "reset": "Reset {{name}}",
+    "controls": "Adjustments",
+    "showControls": "Show the controls",
+    "hideControls": "Hide the controls",
+    "unsaved": "NOT SAVED YET",
+    "degraded": "This device ran short of graphics memory, so the preview is now half size. Nothing about the edit itself has changed.",
+    "unsupported": "This browser cannot show the live preview: it provides no WebGL2.",
+    "groups": {
+      "whiteBalance": "WHITE BALANCE",
+      "tone": "TONE",
+      "color": "COLOR"
+    },
+    "params": {
+      "temperature": "Temperature",
+      "tint": "Tint",
+      "exposure": "Exposure",
+      "contrast": "Contrast",
+      "highlights": "Highlights",
+      "shadows": "Shadows",
+      "whites": "Whites",
+      "blacks": "Blacks",
+      "saturation": "Saturation",
+      "vibrance": "Vibrance"
     }
+  },
+  "errors": {
+    "missing": "That project could not be found.",
+    "unavailable": "The service is unavailable right now. Try again in a moment.",
+    "unreadable": "That edit could not be read.",
+    "signedOut": "Your session has expired. Sign in again.",
+    "unreachable": "Could not reach the server. Check your connection.",
+    "unexpected": "Something went wrong."
   }
 }
