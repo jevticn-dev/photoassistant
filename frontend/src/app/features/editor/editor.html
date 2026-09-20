@@ -32,16 +32,13 @@
         <span class="bar__name">{{ project()?.name }}</span>
 
         <!--
-          Said out loud rather than left to be discovered. Saving is task 6, and
-          a screen that looks like an editor is assumed to keep what is done in
-          it unless it says otherwise.
+          Four states rather than two: "saved as V03", "nothing saved yet",
+          "changed since" and "looking at V01" are four different things to be
+          told, and the last one especially — an earlier version on screen looks
+          exactly like work somebody is in the middle of.
         -->
-        <!--
-          Three states rather than two: "saved as V03" and "nothing saved yet"
-          are different things to be told, and so is "changed since".
-        -->
-        <span class="bar__state label" [class.bar__state--dirty]="dirty()">
-          {{ status() | translate: { label: savedLabel() } }}
+        <span class="bar__state label" [class.bar__state--dirty]="dirty() && restorable() === null">
+          {{ status() | translate: { label: statusLabel() } }}
         </span>
       </div>
 
@@ -52,20 +49,36 @@
         <button class="control label" type="button" [disabled]="!canRedo()" (click)="redo()">
           {{ 'editor.redo' | translate }}
         </button>
+        <!--
+          One button, two names. While an earlier version is showing, saving is
+          what puts it back on top — so the button says that instead of leaving
+          the person to work out that a save is the way back (§B118).
+        -->
         <button
           class="control label control--primary"
           type="button"
           [disabled]="saving()"
           (click)="save()"
         >
-          {{ 'editor.save' | translate }}
+          @if (restorable(); as version) {
+            {{ 'editor.restore' | translate: { label: version.label } }}
+          } @else {
+            {{ 'editor.save' | translate }}
+          }
         </button>
 
+        <!--
+          A verb like the three beside it. The sentence it used to carry is now
+          what a screen reader hears, which is where a sentence belongs: four
+          buttons on one row, and one of them five words long, is what pushed
+          the bar off a narrow screen.
+        -->
         <button
           class="control label"
           type="button"
           [class.control--on]="comparing()"
           [attr.aria-pressed]="comparing()"
+          [attr.aria-label]="'editor.compareLabel' | translate"
           (click)="toggleCompare()"
         >
           {{ 'editor.compare' | translate }}
@@ -75,11 +88,27 @@
 
     @if (saveProblem(); as problem) {
       <p class="notice notice--error" role="alert">{{ problem | translate }}</p>
+    } @else if (historyProblem(); as problem) {
+      <!--
+        Said rather than left to be guessed: an empty strip because the history
+        could not be read looks exactly like an empty strip because nothing has
+        been saved.
+      -->
+      <p class="notice notice--error" role="alert">
+        {{ 'editor.history.failed' | translate: { reason: problem | translate } }}
+      </p>
     } @else if (unsupported()) {
       <p class="notice" role="alert">{{ 'editor.unsupported' | translate }}</p>
     } @else if (degraded()) {
       <p class="notice" role="status">{{ 'editor.degraded' | translate }}</p>
     }
+
+    <app-version-strip
+      class="history"
+      [entries]="versions()"
+      [openId]="openId()"
+      (opened)="openVersion($event)"
+    />
 
     <div class="stage">
       <!--

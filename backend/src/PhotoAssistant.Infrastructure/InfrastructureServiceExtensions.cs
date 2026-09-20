@@ -56,6 +56,7 @@ public static class InfrastructureServiceExtensions
         services.AddScoped<RenameProjectHandler>();
         services.AddScoped<DeleteProjectHandler>();
         services.AddScoped<SaveVersionHandler>();
+        services.AddScoped<ListVersionsHandler>();
     }
 
     private static void AddObjectStorage(this IServiceCollection services, IConfiguration configuration)

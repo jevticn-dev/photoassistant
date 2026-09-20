@@ -63,6 +63,20 @@ public interface IProjectRepository
         CancellationToken cancellationToken);
 
     /// <summary>
+    /// Every version of a project of this user's, oldest first. Null when there
+    /// is no such project; empty when there is one and nothing has been saved.
+    ///
+    /// <para>
+    /// The ordering is part of the contract, not a default: the labels the
+    /// handler hands out are positions in this list.
+    /// </para>
+    /// </summary>
+    Task<IReadOnlyList<StoredVersion>?> ListVersionsForUserAsync(
+        Guid projectId,
+        Guid userId,
+        CancellationToken cancellationToken);
+
+    /// <summary>
     /// Appends a version to a project of this user's and returns it with the
     /// label its position earns. Null when there is no such project.
     /// </summary>

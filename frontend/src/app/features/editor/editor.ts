@@ -16,13 +16,15 @@ import {
   NEUTRAL_RECIPE,
   type EditRecipe,
   parseRecipe,
+  toDocument,
   toJson,
 } from '../../renderer';
 import { PhotoApi, type ApiFailure, type Project } from '../../shared/photos/photo-api';
 import { EditorCanvas, type CanvasFailure } from './editor-canvas';
-import { EditorService } from './editor-service';
+import { EditorService, type VersionEntry } from './editor-service';
 import { type ParamDef, SECTIONS, readParam, writeParam } from './editor-params';
 import { ParamSlider } from './param-slider';
+import { type StripEntry, VersionStrip } from './version-strip';
 
 /**
  * How many edits back undo reaches.
@@ -48,13 +50,15 @@ const DIVIDER_STEP = 5;
  * slider costs a draw rather than a network round trip. That is ADR-3, and the
  * reason the schema exists as a document at all.</p>
  *
- * <p>Saving is task 6 and export is task 8. Until they arrive the screen says
- * so rather than implying otherwise: an editor that looks like it keeps your
- * work and does not is worse than one that admits it.</p>
+ * <p>Saving is explicit, and so is the history beside it: each save is a whole
+ * recipe (ADR-6), and going back to one appends it again rather than undoing
+ * what came after. The bar always says which of the four states the work is in,
+ * because an editor that looks like it keeps your work and does not is worse
+ * than one that admits it.</p>
  */
 @Component({
   selector: 'app-editor',
-  imports: [EditorCanvas, ParamSlider, RouterLink, TranslatePipe],
+  imports: [EditorCanvas, ParamSlider, RouterLink, TranslatePipe, VersionStrip],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './editor.html',
   styleUrl: './editor.scss',
@@ -103,6 +107,54 @@ export class Editor implements OnDestroy {
   /** Set when a save failed, and cleared by the next attempt. */
   protected readonly saveProblem = signal<string | null>(null);
 
+  /**
+   * Everything saved for this project, oldest first — the strip down the side.
+   *
+   * <p>Each entry brings its recipe with it, so opening one is a redraw rather
+   * than a request (§B117).</p>
+   */
+  protected readonly versions = signal<readonly VersionEntry[]>([]);
+
+  /** Set when the history could not be read, so an empty strip is not read as "nothing saved". */
+  protected readonly historyProblem = signal<string | null>(null);
+
+  /**
+   * The version that was opened, and the document it put on screen.
+   *
+   * <p>Both halves, because the second is what keeps the first honest. Editing
+   * after opening V01 means V01 is no longer what is being looked at, and a
+   * flag alone would have to be cleared from every path that changes the
+   * recipe — a slider, a reset, undo, redo, a save. Holding the document
+   * instead makes the question answerable rather than remembered.</p>
+   */
+  private readonly opened = signal<{ id: string; document: string } | null>(null);
+
+  /** Which chip is lit: the opened version, but only while it is still what is shown. */
+  protected readonly openId = computed(() => {
+    const open = this.opened();
+
+    return open !== null && toJson(this.recipe()) === open.document ? open.id : null;
+  });
+
+  /**
+   * The version the save button would put back on top, or null when saving
+   * means what it usually means.
+   *
+   * <p>The newest version is not restorable: it is already on top, and the bar
+   * beside the button says so. Only looking further back turns a save into a
+   * restore.</p>
+   */
+  protected readonly restorable = computed(() => {
+    const id = this.openId();
+    const list = this.versions();
+
+    if (id === null || list.length === 0 || list[list.length - 1].id === id) {
+      return null;
+    }
+
+    return list.find((version) => version.id === id) ?? null;
+  });
+
   protected readonly comparing = signal(false);
   protected readonly divider = signal(50);
 
@@ -127,16 +179,25 @@ export class Editor implements OnDestroy {
 
   /**
    * What the bar says about the work: never saved, saved and untouched since,
-   * or changed since. Three states rather than two, because "saved" and "there
-   * is nothing to save" are different things to be told.
+   * changed since, or looking at an earlier version. Four states rather than
+   * two, because each is a different thing to be told — and the last one has to
+   * be said out loud, since an older version on screen looks exactly like work
+   * somebody is in the middle of.
    */
   protected readonly status = computed(() => {
+    if (this.restorable() !== null) {
+      return 'editor.viewing';
+    }
+
     if (this.savedLabel() === null) {
       return 'editor.unsaved';
     }
 
     return this.dirty() ? 'editor.changed' : 'editor.saved';
   });
+
+  /** Which label the status line and the save button name. */
+  protected readonly statusLabel = computed(() => this.restorable()?.label ?? this.savedLabel());
 
   /**
    * What clips the edited layer. `none` while the split is off, so the whole
@@ -316,6 +377,47 @@ export class Editor implements OnDestroy {
     }
   }
 
+  // -- history --------------------------------------------------------------
+
+  /**
+   * Puts an earlier version on screen.
+   *
+   * <p><b>As an ordinary undo step, not a mode.</b> Whatever was being worked
+   * on goes onto the undo stack on the way past, so Ctrl+Z comes straight back
+   * to it. That is deliberately instead of a dialog asking whether unsaved work
+   * may be discarded: the strip is meant to be clicked through, and a modal on
+   * every chip would make comparing two versions cost two confirmations. The
+   * work is not lost, it is one step behind.</p>
+   *
+   * <p>Nothing is written. Looking at V01 leaves the history exactly as it
+   * was — what writes is the save button, which while this is showing offers to
+   * put V01 back on top as a new version (§B118).</p>
+   */
+  protected openVersion(entry: StripEntry): void {
+    const version = this.versions().find((candidate) => candidate.id === entry.id);
+    if (version === undefined) {
+      return;
+    }
+
+    const recipe = readRecipe(version.edit);
+    if (recipe === null) {
+      // Stored, so it passed validation once; unreadable now means the schema
+      // has moved under it. Said plainly rather than opening something that is
+      // not what the chip promises.
+      this.historyProblem.set('errors.unreadable');
+
+      return;
+    }
+
+    this.historyProblem.set(null);
+
+    this.beginStep();
+    this.recipe.set(recipe);
+    this.endStep();
+
+    this.opened.set({ id: version.id, document: toJson(recipe) });
+  }
+
   // -- saving ---------------------------------------------------------------
 
   /**
@@ -326,6 +428,12 @@ export class Editor implements OnDestroy {
    * notion of a draft. Saving on every change would make the history a list of
    * a hundred entries per sitting instead of the handful of turning points
    * somebody meant to keep (§B111).</p>
+   *
+   * <p><b>This is also how a version is restored.</b> When what is on screen is
+   * an earlier version, saving appends its recipe as the newest one — which is
+   * the only thing "go back to V01" can mean where history only ever grows.
+   * Nothing is rewritten and nothing newer is lost, and that holds because of
+   * the shape rather than because of a rule (§B118).</p>
    */
   protected save(): void {
     if (this.saving() || this.projectId === '') {
@@ -342,8 +450,20 @@ export class Editor implements OnDestroy {
         // The recipe as it was when the request went out, not as it is now:
         // moving a slider while the save is in flight must leave the screen
         // saying there are unsaved changes, because there are.
-        this.savedEdit.set(toJson(recipe));
+        const document = toJson(recipe);
+
+        this.savedEdit.set(document);
         this.savedLabel.set(version.label);
+
+        // Appended rather than refetched: the server was just told exactly this
+        // recipe, and it answered with the label it gave it. Asking for the
+        // list again would be a round trip to learn what is already known.
+        this.versions.update((list) => [...list, { ...version, edit: toDocument(recipe) }]);
+
+        // The new version is what is on screen now, so the strip lights it —
+        // including after a restore, where the chip that lights is the new one
+        // rather than the old one it came from.
+        this.opened.set({ id: version.id, document });
         this.saving.set(false);
       },
       error: (failure: ApiFailure) => {
@@ -442,6 +562,26 @@ export class Editor implements OnDestroy {
           next: (image) => this.image.set(image),
           error: (failure: ApiFailure) => this.failure.set(failure),
         });
+
+        // The history is read beside the photograph rather than before it: an
+        // editor without its strip still edits, so a failure here is a notice
+        // and not a screen that will not open.
+        this.editor.versions(this.projectId).subscribe({
+          next: (versions) => {
+            this.versions.set(versions);
+
+            // Which chip the project opened on. The editor starts from the
+            // newest saved version (§B110), so lighting it is stating a fact
+            // rather than making a choice — and it is what tells the person
+            // that the strip and the photograph are the same thing.
+            const newest = versions[versions.length - 1];
+
+            if (newest !== undefined && project.versionCount > 0) {
+              this.opened.set({ id: newest.id, document: toJson(this.recipe()) });
+            }
+          },
+          error: (failure: ApiFailure) => this.historyProblem.set(failure.summaryKey),
+        });
       },
       error: (failure: ApiFailure) => this.failure.set(failure),
     });
@@ -463,11 +603,23 @@ function startingRecipe(project: Project): EditRecipe {
     return NEUTRAL_RECIPE;
   }
 
+  return readRecipe(project.startingEdit) ?? NEUTRAL_RECIPE;
+}
+
+/**
+ * A stored document as a recipe, or null when it is not one.
+ *
+ * <p>Null rather than a throw, because both callers have somewhere better to
+ * go than an error: the screen opens neutral, and the strip says the entry
+ * could not be read. A failure that is not the schema's is still thrown —
+ * that one is a defect rather than a document.</p>
+ */
+function readRecipe(document: unknown): EditRecipe | null {
   try {
-    return parseRecipe(project.startingEdit);
+    return parseRecipe(document);
   } catch (error) {
     if (error instanceof EditSchemaError) {
-      return NEUTRAL_RECIPE;
+      return null;
     }
 
     throw error;

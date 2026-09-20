@@ -480,6 +480,122 @@ public sealed class ProjectEndpointTests(ApiFactory factory)
             project.StartingEdit!.Value.GetProperty("tone").GetProperty("exposure").GetDouble());
     }
 
+    // -- the history ----------------------------------------------------------
+
+    [Fact]
+    public async Task The_history_is_oldest_first_and_carries_the_recipe_of_each_version()
+    {
+        // The strip in the editor is this list, and every entry in it is one
+        // click away from being what is on screen — which is why the recipe
+        // travels with it rather than behind a second route.
+        var client = await SignedInAsync(Arrange());
+        var projectId = await ProjectOfAsync(await UploadAsync(client));
+
+        await client.PostAsJsonAsync($"/api/projects/{projectId}/versions", Recipe(0.25));
+        await client.PostAsJsonAsync($"/api/projects/{projectId}/versions", Recipe(0.75));
+
+        var history = await client.GetFromJsonAsync<List<VersionEntry>>(
+            $"/api/projects/{projectId}/versions");
+
+        Assert.Equal(["V01", "V02"], history!.Select(version => version.Label));
+        Assert.Equal(
+            [0.25, 0.75],
+            history!.Select(version =>
+                version.Edit.GetProperty("tone").GetProperty("exposure").GetDouble()));
+    }
+
+    [Fact]
+    public async Task A_project_nobody_has_saved_anything_in_has_an_empty_history()
+    {
+        // An abandoned upload is an ordinary state (decision G), so this is a
+        // list with nothing in it rather than a 404.
+        var client = await SignedInAsync(Arrange());
+        var projectId = await ProjectOfAsync(await UploadAsync(client));
+
+        var response = await client.GetAsync($"/api/projects/{projectId}/versions");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Empty((await response.Content.ReadFromJsonAsync<List<VersionEntry>>())!);
+    }
+
+    [Fact]
+    public async Task Someone_elses_history_is_not_found()
+    {
+        var owner = await SignedInAsync(Arrange());
+        var projectId = await ProjectOfAsync(await UploadAsync(owner));
+        await owner.PostAsJsonAsync($"/api/projects/{projectId}/versions", Recipe(0.25));
+        var intruder = await SignedInAsync(Arrange());
+
+        var response = await intruder.GetAsync($"/api/projects/{projectId}/versions");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Restoring_an_older_version_appends_it_and_keeps_everything_newer()
+    {
+        // The whole point of task 7. There is no restore route: going back to
+        // V01 is saving its recipe again, so the history can only grow and the
+        // record of what was done cannot be rewritten by looking at it.
+        var client = await SignedInAsync(Arrange());
+        var projectId = await ProjectOfAsync(await UploadAsync(client));
+
+        await client.PostAsJsonAsync($"/api/projects/{projectId}/versions", Recipe(0.25));
+        await client.PostAsJsonAsync($"/api/projects/{projectId}/versions", Recipe(0.75));
+
+        var history = await client.GetFromJsonAsync<List<VersionEntry>>(
+            $"/api/projects/{projectId}/versions");
+
+        // Exactly what the editor does when the restore button is pressed: it
+        // sends back the recipe the strip handed it.
+        var restored = await client.PostAsJsonAsync(
+            $"/api/projects/{projectId}/versions", history![0].Edit);
+
+        Assert.Equal("V03", (await restored.Content.ReadFromJsonAsync<SavedVersion>())!.Label);
+
+        var after = await client.GetFromJsonAsync<List<VersionEntry>>(
+            $"/api/projects/{projectId}/versions");
+
+        Assert.Equal(["V01", "V02", "V03"], after!.Select(version => version.Label));
+        Assert.Equal(
+            [0.25, 0.75, 0.25],
+            after!.Select(version =>
+                version.Edit.GetProperty("tone").GetProperty("exposure").GetDouble()));
+
+        // And the editor reopens on the restored version, because it is now the
+        // newest — which is the visible half of "restore" having worked.
+        var project = await client.GetFromJsonAsync<ProjectSummary>($"/api/projects/{projectId}");
+
+        Assert.Equal(
+            0.25,
+            project!.StartingEdit!.Value.GetProperty("tone").GetProperty("exposure").GetDouble());
+    }
+
+    [Fact]
+    public async Task Versions_saved_in_the_same_clock_tick_still_have_one_order()
+    {
+        // The clock the rows are written from is coarser than the gap between
+        // two writes can be, so identical timestamps are reachable. Without a
+        // tie-break the labels and the order they label would be free to
+        // disagree, and the strip is where that would show.
+        var client = await SignedInAsync(Arrange());
+        var projectId = await ProjectOfAsync(await UploadAsync(client));
+        var at = DateTimeOffset.UtcNow;
+
+        await SaveVersionAsync(projectId, at);
+        await SaveVersionAsync(projectId, at);
+        await SaveVersionAsync(projectId, at);
+
+        var first = await client.GetFromJsonAsync<List<VersionEntry>>(
+            $"/api/projects/{projectId}/versions");
+        var second = await client.GetFromJsonAsync<List<VersionEntry>>(
+            $"/api/projects/{projectId}/versions");
+
+        Assert.Equal(
+            first!.Select(version => version.Id),
+            second!.Select(version => version.Id));
+    }
+
     [Fact]
     public async Task An_anonymous_request_reaches_none_of_it()
     {
@@ -489,5 +605,8 @@ public sealed class ProjectEndpointTests(ApiFactory factory)
         Assert.Equal(
             HttpStatusCode.Unauthorized,
             (await client.DeleteAsync($"/api/projects/{Guid.NewGuid()}")).StatusCode);
+        Assert.Equal(
+            HttpStatusCode.Unauthorized,
+            (await client.GetAsync($"/api/projects/{Guid.NewGuid()}/versions")).StatusCode);
     }
 }

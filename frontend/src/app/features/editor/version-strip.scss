@@ -1,0 +1,105 @@
+// The history strip. Every value is a token; no hex appears here.
+//
+// It lives inside the display zone, so the tokens below already resolve dark
+// and nothing in this file has to know that (§B91).
+
+:host {
+  display: block;
+  min-height: 0;
+}
+
+.strip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  height: 100%;
+  padding: var(--space-3) var(--space-2);
+  border-right: var(--border-width) solid var(--line);
+
+  // The chips scroll, the heading does not: a long history must not push HIST
+  // off the top of the column it labels.
+  overflow: hidden;
+}
+
+.strip__title {
+  flex: none;
+  margin: 0;
+  font-size: var(--text-xs);
+}
+
+.strip__empty {
+  flex: none;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.strip__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  // A finger's width, and tall enough to read as a card rather than a button:
+  // the strip is a row of saved states, and the shape says so before the label
+  // is read.
+  width: var(--touch-target);
+  height: calc(var(--touch-target) + var(--space-2));
+  padding: 0;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-panel);
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--surface-inset);
+    color: var(--text-primary);
+  }
+
+  // What is on screen right now. The accent is the same one the divider and
+  // the save button use: in this interface it means "this is the live thing".
+  &--open {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+// -- narrow screens ---------------------------------------------------------
+//
+// The column becomes a row above the photograph. Chips scroll sideways within
+// the strip, which is what keeps the page itself free of horizontal scrolling
+// at 360px.
+
+@media (width <= 60rem) {
+  .strip {
+    flex-direction: row;
+    align-items: center;
+    height: auto;
+    padding: var(--space-2) var(--space-3);
+    border-right: none;
+    border-bottom: var(--border-width) solid var(--line);
+  }
+
+  .strip__list {
+    flex-direction: row;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .chip {
+    flex: none;
+    height: var(--touch-target);
+  }
+}

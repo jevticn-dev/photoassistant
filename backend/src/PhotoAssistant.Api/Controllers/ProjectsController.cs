@@ -26,7 +26,8 @@ public sealed class ProjectsController(
     GetProjectHandler projects,
     RenameProjectHandler rename,
     DeleteProjectHandler delete,
-    SaveVersionHandler versions) : ControllerBase
+    SaveVersionHandler versions,
+    ListVersionsHandler history) : ControllerBase
 {
     /// <summary>Everything this person is working on, most recently edited first.</summary>
     [HttpGet]
@@ -127,6 +128,25 @@ public sealed class ProjectsController(
             actionName: nameof(Get),
             routeValues: new { id },
             value: result.Version);
+    }
+
+    /// <summary>Everything that has been saved for this project, oldest first.</summary>
+    /// <remarks>
+    /// There is no companion route for restoring one. Putting an old version
+    /// back on top is a save of its recipe, which is the route above — history
+    /// only grows, so that is the only thing "restore" can mean here (§B118).
+    /// </remarks>
+    [HttpGet("{id:guid}/versions")]
+    [ProducesResponseType<IReadOnlyList<VersionEntry>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Versions(Guid id, CancellationToken cancellationToken)
+    {
+        var listed = await history.ListAsync(id, CurrentUserId(), cancellationToken);
+
+        // Null is "no such project of yours"; an empty list is a project nobody
+        // has saved anything in, which is an ordinary state (decision G).
+        return listed is null ? NotFound() : Ok(listed);
     }
 
     /// <summary>The new name. Absent or blank is a 400, not a project called nothing.</summary>

@@ -14,7 +14,15 @@ public class EditVersion
 
     /// <summary>
     /// Full recipe snapshot in edit schema v1, as raw JSON.
-    /// TODO (phase 1): replace with the typed EditRecipe model.
+    ///
+    /// <para>
+    /// A string on purpose, although <see cref="Edits.EditRecipe"/> exists and
+    /// is what validates every document on its way into this column. The column
+    /// is <c>jsonb</c> and what it holds is the canonical form of a schema kept
+    /// in three languages; binding it to the C# model would make a row readable
+    /// only by whichever version of that model is compiled in, and `schema: 1`
+    /// has to stay readable for good.
+    /// </para>
     /// </summary>
     public string Edit { get; set; } = string.Empty;
 

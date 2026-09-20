@@ -69,6 +69,25 @@ body {
   color: var(--text-secondary);
 }
 
+// Read aloud, never drawn. For the rare case where the screen says something
+// with shape or position — a dash standing for "nothing here yet" — and a
+// screen reader needs the sentence that shape stands for. Not a way to hide
+// things: anything in here is still announced, in full, in reading order.
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+
+  // clip-path rather than `clip`, which is deprecated; inset(50%) leaves an
+  // empty rectangle in the middle of the element and nothing visible.
+  clip-path: inset(50%);
+  border: 0;
+}
+
 // Motion is opt-out, everywhere. The suggestion screen sweeps a line across the
 // photograph while it waits; full-screen movement makes some people ill, and it
 // carries no information the status line does not already carry.

@@ -26,9 +26,14 @@ internal sealed class ProjectRepository(PhotoAssistantDbContext context) : IProj
                 // stored document. Ordering by CreatedAt rather than by id: the
                 // ids are version 7 GUIDs and therefore already time-ordered,
                 // but that is a property of how they happen to be generated,
-                // not something a query should depend on.
+                // not something a query should depend on. The id does break the
+                // tie, though — the clock this is written from is coarser than
+                // the gap between two rows can be, and "newest" has to mean one
+                // row rather than whichever one the database happened to reach
+                // first.
                 LatestVersionEdit = project.Versions
                     .OrderByDescending(version => version.CreatedAt)
+                    .ThenByDescending(version => version.Id)
                     .Select(version => version.Edit)
                     .FirstOrDefault(),
                 LatestChoiceLog = context.Choices
@@ -79,6 +84,40 @@ internal sealed class ProjectRepository(PhotoAssistantDbContext context) : IProj
                 cancellationToken);
 
         return updated > 0;
+    }
+
+    public async Task<IReadOnlyList<StoredVersion>?> ListVersionsForUserAsync(
+        Guid projectId,
+        Guid userId,
+        CancellationToken cancellationToken)
+    {
+        // Ownership first and on its own, because an empty history and someone
+        // else's project are different answers: one is a list with nothing in
+        // it, the other is a 404. A single query could not tell them apart.
+        var owns = await context.Projects.AnyAsync(
+            project => project.Id == projectId && project.UserId == userId,
+            cancellationToken);
+
+        if (!owns)
+        {
+            return null;
+        }
+
+        return await context.EditVersions
+            .Where(version => version.ProjectId == projectId)
+
+            // Oldest first, and the id breaks the tie for the same reason it
+            // does above. The index on (ProjectId, CreatedAt) is this query.
+            .OrderBy(version => version.CreatedAt)
+            .ThenBy(version => version.Id)
+            .Select(version => new StoredVersion
+            {
+                Id = version.Id,
+                CreatedAt = version.CreatedAt,
+                Edit = version.Edit,
+            })
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<SavedVersion?> AddVersionForUserAsync(

@@ -1,0 +1,36 @@
+<!--
+  A nav rather than a list of buttons: the strip is a way around this project,
+  and naming it lets a screen reader jump to it and skip past it.
+-->
+<nav class="strip" [attr.aria-label]="'editor.history.title' | translate">
+  <h2 class="strip__title label" aria-hidden="true">{{ 'editor.history.short' | translate }}</h2>
+
+  @if (entries().length === 0) {
+    <!--
+      A project nobody has saved anything in is an ordinary state, not a gap.
+      The dash says the strip is working and has nothing in it yet, which is
+      what an empty column alone would leave the reader to guess.
+    -->
+    <p class="strip__empty label" [attr.title]="'editor.history.empty' | translate">
+      <span aria-hidden="true">–</span>
+      <span class="visually-hidden">{{ 'editor.history.empty' | translate }}</span>
+    </p>
+  } @else {
+    <ol class="strip__list">
+      @for (entry of entries(); track entry.id) {
+        <li>
+          <button
+            class="chip label"
+            type="button"
+            [class.chip--open]="entry.id === openId()"
+            [attr.aria-current]="entry.id === openId() ? 'true' : null"
+            [attr.aria-label]="'editor.history.open' | translate: { label: entry.label }"
+            (click)="opened.emit(entry)"
+          >
+            {{ entry.label }}
+          </button>
+        </li>
+      }
+    </ol>
+  }
+</nav>

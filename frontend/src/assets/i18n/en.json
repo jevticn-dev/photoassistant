@@ -141,7 +141,8 @@
     "canvasBefore": "Your photograph as it was uploaded",
     "undo": "Undo",
     "redo": "Redo",
-    "compare": "Compare with the original",
+    "compare": "COMPARE",
+    "compareLabel": "Compare with the original",
     "before": "BEFORE",
     "after": "AFTER",
     "divider": "Move the divider between before and after",
@@ -153,6 +154,15 @@
     "saved": "SAVED · {{label}}",
     "changed": "UNSAVED CHANGES",
     "save": "SAVE",
+    "restore": "RESTORE {{label}}",
+    "viewing": "VIEWING {{label}}",
+    "history": {
+      "title": "Saved versions",
+      "short": "HIST",
+      "empty": "Nothing saved yet",
+      "open": "Open version {{label}}",
+      "failed": "The saved versions could not be read. {{reason}}"
+    },
     "degraded": "This device ran short of graphics memory, so the preview is now half size. Nothing about the edit itself has changed.",
     "unsupported": "This browser cannot show the live preview: it provides no WebGL2.",
     "groups": {
