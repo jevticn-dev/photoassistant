@@ -31,6 +31,15 @@ public interface IObjectStorage
         StorageBucket bucket,
         string key,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Removes an object. A key that is not there is not an error: deleting is
+    /// how a caller says "this must not exist", and it already does not.
+    /// </summary>
+    Task DeleteAsync(
+        StorageBucket bucket,
+        string key,
+        CancellationToken cancellationToken);
 }
 
 /// <summary>

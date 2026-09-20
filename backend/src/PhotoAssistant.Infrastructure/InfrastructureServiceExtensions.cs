@@ -52,6 +52,9 @@ public static class InfrastructureServiceExtensions
         services.AddScoped<GetPhotoImageHandler>();
         services.AddScoped<RecordChoiceHandler>();
         services.AddScoped<GetProjectHandler>();
+        services.AddScoped<ListProjectsHandler>();
+        services.AddScoped<RenameProjectHandler>();
+        services.AddScoped<DeleteProjectHandler>();
     }
 
     private static void AddObjectStorage(this IServiceCollection services, IConfiguration configuration)

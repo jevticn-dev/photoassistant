@@ -1,0 +1,116 @@
+<!-- Every visible string goes through the translate pipe, aria-label included. -->
+<section class="projects">
+  <header class="projects__header">
+    <h1 class="projects__title">{{ 'projects.title' | translate }}</h1>
+    <a class="projects__new" routerLink="/upload">{{ 'projects.new' | translate }}</a>
+  </header>
+
+  @if (failure(); as problem) {
+    <div class="projects__problem" role="alert">
+      <p>{{ problem.summaryKey | translate }}</p>
+      <button class="projects__retry" type="button" (click)="retry()">
+        {{ 'common.retry' | translate }}
+      </button>
+    </div>
+  } @else if (!loaded()) {
+    <p class="projects__waiting label" role="status">{{ 'common.loading' | translate }}</p>
+  } @else if (projects().length === 0) {
+    <!--
+      An empty state rather than an empty list: a heading with nothing under it
+      reads as something that failed to load. This says what the screen is for
+      and offers the one thing that fills it.
+    -->
+    <div class="empty">
+      <p class="empty__lead">{{ 'projects.empty.lead' | translate }}</p>
+      <p class="empty__hint">{{ 'projects.empty.hint' | translate }}</p>
+      <a class="projects__new" routerLink="/upload">{{ 'projects.empty.action' | translate }}</a>
+    </div>
+  } @else {
+    <ul class="cards">
+      @for (project of projects(); track project.id) {
+        <li class="card">
+          <!--
+            To the project rather than straight to the editor. A project whose
+            upload was abandoned has never been past the three suggestions, and
+            that is where opening it should land; one whose choice was made is
+            sent on to the editor by chosenGuard, which asks the server. The
+            card therefore needs to know nothing about which it is.
+          -->
+          <a
+            class="card__open"
+            [routerLink]="['/projects', project.id]"
+            [attr.aria-label]="'projects.open' | translate: { name: project.name }"
+          >
+            <app-project-thumbnail [photoId]="project.photoId" />
+          </a>
+
+          <div class="card__body">
+            @if (renaming() === project.id) {
+              <!--
+                A form, so Enter submits and Escape is the only thing left to
+                wire by hand. The field starts with the current name selected,
+                since renaming usually means replacing rather than appending.
+              -->
+              <form class="rename" (submit)="submitRename(project, $event)">
+                <label class="rename__label" [for]="'rename-' + project.id">
+                  {{ 'projects.rename.label' | translate }}
+                </label>
+
+                <input
+                  class="rename__field"
+                  type="text"
+                  [id]="'rename-' + project.id"
+                  [value]="project.name"
+                  [attr.maxlength]="nameLimit"
+                  autocomplete="off"
+                  (keydown.escape)="cancelRename()"
+                  #field
+                />
+
+                <div class="rename__actions">
+                  <button class="card__action" type="submit">
+                    {{ 'common.save' | translate }}
+                  </button>
+                  <button class="card__action" type="button" (click)="cancelRename()">
+                    {{ 'common.cancel' | translate }}
+                  </button>
+                </div>
+              </form>
+            } @else {
+              <a class="card__name" [routerLink]="['/projects', project.id]">
+                {{ project.name }}
+              </a>
+
+              <p class="card__meta readout">
+                {{ versionLabel(project) | translate: { count: project.versionCount } }}
+                <span aria-hidden="true">·</span>
+                {{ project.lastEditedAt | date: 'd MMM y, HH:mm' }}
+              </p>
+
+              <div class="card__actions">
+                <button
+                  class="card__action"
+                  type="button"
+                  [attr.aria-label]="'projects.rename.action' | translate: { name: project.name }"
+                  (click)="startRename(project)"
+                >
+                  {{ 'projects.rename.short' | translate }}
+                </button>
+
+                <button
+                  class="card__action card__action--danger"
+                  type="button"
+                  [disabled]="busy() === project.id"
+                  [attr.aria-label]="'projects.delete.action' | translate: { name: project.name }"
+                  (click)="askToDelete(project)"
+                >
+                  {{ 'projects.delete.short' | translate }}
+                </button>
+              </div>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

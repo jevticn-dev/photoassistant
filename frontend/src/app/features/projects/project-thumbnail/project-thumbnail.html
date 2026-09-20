@@ -1,0 +1,8 @@
+@if (source(); as url) {
+  <img class="thumbnail__image" [src]="url" [alt]="'projects.thumbnail' | translate" />
+} @else {
+  <!-- A flat panel rather than a spinner. The card has a fixed height either
+       way, so nothing moves when the picture lands, and one spinner per row
+       would be a screenful of movement saying nothing. -->
+  <span class="thumbnail__blank" aria-hidden="true"></span>
+}

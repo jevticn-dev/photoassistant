@@ -8,7 +8,11 @@ public enum PhotoImageKind
     /// <summary>2048px JPEG — what the editor renders from.</summary>
     Proxy,
 
-    /// <summary>512px PNG — what search runs on. Served for diagnostics, not for display.</summary>
+    /// <summary>
+    /// 512px PNG — what search runs on, and what a list of projects shows.
+    /// The only small copy there is, so the thumbnail reuses it rather than a
+    /// third derivative being stored for the sake of a card.
+    /// </summary>
     Fit,
 }
 

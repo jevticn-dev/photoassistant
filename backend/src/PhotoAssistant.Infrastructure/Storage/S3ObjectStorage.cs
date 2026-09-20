@@ -70,6 +70,20 @@ internal sealed class S3ObjectStorage(IAmazonS3 client, ObjectStorageOptions opt
         }
     }
 
+    public async Task DeleteAsync(
+        StorageBucket bucket,
+        string key,
+        CancellationToken cancellationToken)
+    {
+        // S3 answers a delete of something that is not there with 204, the same
+        // as a delete of something that was. That is the behaviour the caller
+        // wants — the postcondition is absence, not removal — so there is no
+        // not-found case to handle here, unlike in GetAsync.
+        await client.DeleteObjectAsync(
+            new DeleteObjectRequest { BucketName = NameOf(bucket), Key = key },
+            cancellationToken);
+    }
+
     private string NameOf(StorageBucket bucket) => bucket switch
     {
         StorageBucket.Originals => options.OriginalsBucket,

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PhotoAssistant.Application.Projects;
+using PhotoAssistant.Domain.Enums;
 
 namespace PhotoAssistant.Infrastructure.Persistence;
 
@@ -38,4 +39,103 @@ internal sealed class ProjectRepository(PhotoAssistantDbContext context) : IProj
             })
             .AsNoTracking()
             .SingleOrDefaultAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<ProjectListItem>> ListForUserAsync(
+        Guid userId,
+        CancellationToken cancellationToken) =>
+        await context.Projects
+            .Where(project => project.UserId == userId)
+            .Select(project => new ProjectListItem
+            {
+                Id = project.Id,
+                Name = project.Name,
+                PhotoId = project.PhotoId,
+                VersionCount = project.Versions.Count,
+
+                // A project with no version falls back to when it was created,
+                // which is a normal state rather than a gap: the upload makes
+                // the project, so leaving before saving leaves exactly this.
+                LastEditedAt = project.Versions
+                    .Max(version => (DateTimeOffset?)version.CreatedAt) ?? project.CreatedAt,
+            })
+            .OrderByDescending(project => project.LastEditedAt)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
+    public async Task<bool> RenameForUserAsync(
+        Guid projectId,
+        Guid userId,
+        string name,
+        CancellationToken cancellationToken)
+    {
+        // One statement, no round trip to load first. The ownership predicate
+        // is part of it, so a project that is not this user's updates nothing
+        // and the count says so.
+        var updated = await context.Projects
+            .Where(project => project.Id == projectId && project.UserId == userId)
+            .ExecuteUpdateAsync(
+                setters => setters.SetProperty(project => project.Name, name),
+                cancellationToken);
+
+        return updated > 0;
+    }
+
+    public async Task<DeletedObjects?> DeleteForUserAsync(
+        Guid projectId,
+        Guid userId,
+        CancellationToken cancellationToken)
+    {
+        var project = await context.Projects
+            .Include(candidate => candidate.Photo)
+            .Where(candidate => candidate.Id == projectId && candidate.UserId == userId)
+            .SingleOrDefaultAsync(cancellationToken);
+
+        if (project is null)
+        {
+            return null;
+        }
+
+        var photo = project.Photo;
+
+        // Two conditions, and both matter. A corpus photograph is shared by
+        // 25.000 fitted examples and must never be touched by anything a user
+        // does; and a photograph another project still points at is not this
+        // project's to remove, even though nothing creates that case today.
+        var sharedWithAnother = await context.Projects.AnyAsync(
+            other => other.PhotoId == project.PhotoId && other.Id != project.Id,
+            cancellationToken);
+
+        var removePhoto = photo.Source == PhotoSource.User && !sharedWithAnother;
+
+        if (removePhoto)
+        {
+            // The choice rows name the photograph by foreign key, and that key
+            // is Restrict rather than Cascade, so they are removed explicitly
+            // rather than left for the database to complain about.
+            var choices = await context.Choices
+                .Where(choice => choice.PhotoId == photo.Id)
+                .ToListAsync(cancellationToken);
+
+            context.Choices.RemoveRange(choices);
+        }
+
+        // The versions go with the project through the cascade the schema
+        // declares; only the project itself is removed here.
+        context.Projects.Remove(project);
+
+        if (removePhoto)
+        {
+            context.Photos.Remove(photo);
+        }
+
+        await context.SaveChangesAsync(cancellationToken);
+
+        return new DeletedObjects
+        {
+            OriginalKey = removePhoto ? photo.OriginalKey : null,
+            DerivativeKeys = removePhoto
+                ? new[] { photo.Pre512Key, photo.Proxy2048Key }.OfType<string>().ToList()
+                : [],
+        };
+    }
 }

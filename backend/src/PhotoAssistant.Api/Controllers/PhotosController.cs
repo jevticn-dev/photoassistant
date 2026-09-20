@@ -40,6 +40,22 @@ public sealed class PhotosController(
     public Task<IActionResult> Proxy(Guid id, CancellationToken cancellationToken) =>
         ImageAsync(id, PhotoImageKind.Proxy, cancellationToken);
 
+    /// <summary>The 512px copy, small enough for a list of projects.</summary>
+    /// <remarks>
+    /// The same image the search runs on, because it is the only small one
+    /// stored. It is a lossless PNG made for fitting rather than for looking
+    /// at, so it is about the size of the 2048px JPEG beside it — acceptable
+    /// for a handful of cards, and the thing to fix first if a list ever grows
+    /// long enough to feel it.
+    /// </remarks>
+    [HttpGet("{id:guid}/thumbnail")]
+    [Produces("image/png")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public Task<IActionResult> Thumbnail(Guid id, CancellationToken cancellationToken) =>
+        ImageAsync(id, PhotoImageKind.Fit, cancellationToken);
+
     private async Task<IActionResult> ImageAsync(
         Guid id,
         PhotoImageKind kind,

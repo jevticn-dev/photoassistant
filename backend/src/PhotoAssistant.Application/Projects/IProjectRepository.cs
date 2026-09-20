@@ -31,11 +31,43 @@ public sealed record ProjectRecord
     public required string? LatestChoiceLog { get; init; }
 }
 
-/// <summary>Reading projects, with ownership already applied.</summary>
+/// <summary>
+/// Projects, with ownership already applied.
+///
+/// <para>
+/// Every method takes the user id and folds it into the query rather than
+/// checking afterwards. That is the shape that cannot grow a path where the
+/// second half is forgotten — and it is why someone else's project answers
+/// "no such project" rather than "not yours", which would confirm that the
+/// identifier names something real.
+/// </para>
+/// </summary>
 public interface IProjectRepository
 {
     /// <summary>The project, if it is this user's. Null for both "no such" and "not yours".</summary>
     Task<ProjectRecord?> FindForUserAsync(
+        Guid projectId,
+        Guid userId,
+        CancellationToken cancellationToken);
+
+    /// <summary>This user's projects, most recently edited first.</summary>
+    Task<IReadOnlyList<ProjectListItem>> ListForUserAsync(
+        Guid userId,
+        CancellationToken cancellationToken);
+
+    /// <summary>True when a project of this user's was renamed.</summary>
+    Task<bool> RenameForUserAsync(
+        Guid projectId,
+        Guid userId,
+        string name,
+        CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Removes the project, its versions, and the photograph it was about when
+    /// nothing else needs it. Returns the objects left for storage to clear,
+    /// or null when there was no such project of this user's.
+    /// </summary>
+    Task<DeletedObjects?> DeleteForUserAsync(
         Guid projectId,
         Guid userId,
         CancellationToken cancellationToken);

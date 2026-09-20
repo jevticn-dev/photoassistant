@@ -31,8 +31,32 @@
   },
   "projects": {
     "title": "Projects",
-    "empty": "No projects yet. Upload a photograph to begin.",
-    "new": "New project"
+    "new": "NEW PROJECT",
+    "open": "Open {{name}}",
+    "thumbnail": "The photograph this project is about",
+    "empty": {
+      "lead": "Nothing here yet.",
+      "hint": "Upload a photograph and the system will propose three ways to finish it.",
+      "action": "UPLOAD A PHOTOGRAPH"
+    },
+    "versions": {
+      "none": "NOT SAVED YET",
+      "one": "1 VERSION",
+      "many": "{{count}} VERSIONS"
+    },
+    "rename": {
+      "short": "RENAME",
+      "action": "Rename {{name}}",
+      "label": "PROJECT NAME"
+    },
+    "delete": {
+      "short": "DELETE",
+      "action": "Delete {{name}}",
+      "title": "Delete this project?",
+      "body": "{{name}} and the photograph it was made from will be removed.",
+      "warning": "This cannot be undone.",
+      "confirm": "DELETE"
+    }
   },
   "renderer": {
     "lab": {
@@ -66,8 +90,10 @@
     }
   },
   "common": {
-    "loading": "Loading…",
-    "retry": "Try again"
+    "loading": "LOADING…",
+    "retry": "Try again",
+    "save": "SAVE",
+    "cancel": "CANCEL"
   },
   "upload": {
     "title": "Drop a photograph here",
