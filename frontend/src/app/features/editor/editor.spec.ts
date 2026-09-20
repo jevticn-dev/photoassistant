@@ -1,13 +1,14 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { vi } from 'vitest';
 
 import { provideTranslations } from '../../core/i18n/translation.config';
 import { PhotoApi, type Project } from '../../shared/photos/photo-api';
 import { Editor } from './editor';
+import { EditorService, type SavedVersion } from './editor-service';
 
 /**
  * A stand-in for the decoded working copy. Nothing in these tests draws — jsdom
@@ -16,13 +17,18 @@ import { Editor } from './editor';
  */
 const IMAGE = { width: 1200, height: 800, close: () => {} } as unknown as ImageBitmap;
 
-function project(startingEdit: unknown): Project {
+const PROJECT = '0199a1f0-0000-7000-8000-000000000001';
+
+/** Recorded so a test can see what was actually sent to be stored. */
+let saved: unknown;
+
+function project(startingEdit: unknown, versionCount = 0): Project {
   return {
-    id: '0199a1f0-0000-7000-8000-000000000001',
+    id: PROJECT,
     name: 'Alpine Ridge',
     photoId: '0199a1f0-0000-7000-8000-000000000002',
     createdAt: '2026-09-20T10:00:00+00:00',
-    versionCount: 0,
+    versionCount,
     hasChoice: true,
     startingEdit,
   };
@@ -46,6 +52,8 @@ describe('Editor', () => {
   let http: HttpTestingController;
 
   beforeEach(() => {
+    saved = undefined;
+
     // jsdom has no canvas of any kind, and asking it for a context prints a
     // page of "not implemented" for every test. Answering null is what a
     // browser without WebGL2 does anyway, so the screen is exercised along the
@@ -53,11 +61,18 @@ describe('Editor', () => {
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
   });
 
-  async function open(startingEdit: unknown = CHOSEN): Promise<void> {
+  async function open(startingEdit: unknown = CHOSEN, versionCount = 0): Promise<void> {
     await TestBed.configureTestingModule({
       imports: [Editor],
       providers: [
         provideRouter([]),
+        {
+          // The editor is addressed by project id, and reads it from the route
+          // rather than being handed it. Without this the screen loads but the
+          // save button has nothing to save into.
+          provide: ActivatedRoute,
+          useValue: { snapshot: { paramMap: { get: (): string => PROJECT } } },
+        },
         provideHttpClient(),
         provideHttpClientTesting(),
         provideTranslations(),
@@ -66,8 +81,18 @@ describe('Editor', () => {
           // so both calls answer at once and neither is what is being tested.
           provide: PhotoApi,
           useValue: {
-            project: (): Observable<Project> => of(project(startingEdit)),
+            project: (): Observable<Project> => of(project(startingEdit, versionCount)),
             proxy: (): Observable<ImageBitmap> => of(IMAGE),
+          },
+        },
+        {
+          provide: EditorService,
+          useValue: {
+            saveVersion: (_: string, recipe: unknown): Observable<SavedVersion> => {
+              saved = recipe;
+
+              return of({ id: 'v', label: 'V01', createdAt: '2026-09-20T10:00:00+00:00' });
+            },
           },
         },
       ],
@@ -266,6 +291,50 @@ describe('Editor', () => {
     const home = element().querySelector<HTMLAnchorElement>('.bar__home');
 
     expect(home?.getAttribute('href')).toBe('/projects');
+  });
+
+  it('opens saying nothing has been saved, and says so until something is', async () => {
+    await open();
+
+    expect(element().textContent).toContain('editor.unsaved');
+  });
+
+  it('saving names the version, and the bar stops asking', async () => {
+    await open(null);
+
+    drag('contrast', 20);
+    press('editor.save');
+
+    expect(element().textContent).toContain('editor.saved');
+    expect(element().textContent).not.toContain('editor.changed');
+  });
+
+  it('editing after a save says so again', async () => {
+    // The one state worth colouring: the other two are steady, this one is
+    // asking for something.
+    await open(null);
+
+    press('editor.save');
+    drag('shadows', 15);
+
+    expect(element().textContent).toContain('editor.changed');
+  });
+
+  it('a project that already has versions opens as saved', async () => {
+    // The editor opens on the newest version when there is one (§B110), so
+    // that is also what "saved" means the moment the screen appears.
+    await open(CHOSEN, 3);
+
+    expect(element().textContent).toContain('editor.saved');
+  });
+
+  it('what is sent is the recipe itself, in the schema form', async () => {
+    await open(null);
+
+    drag('exposure', 0.5);
+    press('editor.save');
+
+    expect(saved).toMatchObject({ schema: 1, tone: { exposure: 0.5 } });
   });
 
   it('says that nothing is being saved, rather than letting it be assumed', async () => {

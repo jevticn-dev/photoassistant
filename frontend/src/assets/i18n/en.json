@@ -150,6 +150,9 @@
     "showControls": "Show the controls",
     "hideControls": "Hide the controls",
     "unsaved": "NOT SAVED YET",
+    "saved": "SAVED · {{label}}",
+    "changed": "UNSAVED CHANGES",
+    "save": "SAVE",
     "degraded": "This device ran short of graphics memory, so the preview is now half size. Nothing about the edit itself has changed.",
     "unsupported": "This browser cannot show the live preview: it provides no WebGL2.",
     "groups": {

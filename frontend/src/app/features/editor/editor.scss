@@ -87,6 +87,13 @@
     white-space: nowrap;
   }
 
+  // Changed since the last save is the one state worth colouring: the other
+  // two are steady, and this one is asking for something.
+  &__state--dirty {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
   &__state {
     flex: none;
     padding: var(--space-1) var(--space-2);
@@ -126,6 +133,13 @@
     border-color: var(--accent);
     color: var(--accent);
   }
+
+  // The one action on the bar that writes anything.
+  &--primary {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-contrast);
+  }
 }
 
 .notice {
@@ -136,6 +150,10 @@
   background: var(--surface-panel);
   font-size: var(--text-sm);
   color: var(--text-secondary);
+
+  &--error {
+    color: var(--status-error);
+  }
 }
 
 // -- the photograph ---------------------------------------------------------

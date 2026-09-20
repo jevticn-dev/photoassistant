@@ -352,6 +352,134 @@ public sealed class ProjectEndpointTests(ApiFactory factory)
         Assert.True(await context.Projects.AnyAsync(row => row.Id == projectId));
     }
 
+    // -- saving a version -----------------------------------------------------
+
+    private static object Recipe(double exposure) => new
+    {
+        schema = 1,
+        white_balance = new { temperature = 0, tint = 0 },
+        tone = new
+        {
+            exposure,
+            contrast = 0,
+            highlights = 0,
+            shadows = 0,
+            whites = 0,
+            blacks = 0,
+        },
+        color = new { saturation = 0, vibrance = 0 },
+        tone_curve = new { points = new[] { new[] { 0.0, 0.0 }, new[] { 1.0, 1.0 } } },
+    };
+
+    [Fact]
+    public async Task Each_save_is_a_whole_recipe_and_earns_the_next_label()
+    {
+        // ADR-6: a snapshot rather than a delta. A recipe is about a kilobyte,
+        // so deltas save nothing while making "restore this" a replay.
+        var client = await SignedInAsync(Arrange());
+        var projectId = await ProjectOfAsync(await UploadAsync(client));
+
+        var first = await client.PostAsJsonAsync(
+            $"/api/projects/{projectId}/versions", Recipe(0.25));
+        var second = await client.PostAsJsonAsync(
+            $"/api/projects/{projectId}/versions", Recipe(0.5));
+
+        Assert.Equal(HttpStatusCode.Created, first.StatusCode);
+        Assert.Equal("V01", (await first.Content.ReadFromJsonAsync<SavedVersion>())!.Label);
+        Assert.Equal("V02", (await second.Content.ReadFromJsonAsync<SavedVersion>())!.Label);
+    }
+
+    [Fact]
+    public async Task What_is_stored_is_the_canonical_form_rather_than_what_arrived()
+    {
+        // Every key, in schema order, whatever the client sent. What a version
+        // means must not depend on which client wrote it.
+        var client = await SignedInAsync(Arrange());
+        var projectId = await ProjectOfAsync(await UploadAsync(client));
+
+        await client.PostAsJsonAsync($"/api/projects/{projectId}/versions", Recipe(0.25));
+
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<PhotoAssistantDbContext>();
+        var stored = await context.EditVersions
+            .Where(row => row.ProjectId == projectId)
+            .Select(row => row.Edit)
+            .SingleAsync();
+
+        using var document = System.Text.Json.JsonDocument.Parse(stored);
+
+        Assert.Equal(1, document.RootElement.GetProperty("schema").GetInt32());
+        Assert.Equal(
+            0.25,
+            document.RootElement.GetProperty("tone").GetProperty("exposure").GetDouble());
+        Assert.True(document.RootElement.TryGetProperty("tone_curve", out _));
+    }
+
+    [Fact]
+    public async Task A_document_that_is_not_a_recipe_is_refused_before_it_is_written()
+    {
+        // The column is jsonb, so the database would take this quite happily
+        // (§B107). What refuses it is the C# model of the schema — the same
+        // rules the renderer and the pipeline apply.
+        var client = await SignedInAsync(Arrange());
+        var projectId = await ProjectOfAsync(await UploadAsync(client));
+
+        var response = await client.PostAsJsonAsync(
+            $"/api/projects/{projectId}/versions", new { nonsense = true });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        using var scope = factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<PhotoAssistantDbContext>();
+
+        Assert.False(await context.EditVersions.AnyAsync(row => row.ProjectId == projectId));
+    }
+
+    [Fact]
+    public async Task A_parameter_outside_its_range_is_refused_too()
+    {
+        var client = await SignedInAsync(Arrange());
+        var projectId = await ProjectOfAsync(await UploadAsync(client));
+
+        var response = await client.PostAsJsonAsync(
+            $"/api/projects/{projectId}/versions", Recipe(exposure: 42));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Saving_into_someone_elses_project_is_not_found()
+    {
+        var owner = await SignedInAsync(Arrange());
+        var projectId = await ProjectOfAsync(await UploadAsync(owner));
+        var intruder = await SignedInAsync(Arrange());
+
+        var response = await intruder.PostAsJsonAsync(
+            $"/api/projects/{projectId}/versions", Recipe(0.1));
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task The_editor_reopens_on_what_was_saved_last()
+    {
+        // The read half of this was built in task 4; saving is what finally
+        // gives it something of the person's own to prefer.
+        var client = await SignedInAsync(Arrange());
+        var photoId = await UploadAsync(client);
+        var projectId = await ProjectOfAsync(photoId);
+
+        await client.PostAsJsonAsync($"/api/projects/{projectId}/versions", Recipe(0.25));
+        await client.PostAsJsonAsync($"/api/projects/{projectId}/versions", Recipe(0.75));
+
+        var project = await client.GetFromJsonAsync<ProjectSummary>($"/api/projects/{projectId}");
+
+        Assert.Equal(2, project!.VersionCount);
+        Assert.Equal(
+            0.75,
+            project.StartingEdit!.Value.GetProperty("tone").GetProperty("exposure").GetDouble());
+    }
+
     [Fact]
     public async Task An_anonymous_request_reaches_none_of_it()
     {

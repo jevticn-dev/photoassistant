@@ -63,6 +63,17 @@ public interface IProjectRepository
         CancellationToken cancellationToken);
 
     /// <summary>
+    /// Appends a version to a project of this user's and returns it with the
+    /// label its position earns. Null when there is no such project.
+    /// </summary>
+    Task<SavedVersion?> AddVersionForUserAsync(
+        Guid projectId,
+        Guid userId,
+        string edit,
+        DateTimeOffset at,
+        CancellationToken cancellationToken);
+
+    /// <summary>
     /// Removes the project, its versions, and the photograph it was about when
     /// nothing else needs it. Returns the objects left for storage to clear,
     /// or null when there was no such project of this user's.

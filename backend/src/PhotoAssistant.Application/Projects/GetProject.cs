@@ -38,10 +38,11 @@ public sealed record ProjectSummary
     /// <para>
     /// A <see cref="JsonElement"/> rather than a string, so that it arrives as
     /// an object on the wire instead of a document escaped inside another one.
-    /// The API does not model the schema: the recipe is written by the ML
-    /// service, validated by the client against its own model of the same
-    /// schema, and stored whole (ADR-6). A third hand-maintained copy here
-    /// would be a fourth place to keep in step for no gain.
+    /// Handed over as it was stored rather than parsed on the way out. The C#
+    /// model exists — it is one of the three the schema is maintained in — but
+    /// reading a version costs nothing to validate again: it was validated
+    /// before it was written, which is where an invalid document can still be
+    /// refused rather than merely reported.
     /// </para>
     /// </summary>
     public required JsonElement? StartingEdit { get; init; }

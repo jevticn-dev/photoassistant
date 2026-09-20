@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -24,7 +25,8 @@ public sealed class ProjectsController(
     ListProjectsHandler list,
     GetProjectHandler projects,
     RenameProjectHandler rename,
-    DeleteProjectHandler delete) : ControllerBase
+    DeleteProjectHandler delete,
+    SaveVersionHandler versions) : ControllerBase
 {
     /// <summary>Everything this person is working on, most recently edited first.</summary>
     [HttpGet]
@@ -90,6 +92,42 @@ public sealed class ProjectsController(
         await delete.DeleteAsync(id, CurrentUserId(), cancellationToken)
             ? NoContent()
             : NotFound();
+
+    /// <summary>Saves the edit as it stands, as a full snapshot of the recipe.</summary>
+    /// <remarks>
+    /// The body is the recipe document itself rather than a wrapper around it:
+    /// what is being stored is exactly what the renderer applies, and a field
+    /// named "edit" holding it would be one more shape that the three language
+    /// models would have to agree about.
+    /// </remarks>
+    [HttpPost("{id:guid}/versions")]
+    [ProducesResponseType<SavedVersion>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> SaveVersion(
+        Guid id,
+        [FromBody] JsonElement body,
+        CancellationToken cancellationToken)
+    {
+        var result = await versions.SaveAsync(
+            id, CurrentUserId(), body.GetRawText(), cancellationToken);
+
+        if (result.NotFound)
+        {
+            return NotFound();
+        }
+
+        if (!result.Succeeded)
+        {
+            return ValidationProblem(Problem("edit", result.Error!));
+        }
+
+        return CreatedAtAction(
+            actionName: nameof(Get),
+            routeValues: new { id },
+            value: result.Version);
+    }
 
     /// <summary>The new name. Absent or blank is a 400, not a project called nothing.</summary>
     public sealed record RenameProjectBody

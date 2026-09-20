@@ -36,7 +36,13 @@
           a screen that looks like an editor is assumed to keep what is done in
           it unless it says otherwise.
         -->
-        <span class="bar__state label">{{ 'editor.unsaved' | translate }}</span>
+        <!--
+          Three states rather than two: "saved as V03" and "nothing saved yet"
+          are different things to be told, and so is "changed since".
+        -->
+        <span class="bar__state label" [class.bar__state--dirty]="dirty()">
+          {{ status() | translate: { label: savedLabel() } }}
+        </span>
       </div>
 
       <div class="bar__actions">
@@ -46,6 +52,15 @@
         <button class="control label" type="button" [disabled]="!canRedo()" (click)="redo()">
           {{ 'editor.redo' | translate }}
         </button>
+        <button
+          class="control label control--primary"
+          type="button"
+          [disabled]="saving()"
+          (click)="save()"
+        >
+          {{ 'editor.save' | translate }}
+        </button>
+
         <button
           class="control label"
           type="button"
@@ -58,7 +73,9 @@
       </div>
     </header>
 
-    @if (unsupported()) {
+    @if (saveProblem(); as problem) {
+      <p class="notice notice--error" role="alert">{{ problem | translate }}</p>
+    } @else if (unsupported()) {
       <p class="notice" role="alert">{{ 'editor.unsupported' | translate }}</p>
     } @else if (degraded()) {
       <p class="notice" role="status">{{ 'editor.degraded' | translate }}</p>

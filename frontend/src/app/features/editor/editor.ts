@@ -11,9 +11,16 @@ import {
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { EditSchemaError, NEUTRAL_RECIPE, type EditRecipe, parseRecipe } from '../../renderer';
+import {
+  EditSchemaError,
+  NEUTRAL_RECIPE,
+  type EditRecipe,
+  parseRecipe,
+  toJson,
+} from '../../renderer';
 import { PhotoApi, type ApiFailure, type Project } from '../../shared/photos/photo-api';
 import { EditorCanvas, type CanvasFailure } from './editor-canvas';
+import { EditorService } from './editor-service';
 import { type ParamDef, SECTIONS, readParam, writeParam } from './editor-params';
 import { ParamSlider } from './param-slider';
 
@@ -60,6 +67,7 @@ const DIVIDER_STEP = 5;
 })
 export class Editor implements OnDestroy {
   private readonly api = inject(PhotoApi);
+  private readonly editor = inject(EditorService);
   private readonly route = inject(ActivatedRoute);
 
   private readonly projectId = this.route.snapshot.paramMap.get('id') ?? '';
@@ -78,6 +86,23 @@ export class Editor implements OnDestroy {
   protected readonly degraded = signal(false);
   protected readonly unsupported = signal(false);
 
+  /**
+   * The recipe as it was last saved, in canonical form, or null when nothing
+   * has been saved for this project.
+   *
+   * <p>Kept as text rather than as a recipe because what is being asked is
+   * "has anything changed", and two recipes are equal when their canonical
+   * documents are — which is the same comparison the agreement test makes
+   * across the three languages.</p>
+   */
+  private readonly savedEdit = signal<string | null>(null);
+
+  protected readonly savedLabel = signal<string | null>(null);
+  protected readonly saving = signal(false);
+
+  /** Set when a save failed, and cleared by the next attempt. */
+  protected readonly saveProblem = signal<string | null>(null);
+
   protected readonly comparing = signal(false);
   protected readonly divider = signal(50);
 
@@ -92,6 +117,26 @@ export class Editor implements OnDestroy {
 
   /** True once there is something to look at; the screen shows nothing before. */
   protected readonly ready = computed(() => this.image() !== null);
+
+  /** True when the edit differs from the last thing saved. */
+  protected readonly dirty = computed(() => {
+    const saved = this.savedEdit();
+
+    return saved !== null && toJson(this.recipe()) !== saved;
+  });
+
+  /**
+   * What the bar says about the work: never saved, saved and untouched since,
+   * or changed since. Three states rather than two, because "saved" and "there
+   * is nothing to save" are different things to be told.
+   */
+  protected readonly status = computed(() => {
+    if (this.savedLabel() === null) {
+      return 'editor.unsaved';
+    }
+
+    return this.dirty() ? 'editor.changed' : 'editor.saved';
+  });
 
   /**
    * What clips the edited layer. `none` while the split is off, so the whole
@@ -271,6 +316,43 @@ export class Editor implements OnDestroy {
     }
   }
 
+  // -- saving ---------------------------------------------------------------
+
+  /**
+   * Writes the edit as a version.
+   *
+   * <p>Explicit rather than automatic, and that is the decision rather than the
+   * easy way out: `edit_versions` rows are versions, and the schema has no
+   * notion of a draft. Saving on every change would make the history a list of
+   * a hundred entries per sitting instead of the handful of turning points
+   * somebody meant to keep (§B111).</p>
+   */
+  protected save(): void {
+    if (this.saving() || this.projectId === '') {
+      return;
+    }
+
+    const recipe = this.recipe();
+
+    this.saving.set(true);
+    this.saveProblem.set(null);
+
+    this.editor.saveVersion(this.projectId, recipe).subscribe({
+      next: (version) => {
+        // The recipe as it was when the request went out, not as it is now:
+        // moving a slider while the save is in flight must leave the screen
+        // saying there are unsaved changes, because there are.
+        this.savedEdit.set(toJson(recipe));
+        this.savedLabel.set(version.label);
+        this.saving.set(false);
+      },
+      error: (failure: ApiFailure) => {
+        this.saveProblem.set(failure.summaryKey);
+        this.saving.set(false);
+      },
+    });
+  }
+
   // -- before and after -----------------------------------------------------
 
   /**
@@ -344,7 +426,17 @@ export class Editor implements OnDestroy {
     this.api.project(this.projectId).subscribe({
       next: (project) => {
         this.project.set(project);
-        this.recipe.set(startingRecipe(project));
+
+        const starting = startingRecipe(project);
+        this.recipe.set(starting);
+
+        // A project with versions opens on the newest of them, so that is also
+        // what "saved" means here; one with none opens on a suggestion or on
+        // nothing, and neither has been saved.
+        if (project.versionCount > 0) {
+          this.savedEdit.set(toJson(starting));
+          this.savedLabel.set(`V${String(project.versionCount).padStart(2, '0')}`);
+        }
 
         this.api.proxy(project.photoId).subscribe({
           next: (image) => this.image.set(image),

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PhotoAssistant.Application.Projects;
+using PhotoAssistant.Domain.Entities;
 using PhotoAssistant.Domain.Enums;
 
 namespace PhotoAssistant.Infrastructure.Persistence;
@@ -78,6 +79,48 @@ internal sealed class ProjectRepository(PhotoAssistantDbContext context) : IProj
                 cancellationToken);
 
         return updated > 0;
+    }
+
+    public async Task<SavedVersion?> AddVersionForUserAsync(
+        Guid projectId,
+        Guid userId,
+        string edit,
+        DateTimeOffset at,
+        CancellationToken cancellationToken)
+    {
+        // Ownership first, and as a query rather than a load: nothing about the
+        // project itself is needed to append to it.
+        var owns = await context.Projects.AnyAsync(
+            project => project.Id == projectId && project.UserId == userId,
+            cancellationToken);
+
+        if (!owns)
+        {
+            return null;
+        }
+
+        var version = new EditVersion
+        {
+            Id = Guid.CreateVersion7(),
+            ProjectId = projectId,
+            Edit = edit,
+            CreatedAt = at,
+        };
+
+        context.EditVersions.Add(version);
+        await context.SaveChangesAsync(cancellationToken);
+
+        // Counted after the insert, so the new row is included and the label is
+        // the position this version actually holds.
+        var position = await context.EditVersions.CountAsync(
+            row => row.ProjectId == projectId, cancellationToken);
+
+        return new SavedVersion
+        {
+            Id = version.Id,
+            Label = $"V{position:D2}",
+            CreatedAt = version.CreatedAt,
+        };
     }
 
     public async Task<DeletedObjects?> DeleteForUserAsync(
