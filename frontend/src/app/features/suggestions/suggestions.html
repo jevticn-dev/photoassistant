@@ -1,0 +1,90 @@
+<!-- Every visible string goes through the translate pipe, aria-label included. -->
+<section class="suggestions">
+  @if (failure(); as problem) {
+    <div class="suggestions__problem" role="alert">
+      <p>{{ problem.summaryKey | translate }}</p>
+      <button class="button" type="button" (click)="retry()">
+        {{ 'common.retry' | translate }}
+      </button>
+    </div>
+  } @else if (!ready()) {
+    <!--
+      One waiting state for both halves. Showing three empty frames while the
+      recipes arrive would say less than a line of text does, and the layout
+      would jump twice instead of once (§B94).
+    -->
+    <p class="suggestions__waiting label" role="status">
+      {{ 'suggestions.working' | translate }}
+    </p>
+  } @else {
+    <header class="suggestions__intro">
+      <h1 class="suggestions__heading">{{ 'suggestions.heading' | translate }}</h1>
+      <p class="suggestions__lead">{{ 'suggestions.lead' | translate }}</p>
+    </header>
+
+    <!--
+      The original, above the three. Without it the cards are compared only
+      against each other, and "warmer" has no reference point; with it the
+      question becomes what each one did, which is the question being asked.
+    -->
+    <figure class="original">
+      <app-suggestion-preview [image]="image()!" [recipe]="neutral" [longestSide]="1280" />
+      <figcaption class="original__caption label">
+        {{ 'suggestions.original' | translate }}
+      </figcaption>
+    </figure>
+
+    <!--
+      A trunk and three branches, in right angles only: one line down from the
+      original, one across, and one down into each card. Drawn with borders
+      rather than SVG because it has to stretch with the grid, and decorative
+      so no screen reader announces a shape.
+    -->
+    <div class="branch" aria-hidden="true">
+      <span class="branch__trunk"></span>
+      <span class="branch__bar"></span>
+      <span class="branch__drop"></span>
+      <span class="branch__drop"></span>
+      <span class="branch__drop"></span>
+    </div>
+
+    <ul class="cards">
+      @for (suggestion of suggestions(); track suggestion.index) {
+        <li class="card">
+          <!--
+            A button wrapping the preview, not a click handler on the card: the
+            keyboard reaches it, the screen reader announces it as an action,
+            and Enter works without any of it being written here.
+          -->
+          <button
+            class="card__choose"
+            type="button"
+            [disabled]="choosing()"
+            (click)="choose(suggestion)"
+          >
+            <app-suggestion-preview [image]="image()!" [recipe]="suggestion.recipe" />
+
+            <span class="card__body">
+              <span class="card__index readout">0{{ suggestion.index + 1 }}</span>
+              <span class="card__readout readout">
+                @for (entry of readout(suggestion.recipe); track entry.label) {
+                  <span class="card__value">{{ entry.label }} {{ entry.value }}</span>
+                } @empty {
+                  <!-- A recipe that changes nothing is a real answer: the
+                       photograph is already close to what the experts did. -->
+                  <span class="card__value">{{ 'suggestions.unchanged' | translate }}</span>
+                }
+              </span>
+            </span>
+          </button>
+        </li>
+      }
+    </ul>
+
+    <p class="suggestions__skip">
+      <button class="link" type="button" [disabled]="choosing()" (click)="skip()">
+        {{ 'suggestions.skip' | translate }}
+      </button>
+    </p>
+  }
+</section>

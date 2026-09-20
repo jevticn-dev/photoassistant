@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using PhotoAssistant.Application.Authentication;
 using PhotoAssistant.Application.Photos;
+using PhotoAssistant.Application.Projects;
 using PhotoAssistant.Application.Storage;
 using PhotoAssistant.Infrastructure.Identity;
 using PhotoAssistant.Infrastructure.MlService;
@@ -44,8 +45,13 @@ public static class InfrastructureServiceExtensions
     {
         services.AddScoped<IPhotoUploadRepository, PhotoUploadRepository>();
         services.AddScoped<IPhotoRepository, PhotoRepository>();
+        services.AddScoped<IChoiceRepository, ChoiceRepository>();
+        services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<UploadPhotoHandler>();
         services.AddScoped<SuggestEditsHandler>();
+        services.AddScoped<GetPhotoImageHandler>();
+        services.AddScoped<RecordChoiceHandler>();
+        services.AddScoped<GetProjectHandler>();
     }
 
     private static void AddObjectStorage(this IServiceCollection services, IConfiguration configuration)

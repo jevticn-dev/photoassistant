@@ -21,8 +21,98 @@ namespace PhotoAssistant.Api.Controllers;
 [Route("api/photos")]
 public sealed class PhotosController(
     UploadPhotoHandler upload,
-    SuggestEditsHandler suggestions) : ControllerBase
+    SuggestEditsHandler suggestions,
+    GetPhotoImageHandler images,
+    RecordChoiceHandler choices) : ControllerBase
 {
+    /// <summary>The 2048px working copy the editor renders from.</summary>
+    /// <remarks>
+    /// Served through the API rather than from a presigned storage URL: MinIO
+    /// is not reachable from the internet (ADR-15), and ownership is decided
+    /// here. It costs a proxy hop for an image that is fetched once per
+    /// editing session.
+    /// </remarks>
+    [HttpGet("{id:guid}/proxy")]
+    [Produces("image/jpeg")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public Task<IActionResult> Proxy(Guid id, CancellationToken cancellationToken) =>
+        ImageAsync(id, PhotoImageKind.Proxy, cancellationToken);
+
+    private async Task<IActionResult> ImageAsync(
+        Guid id,
+        PhotoImageKind kind,
+        CancellationToken cancellationToken)
+    {
+        var image = await images.GetAsync(id, CurrentUserId(), kind, cancellationToken);
+
+        if (image is null)
+        {
+            return NotFound();
+        }
+
+        // A derivative never changes: the key contains the photograph's id and
+        // the bytes behind it are written once. Immutable lets the browser
+        // re-open the editor without asking again, and `private` keeps it out
+        // of any shared cache, because this one belongs to one person.
+        Response.Headers.CacheControl = "private, max-age=31536000, immutable";
+
+        return File(image.Content.ToArray(), image.ContentType);
+    }
+
+    /// <summary>Records which of the three suggestions was taken, if any.</summary>
+    [HttpPost("{id:guid}/choices")]
+    [ProducesResponseType<RecordChoiceResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RecordChoice(
+        Guid id,
+        RecordChoiceBody body,
+        CancellationToken cancellationToken)
+    {
+        var result = await choices.RecordAsync(
+            new RecordChoiceRequest
+            {
+                PhotoId = id,
+                UserId = CurrentUserId(),
+                Shown = body.Shown,
+                ChosenIndex = body.ChosenIndex,
+            },
+            cancellationToken);
+
+        if (result.NotFound)
+        {
+            return NotFound();
+        }
+
+        if (!result.Succeeded)
+        {
+            return ValidationProblem(Problem("shown", result.Error!));
+        }
+
+        return CreatedAtAction(
+            actionName: nameof(RecordChoice),
+            routeValues: new { id },
+            value: new RecordChoiceResponse { ChoiceId = result.ChoiceId });
+    }
+
+    /// <summary>What the client sends when a suggestion is taken or skipped.</summary>
+    public sealed record RecordChoiceBody
+    {
+        /// <summary>All three, as they were shown.</summary>
+        public required IReadOnlyList<Suggestion> Shown { get; init; }
+
+        /// <summary>Which one was taken, or null for none.</summary>
+        public int? ChosenIndex { get; init; }
+    }
+
+    public sealed record RecordChoiceResponse
+    {
+        public required Guid ChoiceId { get; init; }
+    }
+
     /// <summary>Three stylistically different edits for a photograph.</summary>
     /// <remarks>
     /// POST rather than GET: the work behind it is a CLIP encode and a vector

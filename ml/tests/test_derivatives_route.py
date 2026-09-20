@@ -122,3 +122,38 @@ def test_the_route_reads_no_storage_and_writes_none():
 
     assert "ObjectStore" not in text
     assert "boto3" not in text
+
+
+def rotated_portrait() -> bytes:
+    """A portrait photograph stored sideways, as a camera held on its side writes it.
+
+    The pixels are 900 wide by 600 tall; EXIF orientation 6 means "rotate a
+    quarter turn clockwise to display", so the upright image is 600x900.
+    """
+    from PIL import Image as PilImage
+
+    image = PilImage.new("RGB", (900, 600), (120, 90, 60))
+    exif = PilImage.Exif()
+    exif[0x0112] = 6  # Orientation
+
+    buffer = io.BytesIO()
+    image.save(buffer, format="JPEG", exif=exif)
+    return buffer.getvalue()
+
+
+def test_a_sideways_photograph_comes_back_upright():
+    """Not cosmetic: pre512 is what CLIP embeds.
+
+    A camera held on its side writes the pixels in sensor order and records the
+    quarter turn in a tag. Ignoring it matches a sideways image against an
+    upright corpus, which returns worse scenes and reports nothing.
+    """
+    response = client.post(
+        "/derivatives", files={"image": ("portrait.jpg", rotated_portrait(), "image/jpeg")}
+    )
+    body = response.json()
+
+    # Taller than wide, because the tag said so — the stored pixels were not.
+    assert body["source_height"] > body["source_width"]
+    assert body["fit"]["height"] > body["fit"]["width"]
+    assert body["proxy"]["height"] > body["proxy"]["width"]

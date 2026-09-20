@@ -34,8 +34,8 @@
     "empty": "No projects yet. Upload a photograph to begin.",
     "new": "New project",
     "detail": {
-      "title": "Project",
-      "pending": "The three suggestions and the editor arrive next."
+      "title": "Editor",
+      "pending": "Your choice was recorded. The editor arrives next."
     }
   },
   "renderer": {
@@ -104,5 +104,21 @@
       }
     },
     "diagram": "A photograph becoming three suggested edits, then one finished result"
+  },
+  "suggestions": {
+    "heading": "Choose a direction",
+    "lead": "Three edits from real photographers, each applied to your photograph. You can adjust whichever you take.",
+    "original": "YOUR PHOTOGRAPH",
+    "working": "READING THE PHOTOGRAPH",
+    "unchanged": "NO CHANGE",
+    "skip": "SKIP AND EDIT IT MYSELF",
+    "errors": {
+      "missing": "That project could not be found.",
+      "unavailable": "Suggestions are unavailable right now.",
+      "unreadable": "The suggestions could not be read. Try again in a moment.",
+      "signedOut": "Your session has expired. Sign in again.",
+      "unreachable": "Could not reach the server. Check your connection.",
+      "unexpected": "Something went wrong while preparing the suggestions."
+    }
   }
 }

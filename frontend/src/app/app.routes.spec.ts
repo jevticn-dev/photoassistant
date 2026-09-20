@@ -2,8 +2,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 
 import { routes } from './app.routes';
+import { SuggestionsService } from './features/suggestions/suggestions-service';
 import { TokenStorage } from './core/auth/token-storage';
 import { provideTranslations } from './core/i18n/translation.config';
 
@@ -29,6 +31,16 @@ describe('routes', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideTranslations(),
+
+        // The suggestion route is guarded by a question to the server. This
+        // file is about whether addresses resolve, so the answer is stubbed;
+        // what the guard does with it is tested where the guard lives.
+        {
+          provide: SuggestionsService,
+          useValue: {
+            project: () => of({ hasChoice: false }),
+          },
+        },
       ],
     });
 
@@ -41,6 +53,7 @@ describe('routes', () => {
   it.each([
     ['/projects'],
     ['/projects/0199a1f0-0000-7000-8000-000000000001'],
+    ['/projects/0199a1f0-0000-7000-8000-000000000001/edit'],
     ['/upload'],
     ['/renderer-lab'],
   ])('%s resolves to a screen of its own when signed in', async (address) => {

@@ -26,7 +26,7 @@ from typing import Annotated
 
 import numpy as np
 from fastapi import APIRouter, File, HTTPException, UploadFile
-from PIL import Image, UnidentifiedImageError
+from PIL import Image, ImageOps, UnidentifiedImageError
 from pydantic import BaseModel, Field
 
 from photoassistant.imaging import Derivative, derive_from_srgb
@@ -66,7 +66,14 @@ def _encode(derivative: Derivative) -> EncodedImage:
 
 
 def _decode(payload: bytes) -> np.ndarray:
-    """Bytes to an 8-bit sRGB array, refusing anything that is not an image.
+    """Bytes to an upright 8-bit sRGB array, refusing anything that is not an image.
+
+    **The EXIF rotation is applied, not ignored.** A camera held on its side
+    writes the pixels in sensor order and records "turn this a quarter turn" in
+    a tag; Pillow honours neither on its own. Left alone, every derivative of a
+    portrait photograph comes out lying down — and that is not only a display
+    fault. ``pre512`` is what CLIP embeds, so a sideways image is matched
+    against an upright corpus and quietly finds worse scenes.
 
     ``convert("RGB")`` is doing more than it looks: it drops an alpha channel and
     turns a greyscale or palette image into three channels, so everything
@@ -76,7 +83,11 @@ def _decode(payload: bytes) -> np.ndarray:
     try:
         with Image.open(io.BytesIO(payload)) as handle:
             handle.load()
-            return np.asarray(handle.convert("RGB"), dtype=np.uint8)
+            # Before the conversion: exif_transpose reads the tag off the image
+            # it is given, and convert() does not carry it over.
+            upright = ImageOps.exif_transpose(handle)
+
+            return np.asarray(upright.convert("RGB"), dtype=np.uint8)
     except (UnidentifiedImageError, OSError, ValueError) as error:
         raise HTTPException(status_code=400, detail="not a readable image") from error
 

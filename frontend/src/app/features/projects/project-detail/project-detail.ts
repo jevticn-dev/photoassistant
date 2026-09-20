@@ -3,12 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
 /**
- * Where an upload lands.
+ * Where a chosen suggestion lands.
  *
- * Deliberately a stub. The screen that belongs here is the three suggestions
- * (task 3), and after it the editor (task 4); this exists so the upload has
- * somewhere to navigate to instead of failing with "cannot match any routes",
- * which would look like the upload itself breaking.
+ * Deliberately a stub: the editor is task 4. It exists so that choosing has
+ * somewhere to go instead of failing with "cannot match any routes", which
+ * would look like the choice itself breaking.
  */
 @Component({
   selector: 'app-project-detail',
