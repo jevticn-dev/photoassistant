@@ -1,0 +1,4 @@
+<!-- role and label are here rather than on the host, because what carries the
+     picture is the canvas and that is what a screen reader should be told
+     about. The text itself comes from the translation file, aria included. -->
+<canvas #canvas role="img" [attr.aria-label]="label()"></canvas>

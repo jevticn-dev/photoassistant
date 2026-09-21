@@ -1,0 +1,22 @@
+<h2 class="confirm__title" id="confirm-delete-title">
+  {{ 'projects.delete.title' | translate }}
+</h2>
+
+<p class="confirm__body">
+  {{ 'projects.delete.body' | translate: { name: data.name } }}
+</p>
+
+<!-- Said plainly rather than softened. The photograph goes with the project and
+     nothing brings either back, which is exactly what someone needs to know
+     before they press the red button, not after. -->
+<p class="confirm__warning">{{ 'projects.delete.warning' | translate }}</p>
+
+<div class="confirm__actions">
+  <button class="confirm__cancel" type="button" (click)="cancel()">
+    {{ 'common.cancel' | translate }}
+  </button>
+
+  <button class="confirm__confirm" type="button" cdkFocusInitial (click)="confirm()">
+    {{ 'projects.delete.confirm' | translate }}
+  </button>
+</div>

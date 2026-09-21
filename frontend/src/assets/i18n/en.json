@@ -1,12 +1,11 @@
 {
   "app": {
-    "title": "PhotoAssistant",
-    "tagline": "Three edit suggestions for every photograph"
+    "title": "PhotoAssistant"
   },
   "nav": {
     "projects": "Projects",
-    "signIn": "Sign in",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "home": "PhotoAssistant — back to projects"
   },
   "auth": {
     "login": {
@@ -21,12 +20,47 @@
       "email": "Email",
       "password": "Password",
       "submit": "Create account",
-      "haveAccount": "Already have an account?"
+      "haveAccount": "Already have an account?",
+      "passwordHint": "At least {{count}} characters, with a digit and a capital letter"
+    },
+    "errors": {
+      "invalidCredentials": "That email and password do not match an account.",
+      "unreachable": "Could not reach the server. Check your connection and try again.",
+      "unexpected": "Something went wrong. Try again in a moment."
     }
   },
   "projects": {
     "title": "Projects",
-    "empty": "No projects yet. Upload a photograph to begin."
+    "new": "NEW PROJECT",
+    "open": "Open {{name}}",
+    "thumbnail": "The photograph this project is about",
+    "empty": {
+      "lead": "Nothing here yet.",
+      "hint": "Upload a photograph and the system will propose three ways to finish it.",
+      "action": "UPLOAD A PHOTOGRAPH"
+    },
+    "versions": {
+      "none": "NOT SAVED YET",
+      "one": "1 VERSION",
+      "many": "{{count}} VERSIONS"
+    },
+    "rename": {
+      "short": "RENAME",
+      "action": "Rename {{name}}",
+      "label": "PROJECT NAME"
+    },
+    "exports": {
+      "short": "EXPORTS",
+      "action": "Exports of {{name}}"
+    },
+    "delete": {
+      "short": "DELETE",
+      "action": "Delete {{name}}",
+      "title": "Delete this project?",
+      "body": "{{name}} and the photograph it was made from will be removed.",
+      "warning": "This cannot be undone.",
+      "confirm": "DELETE"
+    }
   },
   "renderer": {
     "lab": {
@@ -60,7 +94,137 @@
     }
   },
   "common": {
-    "loading": "Loading…",
-    "retry": "Try again"
+    "loading": "LOADING…",
+    "retry": "Try again",
+    "save": "SAVE",
+    "cancel": "CANCEL"
+  },
+  "upload": {
+    "title": "Drop a photograph here",
+    "hint": "OR CLICK TO CHOOSE  ·  JPEG, PNG OR WEBP  ·  UP TO 40 MB",
+    "choose": "Choose a photograph to upload",
+    "sending": "UPLOADING · {{percent}}%",
+    "processing": "READING THE PHOTOGRAPH",
+    "errors": {
+      "empty": "That file is empty.",
+      "tooLarge": "That file is larger than the 40 MB limit.",
+      "wrongType": "Only JPEG, PNG and WebP photographs can be uploaded.",
+      "signedOut": "Your session has expired. Sign in again to upload.",
+      "unreachable": "Could not reach the server. Check your connection and try again.",
+      "unexpected": "The upload did not finish. Try again in a moment."
+    },
+    "heading": "Start a project",
+    "lead": "One photograph in, three ways to finish it. Nothing is changed in the original.",
+    "steps": {
+      "one": {
+        "label": "UPLOAD",
+        "text": "The system reads the scene, the light and the subject."
+      },
+      "two": {
+        "label": "CHOOSE A DIRECTION",
+        "text": "Three edits from real photographers, each previewed on your own photograph."
+      },
+      "three": {
+        "label": "REFINE & EXPORT",
+        "text": "Adjust every parameter live, keep versions, export at full resolution."
+      }
+    },
+    "diagram": "A photograph becoming three suggested edits, then one finished result"
+  },
+  "suggestions": {
+    "heading": "Choose a direction",
+    "lead": "Three edits from real photographers, each applied to your photograph. You can adjust whichever you take.",
+    "original": "YOUR PHOTOGRAPH",
+    "working": "READING THE PHOTOGRAPH",
+    "unchanged": "NO CHANGE",
+    "skip": "SKIP AND EDIT IT MYSELF"
+  },
+  "editor": {
+    "loading": "OPENING THE PHOTOGRAPH",
+    "canvas": "Your photograph with the current edit applied",
+    "canvasBefore": "Your photograph as it was uploaded",
+    "undo": "Undo",
+    "redo": "Redo",
+    "compare": "COMPARE",
+    "compareLabel": "Compare with the original",
+    "before": "BEFORE",
+    "after": "AFTER",
+    "divider": "Move the divider between before and after",
+    "reset": "Reset {{name}}",
+    "controls": "Adjustments",
+    "showControls": "Show the controls",
+    "hideControls": "Hide the controls",
+    "unsaved": "NOT SAVED YET",
+    "saved": "SAVED · {{label}}",
+    "changed": "UNSAVED CHANGES",
+    "save": "SAVE",
+    "restore": "RESTORE {{label}}",
+    "viewing": "VIEWING {{label}}",
+    "history": {
+      "title": "Saved versions",
+      "short": "HIST",
+      "empty": "Nothing saved yet",
+      "open": "Open version {{label}}",
+      "failed": "The saved versions could not be read. {{reason}}"
+    },
+    "export": "EXPORT",
+    "exporting": "EXPORTING",
+    "download": "DOWNLOAD",
+    "exportWaiting": "Rendering your photograph at full size. This takes a few seconds, and you can keep editing while it does.",
+    "exportReady": "Your full-size photograph is ready — {{width}} x {{height}} pixels.",
+    "exportFailed": "The export did not finish. {{reason}}",
+    "exportSlow": "The export is taking longer than expected, so this screen has stopped waiting. It may still finish — reopen the project in a moment, or try again.",
+    "degraded": "This device ran short of graphics memory, so the preview is now half size. Nothing about the edit itself has changed.",
+    "unsupported": "This browser cannot show the live preview: it provides no WebGL2.",
+    "groups": {
+      "whiteBalance": "WHITE BALANCE",
+      "tone": "TONE",
+      "color": "COLOR"
+    },
+    "curve": {
+      "title": "TONE CURVE",
+      "hint": "CURVE",
+      "canvas": "Tone curve. Drag a point to move it, press where there is none to add one.",
+      "point": "Curve point at {{value}}. Arrow keys move it, Delete removes it.",
+      "endPoint": "Curve end at {{value}}. Arrow keys move it up and down.",
+      "help": "Press the curve to add a point.",
+      "helpFull": "Press to add a point; press and hold one to remove it."
+    },
+    "params": {
+      "temperature": "Temperature",
+      "tint": "Tint",
+      "exposure": "Exposure",
+      "contrast": "Contrast",
+      "highlights": "Highlights",
+      "shadows": "Shadows",
+      "whites": "Whites",
+      "blacks": "Blacks",
+      "saturation": "Saturation",
+      "vibrance": "Vibrance"
+    }
+  },
+  "exports": {
+    "title": "Exports of {{name}}",
+    "back": "Back to projects",
+    "loading": "LOADING THE EXPORTS",
+    "version": "Version {{label}}",
+    "unsavedEdit": "An edit that was never saved",
+    "size": "{{width}} x {{height}} · {{megabytes}} MB",
+    "download": "DOWNLOAD",
+    "working": "STILL RENDERING",
+    "failed": "FAILED",
+    "empty": {
+      "title": "Nothing has been exported yet",
+      "body": "Open the editor and use Export to render this photograph at its full size. Finished files stay here, so you can come back for them.",
+      "action": "OPEN THE EDITOR"
+    }
+  },
+  "errors": {
+    "missing": "That project could not be found.",
+    "unavailable": "The service is unavailable right now. Try again in a moment.",
+    "unreadable": "That edit could not be read.",
+    "signedOut": "Your session has expired. Sign in again.",
+    "unreachable": "Could not reach the server. Check your connection.",
+    "unexpected": "Something went wrong."
   }
 }

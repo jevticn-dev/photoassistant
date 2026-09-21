@@ -6,9 +6,10 @@ and the ML service insert into a shape that already exists. Two places issuing
 DDL against one database is how a schema ends up with no owner.
 
 Nothing here pools connections. The offline pipeline opens one per worker and
-keeps it for the run, and the service is not yet touching the database at all —
-when it does, a pool belongs there rather than here, because its lifetime is the
-process and the library does not own the process.
+keeps it for the run; the service opens one per request in ``/recommend`` and one
+per poll in the export worker. A pool belongs in the service rather than here if
+it is ever wanted, because its lifetime is the process and the library does not
+own the process.
 """
 
 from collections.abc import Iterator

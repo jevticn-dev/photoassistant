@@ -1,0 +1,122 @@
+// The tone curve. Every value is a token; no hex appears here.
+
+.curve {
+  display: block;
+}
+
+.curve__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.curve__title {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--text-primary);
+}
+
+.curve__hint {
+  color: var(--text-secondary);
+}
+
+.curve__frame {
+  position: relative;
+
+  // The prototype's proportion: tall enough to aim at, short enough that the
+  // photograph keeps the panel's height.
+  height: 9.5rem;
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius-md);
+
+  // One step darker than the grid drawn on it. The three surfaces make a
+  // ladder — panel behind, inset for the grid, line for the diagonal — which
+  // is how the prototype separates them; drawing the grid in `--line` on
+  // `--surface-inset` put two neighbouring shades against each other and the
+  // grid all but disappeared.
+  background: var(--surface-panel);
+  overflow: hidden;
+
+  // Dragging a point must not also scroll the drawer it sits in.
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.curve__surface {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+
+  // Every press is measured against the frame, so the drawing stays out of it.
+  pointer-events: none;
+}
+
+// vector-effect keeps every stroke one pixel wide whatever the box is
+// stretched to; without it the 100x100 viewBox scales the lines with it and
+// the grid comes out thicker horizontally than vertically.
+.curve__grid,
+.curve__identity,
+.curve__line {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.curve__grid {
+  stroke: var(--surface-inset);
+  stroke-width: 1;
+}
+
+.curve__identity {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.curve__line {
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.curve__handle {
+  position: absolute;
+
+  // Round, and staying round: outside the stretched viewBox, so width and
+  // height mean the same thing in both directions.
+  width: var(--space-3);
+  height: var(--space-3);
+  padding: 0;
+  transform: translate(-50%, -50%);
+  border: var(--border-width) solid var(--surface-panel);
+  border-radius: 50%;
+  background: var(--accent);
+
+  // Hit-tested, but not decided here: a press on a handle bubbles to the frame,
+  // which answers it with the one rule it answers everything by — the nearest
+  // point, or a new one. So the logic still has no per-handle hit areas to
+  // overlap, and the handle gets to say what the cursor is. Taking it out of
+  // hit-testing altogether was the first attempt, and it cost exactly that: the
+  // pointer stayed a crosshair over a point that could be grabbed.
+  cursor: grab;
+
+  &--fixed {
+    cursor: ns-resize;
+  }
+
+  &:focus-visible {
+    outline: var(--border-width) solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+.curve__help {
+  margin: var(--space-2) 0 0;
+  color: var(--text-secondary);
+
+  // Two lines of instruction under a small control would take more room than
+  // the control; the text is deliberately one short line.
+  font-size: var(--text-xs);
+}

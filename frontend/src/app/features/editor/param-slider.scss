@@ -1,0 +1,120 @@
+// One row of the adjustment panel. Tokens only; no hex value appears here.
+
+// The hairline between rows sits on the host rather than inside it, so the last
+// row of a group can drop it — otherwise it would land immediately above the
+// rule that separates one group from the next and read as a double line.
+:host {
+  display: block;
+  border-bottom: var(--border-width) solid var(--surface-panel);
+}
+
+:host(:last-of-type) {
+  border-bottom: none;
+}
+
+.param {
+  padding: var(--space-2) 0;
+}
+
+.param__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+
+  // The double click that resets would otherwise select the label first.
+  user-select: none;
+}
+
+.param__name {
+  font-size: var(--text-sm);
+  cursor: default;
+}
+
+.param__value {
+  padding: var(--space-1) var(--space-2);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    border-color: var(--line);
+    color: var(--text-primary);
+  }
+
+  // At zero there is nothing to reset. It stays in place and stays readable,
+  // because it is the value as much as it is a button.
+  &:disabled {
+    cursor: default;
+  }
+}
+
+.param__track {
+  // --fill is set by the template, so the filled part of the track and the
+  // thumb cannot drift apart: both read the same number.
+  --track: linear-gradient(
+    to right,
+    var(--accent) 0 var(--fill),
+    var(--surface-inset) var(--fill) 100%
+  );
+
+  appearance: none;
+  width: 100%;
+  height: 1.75rem;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+
+  // The two engines name the same two parts differently and will not accept a
+  // selector list, so each rule is written twice rather than once.
+  &::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: var(--radius-sm);
+    background: var(--track);
+  }
+
+  &::-moz-range-track {
+    height: 4px;
+    border-radius: var(--radius-sm);
+    background: var(--track);
+  }
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 10px;
+    height: 16px;
+
+    // Centres the thumb on a four pixel track: half the track, less half the
+    // thumb. Written out because the arithmetic is the whole reason for it.
+    margin-top: calc((4px - 16px) / 2);
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--text-primary);
+  }
+
+  &::-moz-range-thumb {
+    width: 10px;
+    height: 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--text-primary);
+  }
+}
+
+// Touch targets, by the thing that actually decides them. A fine pointer hits a
+// four pixel track exactly; a finger needs the 44px plan §11 sets, and paying
+// for it on every desktop would make the panel twice as tall as it need be.
+@media (pointer: coarse) {
+  .param__track {
+    height: var(--touch-target);
+  }
+
+  .param__value {
+    min-width: var(--touch-target);
+    min-height: var(--touch-target);
+  }
+}

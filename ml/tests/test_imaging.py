@@ -10,6 +10,7 @@ from photoassistant.imaging import (
     FIT_SIZE,
     PROPHOTO_TO_SRGB_LINEAR,
     PROXY_SIZE,
+    derive_from_srgb,
     encode_jpeg,
     encode_png,
     fit_size_for,
@@ -195,3 +196,93 @@ def test_derivatives_carry_the_gamut_fraction():
     rendition[..., 1] = 65535
 
     assert make_derivatives(rendition, with_proxy=False).gamut_fraction == 1.0
+
+
+# -- uploads (ADR-27) ---------------------------------------------------------
+
+
+def test_an_upload_yields_both_sizes():
+    """The API stores what this returns; a missing proxy would leave the editor blank."""
+    # Larger than both targets on the long side, so both are actually reductions.
+    image = np.full((2000, 3000, 3), 128, dtype=np.uint8)
+
+    derivatives = derive_from_srgb(image)
+
+    assert (derivatives.fit.width, derivatives.fit.height) == (512, 341)
+    assert (derivatives.proxy.width, derivatives.proxy.height) == (2048, 1365)
+    assert derivatives.fit.content_type == "image/png"
+    assert derivatives.proxy.content_type == "image/jpeg"
+
+
+def test_an_upload_smaller_than_the_targets_is_not_enlarged():
+    image = np.full((300, 400, 3), 200, dtype=np.uint8)
+
+    derivatives = derive_from_srgb(image)
+
+    assert (derivatives.fit.width, derivatives.fit.height) == (400, 300)
+    assert (derivatives.proxy.width, derivatives.proxy.height) == (400, 300)
+
+
+def test_an_upload_reports_no_gamut_clipping():
+    """An sRGB file cannot hold a colour outside sRGB, so there is nothing to report."""
+    image = np.zeros((16, 16, 3), dtype=np.uint8)
+
+    assert derive_from_srgb(image).gamut_fraction == 0.0
+
+
+def test_an_upload_takes_the_same_path_as_the_corpus():
+    """The point of ADR-27: identical pixels in, identical derivative out.
+
+    An sRGB upload and the same image arriving as a 16-bit ProPhoto rendition
+    differ only in the first conversion. Feed the second the ProPhoto encoding of
+    a mid grey and both must land on the same downscaled bytes — if they ever
+    diverge, an upload is no longer comparable with the 25.000 it is matched
+    against, and nothing else in the system would notice.
+    """
+    flat = np.full((600, 900, 3), 128, dtype=np.uint8)
+
+    upload = derive_from_srgb(flat)
+    corpus = make_derivatives(
+        # The same colour, expressed the way the corpus arrives: sRGB -> linear
+        # -> ProPhoto is skipped by using a grey, which is on the neutral axis of
+        # both spaces and so has the same encoded value in each.
+        np.full((600, 900, 3), round(srgb_to_prophoto_grey(128) * 65535), dtype=np.uint16),
+        with_proxy=True,
+    )
+
+    assert (upload.fit.width, upload.fit.height) == (corpus.fit.width, corpus.fit.height)
+    assert (upload.proxy.width, upload.proxy.height) == (corpus.proxy.width, corpus.proxy.height)
+
+
+def srgb_to_prophoto_grey(value: int) -> float:
+    """A neutral grey's ProPhoto encoding, for the test above.
+
+    Neutral greys sit on the achromatic axis of both spaces, so the matrix leaves
+    them alone and only the transfer function differs.
+    """
+    from photoassistant.imaging.prophoto import romm_decode
+    from photoassistant.renderer.color import srgb_decode
+
+    linear = float(srgb_decode(np.array([value / 255.0]))[0])
+    candidates = np.linspace(0.0, 1.0, 100_001)
+    return float(candidates[np.argmin(np.abs(romm_decode(candidates) - linear))])
+
+
+def test_a_badly_compressing_upload_still_encodes():
+    """Noise overflowed Pillow's optimise buffer and failed the save.
+
+    Not a hypothetical: a high-ISO night photograph is close enough to noise, and
+    an upload is whatever a user sends. The corpus never triggered it because a
+    normal photograph compresses.
+    """
+    noise = (np.random.default_rng(7).random((1200, 1800, 3)) * 255).astype(np.uint8)
+
+    derivatives = derive_from_srgb(noise)
+
+    # Decoded rather than sniffed for a magic number: "broken data stream"
+    # produced a short file, and only a full decode proves the whole scan is
+    # there rather than its first bytes.
+    decoded = Image.open(io.BytesIO(derivatives.proxy.data))
+    decoded.load()
+
+    assert decoded.size == (derivatives.proxy.width, derivatives.proxy.height)

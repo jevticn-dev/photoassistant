@@ -1,0 +1,23 @@
+{
+  "//": [
+    "The dev server forwards /api to the .NET API, exactly as nginx does in the",
+    "delivered stack. Two things follow, and both are the point.",
+    "",
+    "The browser only ever talks to one origin, so there is no cross-origin",
+    "request and the API needs no CORS policy at all — nothing to configure, and",
+    "no permissive rule that could outlive development.",
+    "",
+    "Development and production then differ in who forwards, not in what the",
+    "frontend calls: apiBaseUrl is '/api' in both. A bug caused by an absolute",
+    "address can no longer hide until the stack is assembled.",
+    "",
+    "The target is the API's published port from infra/docker-compose.yml. It is",
+    "also where `dotnet run --project backend/src/PhotoAssistant.Api` listens, so",
+    "the same proxy serves both ways of running the backend."
+  ],
+  "/api": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": false
+  }
+}

@@ -29,11 +29,14 @@ from photoassistant.imaging.derivatives import (
     PROXY_SIZE,
     Derivative,
     Derivatives,
+    derive_from_srgb,
     encode_jpeg,
     encode_png,
+    encode_png_quantised,
     fit_size_for,
     make_derivatives,
 )
+from photoassistant.imaging.export import DEFAULT_BAND_ROWS, render_full_resolution
 from photoassistant.imaging.prophoto import (
     PROPHOTO_TO_SRGB_LINEAR,
     prophoto_to_srgb,
@@ -42,16 +45,20 @@ from photoassistant.imaging.prophoto import (
 from photoassistant.imaging.resample import resample_area
 
 __all__ = [
+    "DEFAULT_BAND_ROWS",
     "FIT_SIZE",
     "PROPHOTO_TO_SRGB_LINEAR",
     "PROXY_SIZE",
     "Derivative",
     "Derivatives",
+    "derive_from_srgb",
     "encode_jpeg",
     "encode_png",
+    "encode_png_quantised",
     "fit_size_for",
     "make_derivatives",
     "prophoto_to_srgb",
+    "render_full_resolution",
     "resample_area",
     "romm_decode",
 ]

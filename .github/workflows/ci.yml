@@ -49,8 +49,37 @@ jobs:
       JWT_ISSUER: photoassistant
       JWT_AUDIENCE: photoassistant
 
+      # Object storage, for the upload tests. Same reasoning as the database:
+      # they write and read real objects, because an in-memory stand-in would
+      # not prove that the S3 client talks to MinIO correctly.
+      S3_ENDPOINT: http://localhost:9000
+      S3_ACCESS_KEY: photoassistant
+      S3_SECRET_KEY: ci-password
+      S3_BUCKET_ORIGINALS: originals
+      S3_BUCKET_DERIVATIVES: derivatives
+      S3_BUCKET_EXPORTS: exports
+
+      # Required at start-up, never reached: the upload tests substitute
+      # IDerivativeGenerator, and the ML service deliberately has no port to
+      # publish. The address only has to exist.
+      ML_SERVICE_URL: http://localhost:8000
+
     steps:
       - uses: actions/checkout@v7
+
+      # Started as a step rather than as a service container: MinIO needs a
+      # command (`server /data`) and service containers cannot set one.
+      #
+      # quay.io, not Docker Hub — `minio/minio` there is no longer pullable
+      # without credentials. Same tag, same build, verified by the release
+      # label and creation timestamp.
+      - name: Start MinIO
+        run: |
+          docker run -d --name minio -p 9000:9000 \
+            -e MINIO_ROOT_USER=photoassistant \
+            -e MINIO_ROOT_PASSWORD=ci-password \
+            quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z server /data
+          until curl -sf http://localhost:9000/minio/health/live; do sleep 1; done
 
       - uses: actions/setup-dotnet@v6
         with:

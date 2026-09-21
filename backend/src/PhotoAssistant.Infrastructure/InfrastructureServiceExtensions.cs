@@ -1,4 +1,6 @@
 using System.Text;
+using Amazon.Runtime;
+using Amazon.S3;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -6,8 +8,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using PhotoAssistant.Application.Authentication;
+using PhotoAssistant.Application.Photos;
+using PhotoAssistant.Application.Exports;
+using PhotoAssistant.Application.Projects;
+using PhotoAssistant.Application.Storage;
 using PhotoAssistant.Infrastructure.Identity;
+using PhotoAssistant.Infrastructure.MlService;
 using PhotoAssistant.Infrastructure.Persistence;
+using PhotoAssistant.Infrastructure.Storage;
 
 namespace PhotoAssistant.Infrastructure;
 
@@ -23,8 +31,105 @@ public static class InfrastructureServiceExtensions
     {
         services.AddPersistence(configuration);
         services.AddAuthenticationServices(configuration);
+        services.AddObjectStorage(configuration);
+        services.AddMlService(configuration);
+        services.AddPhotos();
 
         return services;
+    }
+
+    /// <summary>
+    /// The upload use case and the one thing it needs persisted. The handler
+    /// itself lives in Application; only its registration belongs here.
+    /// </summary>
+    private static void AddPhotos(this IServiceCollection services)
+    {
+        services.AddScoped<IPhotoUploadRepository, PhotoUploadRepository>();
+        services.AddScoped<IPhotoRepository, PhotoRepository>();
+        services.AddScoped<IChoiceRepository, ChoiceRepository>();
+        services.AddScoped<IProjectRepository, ProjectRepository>();
+        services.AddScoped<UploadPhotoHandler>();
+        services.AddScoped<SuggestEditsHandler>();
+        services.AddScoped<GetPhotoImageHandler>();
+        services.AddScoped<RecordChoiceHandler>();
+        services.AddScoped<GetProjectHandler>();
+        services.AddScoped<ListProjectsHandler>();
+        services.AddScoped<RenameProjectHandler>();
+        services.AddScoped<DeleteProjectHandler>();
+        services.AddScoped<SaveVersionHandler>();
+        services.AddScoped<ListVersionsHandler>();
+        services.AddScoped<IJobRepository, JobRepository>();
+        services.AddScoped<RequestExportHandler>();
+        services.AddScoped<GetJobHandler>();
+        services.AddScoped<ListExportsHandler>();
+    }
+
+    private static void AddObjectStorage(this IServiceCollection services, IConfiguration configuration)
+    {
+        // The neutral names are what compose injects, and they win. The
+        // fallbacks are for running the API on the host, where the same MinIO
+        // is reached at a different address and the credentials are still only
+        // written down once, under the names the container image uses. This
+        // mirrors POSTGRES_HOST / POSTGRES_HOST_LOCAL below, and what
+        // pipeline/environment.py does on the Python side.
+        var options = new ObjectStorageOptions
+        {
+            Endpoint = configuration["S3_ENDPOINT"]
+                       ?? Required(configuration, "S3_ENDPOINT_LOCAL"),
+            AccessKey = configuration["S3_ACCESS_KEY"]
+                        ?? Required(configuration, "MINIO_ROOT_USER"),
+            SecretKey = configuration["S3_SECRET_KEY"]
+                        ?? Required(configuration, "MINIO_ROOT_PASSWORD"),
+            Region = configuration["S3_REGION"] ?? "us-east-1",
+            OriginalsBucket = Required(configuration, "S3_BUCKET_ORIGINALS"),
+            DerivativesBucket = Required(configuration, "S3_BUCKET_DERIVATIVES"),
+            ExportsBucket = Required(configuration, "S3_BUCKET_EXPORTS"),
+        };
+
+        services.AddSingleton(options);
+        services.AddSingleton<IAmazonS3>(_ => new AmazonS3Client(
+            new BasicAWSCredentials(options.AccessKey, options.SecretKey),
+            new AmazonS3Config
+            {
+                ServiceURL = options.Endpoint,
+                AuthenticationRegion = options.Region,
+
+                // MinIO addresses buckets by path, not by subdomain. Left at the
+                // default the SDK would ask for `bucket.minio:9000`, which does
+                // not resolve inside compose and fails as a name lookup rather
+                // than as a configuration mistake.
+                ForcePathStyle = true,
+            }));
+
+        services.AddScoped<IObjectStorage, S3ObjectStorage>();
+    }
+
+    private static void AddMlService(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Same reasoning as the storage endpoint: the compose name inside the
+        // network, localhost from the host.
+        var address = configuration["ML_SERVICE_URL"]
+                      ?? Required(configuration, "ML_SERVICE_URL_LOCAL");
+
+        services.AddHttpClient<IDerivativeGenerator, MlDerivativeGenerator>(client =>
+        {
+            client.BaseAddress = new Uri(address);
+
+            // Deriving both sizes of a large photograph is real work, and the
+            // default of 100 seconds is long enough that a stuck request would
+            // hold a browser far past the point of usefulness.
+            client.Timeout = TimeSpan.FromSeconds(30);
+        });
+
+        // Measured at p95 262 ms in phase 3, against a budget of 1,5 s (§B82).
+        // Ten seconds is far above anything healthy and far below a browser
+        // giving up on its own, so a stalled service fails as a message rather
+        // than as a spinner nobody can explain.
+        services.AddHttpClient<IRecommendationService, MlRecommendationService>(client =>
+        {
+            client.BaseAddress = new Uri(address);
+            client.Timeout = TimeSpan.FromSeconds(10);
+        });
     }
 
     private static void AddPersistence(this IServiceCollection services, IConfiguration configuration)

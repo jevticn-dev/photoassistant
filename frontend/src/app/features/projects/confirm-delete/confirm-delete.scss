@@ -1,0 +1,61 @@
+:host {
+  display: block;
+  width: min(28rem, calc(100vw - var(--space-6)));
+  padding: var(--space-5);
+  border: var(--border-width) solid var(--line);
+  border-radius: var(--radius-lg);
+
+  // The dialog is its own surface rather than the page's: it sits over the list
+  // and has to read as being in front of it, not part of it.
+  background: var(--surface-panel);
+  color: var(--text-primary);
+}
+
+.confirm__title {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+}
+
+.confirm__body {
+  margin: 0 0 var(--space-2);
+}
+
+.confirm__warning {
+  margin: 0 0 var(--space-5);
+  color: var(--status-error);
+  font-size: var(--text-sm);
+}
+
+.confirm__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+.confirm__cancel,
+.confirm__confirm {
+  min-height: var(--touch-target);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  cursor: pointer;
+}
+
+.confirm__cancel {
+  border: var(--border-width) solid var(--line);
+  background: none;
+  color: var(--text-primary);
+}
+
+// The destructive action carries the status colour rather than the accent. The
+// accent is what the application uses to say "this way"; losing work is not
+// that, and the two must not look alike on the one screen where it matters.
+.confirm__confirm {
+  border: var(--border-width) solid var(--status-error);
+  background: var(--status-error);
+  color: var(--accent-contrast);
+}

@@ -1,1 +1,103 @@
-/* You can add global styles to this file, and also import other style files */
+// Global stylesheet: fonts, tokens, and the few element defaults that would
+// otherwise be repeated in every component. Everything visual beyond this lives
+// with the component that draws it.
+
+// Fonts are self-hosted through @fontsource and listed in angular.json rather
+// than imported here: they are plain CSS, and Sass cannot derive a namespace
+// from a file called 400.css. Only the two weights the direction uses (notes
+// phase-4 §B93) — the prototype sets 400 and 500 and nothing else, and every
+// extra weight is a file every visitor downloads. Never a CDN: the delivery
+// makes no third-party requests.
+
+@use 'styles/tokens';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--surface-base);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: var(--weight-regular);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+// The accent is the only colour that marks focus, and focus must always be
+// visible: removing the outline without replacing it makes the application
+// unusable by keyboard. :focus-visible rather than :focus so a mouse click does
+// not draw a ring nobody asked for.
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  // --focus-ring, not --accent: on the light zone the accent is too close in
+  // brightness to the surfaces it would outline (see styles/_tokens.scss).
+  outline: 2px solid var(--focus-ring);
+
+  // Sits on the edge rather than floating off it. An offset ring around a
+  // bordered input reads as two rings with a gap, and on a panel of hairlines
+  // the extra line is the loudest thing on screen. Components must not add a
+  // second indicator of their own on top of this one.
+  outline-offset: 0;
+}
+
+// A label on a front panel: monospace, spaced, small. The capitals belong in
+// the translated string, not here — text-transform would leave the underlying
+// text lower-case for a screen reader while showing capitals on screen.
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  color: var(--text-secondary);
+}
+
+// A numeric readout: the values themselves, monospace so digits line up between
+// rows and the layout does not shift as a number changes.
+.readout {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+// Read aloud, never drawn. For the rare case where the screen says something
+// with shape or position — a dash standing for "nothing here yet" — and a
+// screen reader needs the sentence that shape stands for. Not a way to hide
+// things: anything in here is still announced, in full, in reading order.
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+
+  // clip-path rather than `clip`, which is deprecated; inset(50%) leaves an
+  // empty rectangle in the middle of the element and nothing visible.
+  clip-path: inset(50%);
+  border: 0;
+}
+
+// Motion is opt-out, everywhere. The suggestion screen sweeps a line across the
+// photograph while it waits; full-screen movement makes some people ill, and it
+// carries no information the status line does not already carry.
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

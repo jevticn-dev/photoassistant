@@ -1,4 +1,4 @@
-"""``POST /recommend`` — a photograph in, three suggestions with previews out.
+"""``POST /recommend`` — a photograph in, three edit recipes out.
 
 The route is thin on purpose: it validates the upload, calls the library, and maps
 the result. Every decision it embodies was measured in phase 3 and is recorded in
@@ -9,10 +9,13 @@ from each of the three nearest scenes, preferring the edit schema v1 reproduced 
 faithfully. No fingerprint, no clustering, no second model — those exist behind the
 interfaces and lost, measurably, which is itself the finding.
 
-**Previews travel in the response as base64 JPEG.** The alternative was writing them
-to object storage and returning keys, which means orphaned files nobody cleans up
-after a request nobody finished. A 512px JPEG is tens of kilobytes; three of them
-plus the recipes make a response of a few hundred, which is the cheaper problem.
+**The response carries recipes and nothing else** (phase 4, decision C). It used to
+render a 512px preview of each, which measured 157 ms of a 239 ms request and 141 KB
+of its body (§B84) — more than half the time, for an image the browser can produce
+itself. The frontend runs the same renderer, proven to agree with this one by the
+golden test, over the 2048px proxy it loads for the editor anyway. So the person
+chooses from the very image they are about to edit, rather than from a smaller one
+rendered elsewhere.
 
 **This service does not know about users.** No authentication, no ownership, no
 identifiers of people. The .NET API is the only public door and owns all of that
@@ -20,7 +23,6 @@ identifiers of people. The .NET API is the only public door and owns all of that
 private network, which is by design nobody but that API.
 """
 
-import base64
 import io
 from typing import Annotated, Any
 
@@ -36,23 +38,21 @@ from photoassistant.recommender import (
     Recommender,
     TopCandidates,
 )
-from photoassistant.renderer import quantise, render, srgb_decode, srgb_encode
+from photoassistant.renderer import srgb_decode, srgb_encode
 from photoassistant.storage import DatabaseConfig, connect
 
 router = APIRouter(tags=["recommend"])
 
 # The resolution everything downstream was measured at: recipes were fitted against
-# 512px results and the evaluation rendered at 512, so a preview made at another
-# size would not be the thing that was measured. FIT_SIZE is that same constant,
-# taken from the phase 2 derivatives rather than repeated here.
-PREVIEW_SIZE = FIT_SIZE
+# 512px results and the evaluation searched at 512, so an image embedded at
+# another size would not be the thing that was measured. FIT_SIZE is that same
+# constant, taken from the phase 2 derivatives rather than repeated here.
+SEARCH_SIZE = FIT_SIZE
 
 # Generous enough for a phone photograph, small enough that a mistake cannot fill
 # memory. The .NET side will have its own limit; this one exists because a service
 # must not depend on someone else's validation.
 MAXIMUM_UPLOAD_BYTES = 40 * 1024 * 1024
-
-JPEG_QUALITY = 85
 
 # The encoder is built once for the life of the process, not once per request.
 # ``ClipEmbedder`` loads its weights lazily **per instance**, so constructing one
@@ -74,7 +74,6 @@ class Suggestion(BaseModel):
     """One proposal: what to apply, where it came from, and what it looks like."""
 
     recipe: dict[str, Any] = Field(description="The edit in schema v1, ready to apply")
-    preview: str = Field(description="512px JPEG of the recipe applied to the upload, base64")
     source_reference: str = Field(description="Photograph the edit was taken from")
     expert: str | None = Field(description="Which FiveK expert produced it, a to e")
     scene_distance: float = Field(description="Cosine distance from the upload to that scene")
@@ -102,14 +101,6 @@ def _decode(payload: bytes) -> np.ndarray:
     return pixels / 255.0
 
 
-def _preview(image: np.ndarray, recipe) -> str:
-    """Render one recipe onto the upload and encode it for the response."""
-    rendered = quantise(render(image, recipe))
-    buffer = io.BytesIO()
-    Image.fromarray(rendered).save(buffer, format="JPEG", quality=JPEG_QUALITY)
-    return base64.b64encode(buffer.getvalue()).decode("ascii")
-
-
 @router.post(
     "/recommend",
     response_model=RecommendResponse,
@@ -119,8 +110,8 @@ def recommend(
     image: Annotated[UploadFile, File(description="The photograph to suggest edits for")],
 ) -> RecommendResponse:
     # Deliberately **not** ``async``. Everything this handler does — decoding,
-    # encoding through CLIP, rendering three previews — is blocking work in C and
-    # NumPy, several hundred milliseconds of it. In an async handler that time is
+    # encoding through CLIP, searching — is blocking work in C and NumPy,
+    # several hundred milliseconds of it. In an async handler that time is
     # spent on the event loop, where it stalls every other connection including the
     # health check; declared like this, FastAPI runs it in the threadpool, which is
     # where blocking work belongs. The database connection is opened per request
@@ -132,19 +123,19 @@ def recommend(
         raise HTTPException(status_code=413, detail="image too large")
 
     # One size for everything that follows. The encoder resizes internally anyway;
-    # what matters is that the preview is rendered at the resolution the recipes
-    # were fitted and evaluated at.
+    # what matters is that the image is embedded at the resolution the corpus
+    # vectors were computed at.
     #
     # Down to size **in linear light**, the way the pipeline made every derivative
     # this corpus was built from (§A10). Averaging gamma-encoded values darkens the
     # result, because the average of two encoded values is not the encoding of
     # their average — so the upload is decoded, averaged, and encoded back rather
-    # than resized where it stands. A preview subtly darker than the corpus it is
+    # than resized where it stands. An image subtly darker than the corpus it is
     # compared against is a defect nobody could name.
     decoded = _decode(payload)
     height, width = decoded.shape[:2]
     small = srgb_encode(
-        resample_area(srgb_decode(decoded), fit_size_for(height, width, PREVIEW_SIZE))
+        resample_area(srgb_decode(decoded), fit_size_for(height, width, SEARCH_SIZE))
     )
 
     with connect(DatabaseConfig.from_environment()) as connection:
@@ -162,7 +153,6 @@ def recommend(
         suggestions=[
             Suggestion(
                 recipe=candidate.recipe.to_dict(),
-                preview=_preview(small, candidate.recipe),
                 source_reference=candidate.photo_reference,
                 expert=candidate.expert,
                 scene_distance=candidate.photo_distance,

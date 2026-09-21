@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using PhotoAssistant.Api.Middleware;
 using PhotoAssistant.Infrastructure;
 using PhotoAssistant.Infrastructure.Persistence;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,18 @@ app.UseStatusCodePages();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    // The document alone is JSON nobody reads by hand, so it gets a reader.
+    // Scalar rather than Swagger UI (phase 4, decision H): it is built for the
+    // document .NET already generates, and it is one line with no attributes
+    // sprinkled through the controllers.
+    //
+    // Inside the same IsDevelopment block as the document it renders — an API
+    // browser on a production host is a map of every route for anyone who finds
+    // it, and the pair must not drift apart.
+    app.MapScalarApiReference(options => options
+        .WithTitle("PhotoAssistant API")
+        .WithTheme(ScalarTheme.BluePlanet));
 }
 
 app.UseAuthentication();

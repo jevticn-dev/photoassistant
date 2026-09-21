@@ -1,0 +1,48 @@
+<div class="param">
+  <!--
+    The two reset gestures sit on the head rather than on the whole row: a
+    finger resting on the track is a slow drag, not a request to set the
+    value back to nothing.
+  -->
+  <div
+    class="param__head"
+    (dblclick)="requestReset()"
+    (pointerdown)="pressStart($event)"
+    (pointerup)="clearPress()"
+    (pointercancel)="clearPress()"
+    (pointerleave)="clearPress()"
+  >
+    <label class="param__name" [for]="id()">{{ name() | translate }}</label>
+
+    <!--
+      The readout is the third way to reset, and the only one a keyboard can
+      reach: neither a double click nor a long press has a key. Disabled at
+      zero, where there is nothing to undo.
+    -->
+    <button
+      class="param__value readout"
+      type="button"
+      [disabled]="value() === 0"
+      [attr.aria-label]="'editor.reset' | translate: { name: name() | translate }"
+      (click)="requestReset()"
+    >
+      {{ display() }}
+    </button>
+  </div>
+
+  <input
+    class="param__track"
+    type="range"
+    [id]="id()"
+    [min]="param().min"
+    [max]="param().max"
+    [step]="param().step"
+    [value]="value()"
+    [style.--fill]="fill()"
+    (pointerdown)="stepStart.emit()"
+    (pointerup)="stepEnd.emit()"
+    (keydown)="onKey($event)"
+    (keyup)="stepEnd.emit()"
+    (input)="onInput($event)"
+  />
+</div>

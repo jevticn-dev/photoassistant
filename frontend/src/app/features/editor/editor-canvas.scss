@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+canvas {
+  display: block;
+
+  // The frame already carries the photograph's aspect ratio, so filling it is
+  // exact rather than approximate — which is what makes the comparison
+  // divider's percentage land on the same pixels in both layers.
+  width: 100%;
+  height: 100%;
+  background: var(--surface-inset);
+}

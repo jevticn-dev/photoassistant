@@ -1,0 +1,126 @@
+<!-- Every visible string goes through the translate pipe, aria-label included. -->
+<section class="upload">
+  <header class="upload__intro">
+    <h1 class="upload__heading">{{ 'upload.heading' | translate }}</h1>
+    <p class="upload__lead">{{ 'upload.lead' | translate }}</p>
+  </header>
+
+  <!--
+    The diagram is inline SVG rather than a file: it is three rectangles and
+    two arrows, it has to take its colours from the tokens, and a separate
+    asset would be one more thing to keep in step with the palette.
+
+    currentColor and the accent variable do the work, so it is correct in
+    either zone without a second copy.
+  -->
+  <svg
+    class="flow"
+    viewBox="0 0 320 64"
+    role="img"
+    [attr.aria-label]="'upload.diagram' | translate"
+  >
+    <!-- One photograph in -->
+    <rect x="1" y="17" width="42" height="30" rx="2" class="flow__frame" />
+    <circle cx="12" cy="27" r="3.5" class="flow__mark" />
+    <path d="M4 44 L17 31 L26 40 L33 34 L40 44 Z" class="flow__mark" />
+
+    <path d="M50 32 H72" class="flow__link" />
+    <path d="M68 28 L73 32 L68 36" class="flow__link" />
+
+    <!-- Three suggestions, the middle one chosen -->
+    <rect x="80" y="1" width="42" height="26" rx="2" class="flow__frame" />
+    <rect x="80" y="19" width="42" height="26" rx="2" class="flow__frame flow__frame--chosen" />
+    <rect x="80" y="37" width="42" height="26" rx="2" class="flow__frame" />
+    <text x="127" y="35" class="flow__count">03</text>
+
+    <path d="M150 32 H172" class="flow__link" />
+    <path d="M168 28 L173 32 L168 36" class="flow__link" />
+
+    <!-- Refined, then exported at full size -->
+    <rect x="180" y="13" width="50" height="38" rx="2" class="flow__frame flow__frame--chosen" />
+    <path d="M188 30 H222" class="flow__slider" />
+    <circle cx="205" cy="30" r="3.5" class="flow__knob" />
+    <path d="M188 40 H222" class="flow__slider" />
+    <circle cx="197" cy="40" r="3.5" class="flow__knob" />
+
+    <path d="M238 32 H260" class="flow__link" />
+    <path d="M256 28 L261 32 L256 36" class="flow__link" />
+
+    <rect x="268" y="9" width="50" height="46" rx="2" class="flow__frame flow__frame--chosen" />
+    <path d="M272 48 L288 32 L298 42 L305 35 L314 48 Z" class="flow__mark" />
+  </svg>
+
+  <ol class="steps">
+    @for (step of steps; track step.key) {
+      <li class="steps__item">
+        <span class="steps__index readout">{{ step.index }}</span>
+        <span class="steps__label label">{{ step.label | translate }}</span>
+        <span class="steps__text">{{ step.text | translate }}</span>
+      </li>
+    }
+  </ol>
+
+  <!--
+    Only the drop zone is replaced while an upload runs. Everything above it
+    explains what is about to happen, and that remains true during the wait —
+    swapping the whole page out made it lurch and left nothing to read.
+  -->
+  @if (phase() === 'idle') {
+    <!--
+      A label wrapping a hidden input, not a div with a click handler: the
+      keyboard, the screen reader and the browser's own file dialog all come
+      free, and a custom control would have to reimplement each.
+    -->
+    <label
+      class="dropzone"
+      [class.dropzone--active]="dragging()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave()"
+      (drop)="onDrop($event)"
+    >
+      <input
+        class="dropzone__input"
+        type="file"
+        [accept]="accepted"
+        (change)="onPicked($event)"
+        [attr.aria-label]="'upload.choose' | translate"
+      />
+      <span class="dropzone__title">{{ 'upload.title' | translate }}</span>
+      <span class="dropzone__hint readout">{{ 'upload.hint' | translate }}</span>
+    </label>
+
+    @if (failure()?.summaryKey; as summaryKey) {
+      <p class="upload__error" role="alert">{{ summaryKey | translate }}</p>
+    }
+    @if (message(); as detail) {
+      <!-- The API worded this one; it names the actual limit or format. -->
+      <p class="upload__error" role="alert">{{ detail }}</p>
+    }
+  } @else {
+    <!--
+      zone-display, because this is a photograph being looked at rather than a
+      control being operated. The class redefines the tokens, so everything
+      below keeps using the same names and comes out dark.
+    -->
+    <div class="working zone-display">
+      @if (preview(); as source) {
+        <img class="working__photo" [src]="source" alt="" />
+      }
+
+      <!--
+        The sweep is decoration in the accessibility sense — the status line
+        below carries the same information — so it is hidden from assistive
+        technology rather than announced as a moving element.
+      -->
+      <span class="working__scan" aria-hidden="true"></span>
+
+      <p class="working__status label" role="status">
+        @if (phase() === 'sending') {
+          {{ 'upload.sending' | translate: { percent: percent() } }}
+        } @else {
+          {{ 'upload.processing' | translate }}
+        }
+      </p>
+    </div>
+  }
+</section>
