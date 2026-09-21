@@ -1,0 +1,98 @@
+<!-- Every visible string goes through the translate pipe, aria-label included. -->
+<section class="exports">
+  <header class="exports__head">
+    <a class="exports__back" [routerLink]="['/projects']">{{ 'exports.back' | translate }}</a>
+    <h1 class="exports__title">
+      {{ 'exports.title' | translate: { name: project()?.name ?? '' } }}
+    </h1>
+  </header>
+
+  @if (failure(); as problem) {
+    <div class="exports__problem" role="alert">
+      <p>{{ problem.summaryKey | translate }}</p>
+      <button class="exports__action" type="button" (click)="retry()">
+        {{ 'common.retry' | translate }}
+      </button>
+    </div>
+  } @else if (rows() === null) {
+    <p class="exports__waiting label" role="status">{{ 'exports.loading' | translate }}</p>
+  } @else if (empty()) {
+    <!--
+      A project nobody has exported is an ordinary state, not a failure — the
+      same treatment the project list gives an account with no projects.
+    -->
+    <div class="exports__empty">
+      <p class="exports__emptyTitle">{{ 'exports.empty.title' | translate }}</p>
+      <p class="exports__emptyBody">{{ 'exports.empty.body' | translate }}</p>
+      <a
+        class="exports__action exports__action--primary"
+        [routerLink]="['/projects', project()?.id, 'edit']"
+      >
+        {{ 'exports.empty.action' | translate }}
+      </a>
+    </div>
+  } @else {
+    @if (downloadProblem(); as problem) {
+      <p class="notice notice--error" role="alert">{{ problem | translate }}</p>
+    }
+
+    <ul class="exports__list">
+      @for (row of rows(); track row.job.id) {
+        <li class="export">
+          <div class="export__what">
+            <!--
+              Which edit this file is. An export carries the recipe that was on
+              screen, not a version, so a match is a comparison and a miss is an
+              ordinary answer rather than a gap (§B126).
+            -->
+            <span class="export__version label">
+              {{
+                row.version === null
+                  ? ('exports.unsavedEdit' | translate)
+                  : ('exports.version' | translate: { label: row.version })
+              }}
+            </span>
+
+            <span class="export__when">{{ row.job.createdAt | date: 'medium' }}</span>
+          </div>
+
+          <div class="export__state">
+            @switch (row.job.status) {
+              @case ('done') {
+                <span class="export__size readout">
+                  {{
+                    'exports.size'
+                      | translate
+                        : {
+                            width: row.job.result?.width,
+                            height: row.job.result?.height,
+                            megabytes: ((row.job.result?.bytes ?? 0) / 1048576).toFixed(1),
+                          }
+                  }}
+                </span>
+                <button
+                  class="exports__action exports__action--primary"
+                  type="button"
+                  (click)="download(row.job)"
+                >
+                  {{ 'exports.download' | translate }}
+                </button>
+              }
+              @case ('failed') {
+                <span class="export__failed label">{{ 'exports.failed' | translate }}</span>
+                <span class="export__reason">{{ row.job.error }}</span>
+              }
+              @default {
+                <!--
+                  Pending and running are one thing to the person waiting: it is
+                  not finished. The distinction is the worker's business.
+                -->
+                <span class="export__working label">{{ 'exports.working' | translate }}</span>
+              }
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

@@ -167,6 +167,14 @@ services:
       S3_ENDPOINT: http://minio:9000
       S3_ACCESS_KEY: ${MINIO_ROOT_USER}
       S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      # The bucket names arrived with the export worker: until then this service
+      # only touched the database, so it never built an ObjectStorageConfig.
+      # That config requires all three and refuses to default any of them, so
+      # without these the worker stops the service from starting rather than
+      # failing on the first export.
+      S3_BUCKET_ORIGINALS: ${S3_BUCKET_ORIGINALS}
+      S3_BUCKET_DERIVATIVES: ${S3_BUCKET_DERIVATIVES}
+      S3_BUCKET_EXPORTS: ${S3_BUCKET_EXPORTS}
 
     # The model weights live here, outside the image. POST /recommend encodes the
     # upload at request time, so this container runs CLIP; without the volume every

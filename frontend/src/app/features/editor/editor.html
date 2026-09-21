@@ -83,6 +83,27 @@
         >
           {{ 'editor.compare' | translate }}
         </button>
+
+        <!--
+          Export, and then the file. Two states of one control rather than two
+          controls: until something has been rendered there is nothing to
+          download, and once there is, asking again for the same edit would
+          produce the same file.
+        -->
+        @if (downloadable()) {
+          <button class="control label control--primary" type="button" (click)="download()">
+            {{ 'editor.download' | translate }}
+          </button>
+        } @else {
+          <button
+            class="control label"
+            type="button"
+            [disabled]="exporting()"
+            (click)="requestExport()"
+          >
+            {{ (exporting() ? 'editor.exporting' : 'editor.export') | translate }}
+          </button>
+        }
       </div>
     </header>
 
@@ -96,6 +117,30 @@
       -->
       <p class="notice notice--error" role="alert">
         {{ 'editor.history.failed' | translate: { reason: problem | translate } }}
+      </p>
+    } @else if (exportProblem(); as problem) {
+      <p class="notice notice--error" role="alert">{{ problem | translate }}</p>
+    } @else if (job()?.status === 'failed') {
+      <!--
+        The worker's own sentence, written to be shown. Not a stack trace, and
+        not a generic failure either: "the original is no longer stored" is
+        something a person can act on.
+      -->
+      <p class="notice notice--error" role="alert">
+        {{ 'editor.exportFailed' | translate: { reason: job()?.error } }}
+      </p>
+    } @else if (exporting()) {
+      <!--
+        No percentage, because there is none to be had: the job says pending or
+        running and nothing finer. A bar that invented progress would be the
+        theatre decision D already refused on the waiting screen.
+      -->
+      <p class="notice" role="status">{{ 'editor.exportWaiting' | translate }}</p>
+    } @else if (exported(); as job) {
+      <p class="notice" role="status">
+        {{
+          'editor.exportReady' | translate: { width: job.result?.width, height: job.result?.height }
+        }}
       </p>
     } @else if (unsupported()) {
       <p class="notice" role="alert">{{ 'editor.unsupported' | translate }}</p>
@@ -209,6 +254,20 @@
             }
           </section>
         }
+
+        <!--
+          Last, and as a group of its own: it is the one control that is not a
+          row with a number, and the prototype puts it at the bottom of the
+          panel for the same reason.
+        -->
+        <section class="group">
+          <app-curve-editor
+            [points]="recipe().toneCurve.points"
+            (changed)="setCurve($event)"
+            (stepStart)="beginStep()"
+            (stepEnd)="endStep()"
+          />
+        </section>
       </div>
     </aside>
   }

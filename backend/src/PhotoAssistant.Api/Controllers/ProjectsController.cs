@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using PhotoAssistant.Application.Exports;
 using PhotoAssistant.Application.Projects;
 
 namespace PhotoAssistant.Api.Controllers;
@@ -27,7 +28,9 @@ public sealed class ProjectsController(
     RenameProjectHandler rename,
     DeleteProjectHandler delete,
     SaveVersionHandler versions,
-    ListVersionsHandler history) : ControllerBase
+    ListVersionsHandler history,
+    RequestExportHandler exports,
+    ListExportsHandler exportHistory) : ControllerBase
 {
     /// <summary>Everything this person is working on, most recently edited first.</summary>
     [HttpGet]
@@ -147,6 +150,68 @@ public sealed class ProjectsController(
         // Null is "no such project of yours"; an empty list is a project nobody
         // has saved anything in, which is an ordinary state (decision G).
         return listed is null ? NotFound() : Ok(listed);
+    }
+
+    /// <summary>Queues the photograph at full size, with this edit applied.</summary>
+    /// <remarks>
+    /// The body is the recipe, exactly as saving a version takes it — what is
+    /// exported is what is on screen, which is not necessarily the newest saved
+    /// version. Asking for a file does not make a version: a version is a
+    /// turning point somebody meant to keep, and an export is not one.
+    ///
+    /// <para>
+    /// 202 rather than 201: nothing has been made yet. The job id is how the
+    /// screen follows it, through <c>GET /api/jobs/{id}</c>.
+    /// </para>
+    /// </remarks>
+    [HttpPost("{id:guid}/export")]
+    [ProducesResponseType<ExportQueuedResponse>(StatusCodes.Status202Accepted)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Export(
+        Guid id,
+        [FromBody] JsonElement body,
+        CancellationToken cancellationToken)
+    {
+        var result = await exports.RequestAsync(
+            id, CurrentUserId(), body.GetRawText(), cancellationToken);
+
+        if (result.NotFound)
+        {
+            return NotFound();
+        }
+
+        if (!result.Succeeded)
+        {
+            return ValidationProblem(Problem("edit", result.Error!));
+        }
+
+        return Accepted(new ExportQueuedResponse { JobId = result.JobId });
+    }
+
+    /// <summary>Every export asked for on this project, newest first.</summary>
+    /// <remarks>
+    /// The editor reads the first entry when it opens, so a finished file is
+    /// still reachable after a reload — without it the export exists on the
+    /// server with no way to it through the application, which is what somebody
+    /// meets after closing the tab on a render they were waiting for.
+    /// </remarks>
+    [HttpGet("{id:guid}/exports")]
+    [ProducesResponseType<IReadOnlyList<JobState>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Exports(Guid id, CancellationToken cancellationToken)
+    {
+        var listed = await exportHistory.ListAsync(id, CurrentUserId(), cancellationToken);
+
+        return listed is null ? NotFound() : Ok(listed);
+    }
+
+    /// <summary>The job to follow. Nothing exists at a URL yet, which is why this is not a location.</summary>
+    public sealed record ExportQueuedResponse
+    {
+        public required Guid JobId { get; init; }
     }
 
     /// <summary>The new name. Absent or blank is a 400, not a project called nothing.</summary>

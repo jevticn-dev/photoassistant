@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using PhotoAssistant.Application.Authentication;
 using PhotoAssistant.Application.Photos;
+using PhotoAssistant.Application.Exports;
 using PhotoAssistant.Application.Projects;
 using PhotoAssistant.Application.Storage;
 using PhotoAssistant.Infrastructure.Identity;
@@ -57,6 +58,10 @@ public static class InfrastructureServiceExtensions
         services.AddScoped<DeleteProjectHandler>();
         services.AddScoped<SaveVersionHandler>();
         services.AddScoped<ListVersionsHandler>();
+        services.AddScoped<IJobRepository, JobRepository>();
+        services.AddScoped<RequestExportHandler>();
+        services.AddScoped<GetJobHandler>();
+        services.AddScoped<ListExportsHandler>();
     }
 
     private static void AddObjectStorage(this IServiceCollection services, IConfiguration configuration)

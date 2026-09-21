@@ -49,6 +49,10 @@
       "action": "Rename {{name}}",
       "label": "PROJECT NAME"
     },
+    "exports": {
+      "short": "EXPORTS",
+      "action": "Exports of {{name}}"
+    },
     "delete": {
       "short": "DELETE",
       "action": "Delete {{name}}",
@@ -163,12 +167,28 @@
       "open": "Open version {{label}}",
       "failed": "The saved versions could not be read. {{reason}}"
     },
+    "export": "EXPORT",
+    "exporting": "EXPORTING",
+    "download": "DOWNLOAD",
+    "exportWaiting": "Rendering your photograph at full size. This takes a few seconds, and you can keep editing while it does.",
+    "exportReady": "Your full-size photograph is ready — {{width}} x {{height}} pixels.",
+    "exportFailed": "The export did not finish. {{reason}}",
+    "exportSlow": "The export is taking longer than expected, so this screen has stopped waiting. It may still finish — reopen the project in a moment, or try again.",
     "degraded": "This device ran short of graphics memory, so the preview is now half size. Nothing about the edit itself has changed.",
     "unsupported": "This browser cannot show the live preview: it provides no WebGL2.",
     "groups": {
       "whiteBalance": "WHITE BALANCE",
       "tone": "TONE",
       "color": "COLOR"
+    },
+    "curve": {
+      "title": "TONE CURVE",
+      "hint": "CURVE",
+      "canvas": "Tone curve. Drag a point to move it, press where there is none to add one.",
+      "point": "Curve point at {{value}}. Arrow keys move it, Delete removes it.",
+      "endPoint": "Curve end at {{value}}. Arrow keys move it up and down.",
+      "help": "Press the curve to add a point.",
+      "helpFull": "Press to add a point; press and hold one to remove it."
     },
     "params": {
       "temperature": "Temperature",
@@ -181,6 +201,22 @@
       "blacks": "Blacks",
       "saturation": "Saturation",
       "vibrance": "Vibrance"
+    }
+  },
+  "exports": {
+    "title": "Exports of {{name}}",
+    "back": "Back to projects",
+    "loading": "LOADING THE EXPORTS",
+    "version": "Version {{label}}",
+    "unsavedEdit": "An edit that was never saved",
+    "size": "{{width}} x {{height}} · {{megabytes}} MB",
+    "download": "DOWNLOAD",
+    "working": "STILL RENDERING",
+    "failed": "FAILED",
+    "empty": {
+      "title": "Nothing has been exported yet",
+      "body": "Open the editor and use Export to render this photograph at its full size. Finished files stay here, so you can come back for them.",
+      "action": "OPEN THE EDITOR"
     }
   },
   "errors": {

@@ -19,6 +19,12 @@ export const projectsRoutes: Routes = [
     loadComponent: () => import('../suggestions/suggestions').then((m) => m.Suggestions),
   },
   {
+    // Every export of one project, reached from its card. The housing zone:
+    // this is a list of files, not a photograph being judged.
+    path: ':id/exports',
+    loadComponent: () => import('./project-exports/project-exports').then((m) => m.ProjectExports),
+  },
+  {
     // Where a choice lands, and where a project is reopened. The display zone
     // for the same reason as the screen above it: this is a photograph being
     // judged, and a light surround changes that judgement.

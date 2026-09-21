@@ -88,6 +88,19 @@
               </p>
 
               <div class="card__actions">
+                <!--
+                  The way to files already rendered. From here rather than from
+                  the editor, because a finished export outlives the sitting
+                  that made it.
+                -->
+                <a
+                  class="card__action"
+                  [routerLink]="['/projects', project.id, 'exports']"
+                  [attr.aria-label]="'projects.exports.action' | translate: { name: project.name }"
+                >
+                  {{ 'projects.exports.short' | translate }}
+                </a>
+
                 <button
                   class="card__action"
                   type="button"

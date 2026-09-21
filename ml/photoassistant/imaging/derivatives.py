@@ -82,9 +82,16 @@ def fit_size_for(height: int, width: int, longest: int) -> tuple[int, int]:
     return max(1, round(height * scale)), max(1, round(width * scale))
 
 
-def encode_png(srgb: NDArray[np.floating]) -> Derivative:
-    """8-bit PNG from an sRGB float image. Lossless, because this one is measured."""
-    pixels = quantise(srgb)
+def encode_png_quantised(pixels: NDArray[np.uint8]) -> Derivative:
+    """8-bit PNG from pixels that have already been quantised.
+
+    The entry point for anything that produced its 8-bit result a piece at a
+    time, which the full-resolution export does: it quantises each band as the
+    band is rendered, so that a float copy of the whole image never exists
+    (§B121). Handing those pixels to ``encode_png`` would mean converting them
+    back to float only to quantise them again — and the float copy is the very
+    thing being avoided.
+    """
     buffer = io.BytesIO()
     Image.fromarray(pixels, mode="RGB").save(buffer, format="PNG", optimize=True)
     return Derivative(
@@ -93,6 +100,11 @@ def encode_png(srgb: NDArray[np.floating]) -> Derivative:
         height=pixels.shape[0],
         width=pixels.shape[1],
     )
+
+
+def encode_png(srgb: NDArray[np.floating]) -> Derivative:
+    """8-bit PNG from an sRGB float image. Lossless, because this one is measured."""
+    return encode_png_quantised(quantise(srgb))
 
 
 def encode_jpeg(srgb: NDArray[np.floating], quality: int = PROXY_JPEG_QUALITY) -> Derivative:

@@ -6,9 +6,15 @@ import { Observable, of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 import { provideTranslations } from '../../core/i18n/translation.config';
-import { PhotoApi, type Project } from '../../shared/photos/photo-api';
+import {
+  PhotoApi,
+  type JobState,
+  type Project,
+  type SavedVersion,
+  type VersionEntry,
+} from '../../shared/photos/photo-api';
 import { Editor } from './editor';
-import { EditorService, type SavedVersion, type VersionEntry } from './editor-service';
+import { EditorService } from './editor-service';
 
 /**
  * A stand-in for the decoded working copy. Nothing in these tests draws — jsdom
@@ -24,6 +30,43 @@ let saved: unknown;
 
 /** How many times this screen has saved, so each one earns the next label. */
 let saves: number;
+
+/** What the recipe sent to be exported was, or undefined if none was. */
+let exportedRecipe: unknown;
+
+/** The states the job reports, one per poll; the last one repeats. */
+let jobStates: JobState[];
+
+/** Whether the finished file was fetched. */
+let downloaded: boolean;
+
+/** Exports already on the server when the screen opens. */
+let previousExports: JobState[];
+
+function job(
+  status: JobState['status'],
+  error: string | null = null,
+  edit: unknown = CHOSEN,
+): JobState {
+  return {
+    id: 'job-1',
+    status,
+    createdAt: '2026-09-21T10:00:00+00:00',
+    updatedAt: '2026-09-21T10:00:00+00:00',
+    error,
+    edit,
+    result:
+      status === 'done'
+        ? {
+            key: 'job-1.png',
+            contentType: 'image/png',
+            width: 6000,
+            height: 4000,
+            bytes: 25_000_000,
+          }
+        : null,
+  };
+}
 
 function project(startingEdit: unknown, versionCount = 0): Project {
   return {
@@ -76,6 +119,10 @@ describe('Editor', () => {
   beforeEach(() => {
     saved = undefined;
     saves = 0;
+    exportedRecipe = undefined;
+    downloaded = false;
+    jobStates = [job('done')];
+    previousExports = [];
 
     // jsdom has no canvas of any kind, and asking it for a context prints a
     // page of "not implemented" for every test. Answering null is what a
@@ -112,13 +159,29 @@ describe('Editor', () => {
           useValue: {
             project: (): Observable<Project> => of(project(startingEdit, versionCount)),
             proxy: (): Observable<ImageBitmap> => of(IMAGE),
+            versions: (): Observable<readonly VersionEntry[]> =>
+              historyFails ? throwError(() => ({ summaryKey: 'errors.unreachable' })) : of(history),
+            // No earlier export by default; the one test that wants one sets it.
+            exports: (): Observable<readonly JobState[]> => of(previousExports),
+            download: (): Observable<Blob> => {
+              downloaded = true;
+
+              return of(new Blob([new Uint8Array([137, 80, 78, 71])], { type: 'image/png' }));
+            },
           },
         },
         {
           provide: EditorService,
           useValue: {
-            versions: (): Observable<readonly VersionEntry[]> =>
-              historyFails ? throwError(() => ({ summaryKey: 'errors.unreachable' })) : of(history),
+            requestExport: (_: string, recipe: unknown): Observable<{ jobId: string }> => {
+              exportedRecipe = recipe;
+
+              return of({ jobId: 'job-1' });
+            },
+            // One state per poll, the last one repeating: enough to walk the
+            // screen through pending and out the other side.
+            job: (): Observable<JobState> =>
+              of(jobStates.length > 1 ? jobStates.shift()! : jobStates[0]),
             saveVersion: (_: string, recipe: unknown): Observable<SavedVersion> => {
               saved = recipe;
               saves += 1;
@@ -469,5 +532,178 @@ describe('Editor', () => {
     await open(CHOSEN, 0, true);
 
     expect(element().textContent).toContain('editor.history.failed');
+  });
+
+  // -- the export -------------------------------------------------------------
+
+  async function pollOnce(): Promise<void> {
+    // timer(0, ...) fires its first tick on a macrotask, so the screen has not
+    // heard anything until the clock is let run.
+    await vi.advanceTimersByTimeAsync(0);
+    fixture.detectChanges();
+  }
+
+  it('exporting sends the edit on screen, not the last one saved', async () => {
+    // The two are deliberately unlinked: a version is a turning point somebody
+    // meant to keep, and asking for a file is not one.
+    vi.useFakeTimers();
+
+    try {
+      await open(CHOSEN, 3);
+      drag('contrast', 42);
+
+      press('editor.export');
+      await pollOnce();
+
+      expect(exportedRecipe).toMatchObject({ tone: { contrast: 42 } });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('exporting does not save a version', async () => {
+    vi.useFakeTimers();
+
+    try {
+      await open(CHOSEN, 3);
+
+      press('editor.export');
+      await pollOnce();
+
+      expect(saved).toBeUndefined();
+      expect(chips()).toHaveLength(3);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('while it is rendering the screen says so, without inventing a percentage', async () => {
+    // The job says pending or running and nothing finer, so a progress bar
+    // would be theatre — the same refusal decision D made on the waiting
+    // screen.
+    vi.useFakeTimers();
+
+    try {
+      jobStates = [job('pending'), job('running'), job('done')];
+      await open(CHOSEN, 3);
+
+      press('editor.export');
+      await pollOnce();
+
+      expect(element().textContent).toContain('editor.exportWaiting');
+      expect(element().textContent).toContain('editor.exporting');
+      expect(element().textContent).not.toMatch(/%/);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('a finished export offers the file and says how big it is', async () => {
+    vi.useFakeTimers();
+
+    try {
+      await open(CHOSEN, 3);
+
+      press('editor.export');
+      await pollOnce();
+
+      expect(element().textContent).toContain('editor.exportReady');
+      expect(element().textContent).toContain('editor.download');
+      expect(element().textContent).not.toContain('editor.exportWaiting');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('the file is fetched rather than linked to, because a link carries no token', async () => {
+    vi.useFakeTimers();
+
+    try {
+      await open(CHOSEN, 3);
+
+      press('editor.export');
+      await pollOnce();
+      press('editor.download');
+
+      expect(downloaded).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('a file rendered earlier is still offered when the project is reopened', async () => {
+    // The hole this closes: the export lived only in the component, so a
+    // reload left the file on the server with no way to it through the
+    // application — and the screen looked as though nothing had happened.
+    previousExports = [job('done')];
+    await open(CHOSEN, 3);
+
+    expect(element().textContent).toContain('editor.download');
+
+    // Offered, but not announced: "your photograph is ready" belongs to the
+    // moment it becomes ready, not to every opening of the project.
+    expect(element().textContent).not.toContain('editor.exportReady');
+  });
+
+  it('a file stops being offered once the picture stops matching it', async () => {
+    // The button hands over a photograph. After a slider has moved, the file
+    // rendered before it is a different photograph — so the offer goes, and
+    // exporting is what is on offer instead.
+    previousExports = [job('done')];
+    await open(CHOSEN, 3);
+    expect(element().textContent).toContain('editor.download');
+
+    drag('contrast', 42);
+
+    expect(element().textContent).not.toContain('editor.download');
+    expect(element().textContent).toContain('editor.export');
+  });
+
+  it('undoing back to what was exported offers the file again', async () => {
+    // It is a comparison, not a latch: the file matches the picture again, so
+    // there is no reason to render it a second time.
+    previousExports = [job('done')];
+    await open(CHOSEN, 3);
+
+    drag('contrast', 42);
+    expect(element().textContent).not.toContain('editor.download');
+
+    press('editor.undo');
+
+    expect(element().textContent).toContain('editor.download');
+  });
+
+  it('an export of a different edit is not offered for this one', async () => {
+    // The project has an export, but of something else — reopening must not
+    // present it as though it were a file of what is on screen.
+    previousExports = [job('done', null, recipeWith(99))];
+    await open(CHOSEN, 3);
+
+    expect(element().textContent).not.toContain('editor.download');
+  });
+
+  it('an unfinished export from before is not offered as a file', async () => {
+    previousExports = [job('running')];
+    await open(CHOSEN, 3);
+
+    expect(element().textContent).not.toContain('editor.download');
+    expect(element().textContent).toContain('editor.export');
+  });
+
+  it('a failed export shows what the worker said, not a shrug', async () => {
+    vi.useFakeTimers();
+
+    try {
+      jobStates = [job('failed', 'the original this project was made from is no longer stored')];
+      await open(CHOSEN, 3);
+
+      press('editor.export');
+      await pollOnce();
+
+      expect(element().textContent).toContain('editor.exportFailed');
+      expect(element().textContent).not.toContain('editor.download');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

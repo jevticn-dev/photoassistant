@@ -1,0 +1,66 @@
+<!-- Every visible string goes through the translate pipe, aria-label included. -->
+<section class="curve">
+  <header class="curve__head">
+    <h2 class="curve__title label">{{ 'editor.curve.title' | translate }}</h2>
+    <span class="curve__hint label">{{ 'editor.curve.hint' | translate }}</span>
+  </header>
+
+  <!--
+    The frame takes the pointer, not the drawing.
+
+    Handles are HTML over the drawing rather than circles inside it, because the
+    square is stretched to the panel's width (`preserveAspectRatio="none"`) and
+    anything drawn in those coordinates is stretched with it — a circle comes out
+    an ellipse. Putting them outside the viewBox is also what the prototype does.
+
+    A press on a handle bubbles to this frame, which answers every press the same
+    way — the nearest point, or a new one — so the handles carry the cursor
+    without owning any of the decision.
+  -->
+  <div
+    #frame
+    class="curve__frame"
+    role="group"
+    [attr.aria-label]="'editor.curve.canvas' | translate"
+    (pointerdown)="onPointerDown($event, frame)"
+    (pointermove)="onPointerMove($event, frame)"
+    (pointerup)="onPointerUp($event, frame)"
+    (pointercancel)="onPointerUp($event, frame)"
+  >
+    <svg class="curve__surface" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <!-- Quarters, as the prototype draws them: something to judge against. -->
+      @for (at of [25, 50, 75]; track at) {
+        <line class="curve__grid" [attr.x1]="at" y1="0" [attr.x2]="at" y2="100" />
+        <line class="curve__grid" x1="0" [attr.y1]="at" x2="100" [attr.y2]="at" />
+      }
+
+      <!-- Where the curve would be if it did nothing. -->
+      <line class="curve__identity" x1="0" y1="100" x2="100" y2="0" />
+
+      <!--
+        Sampled through the renderer's own interpolation, so what is drawn is
+        what the shader will do rather than an approximation of it.
+      -->
+      <path class="curve__line" [attr.d]="path()" />
+    </svg>
+
+    @for (handle of handles(); track handle.index) {
+      <button
+        type="button"
+        class="curve__handle"
+        [class.curve__handle--fixed]="handle.fixed"
+        [style.left.%]="handle.x"
+        [style.top.%]="handle.y"
+        [attr.aria-label]="
+          (handle.fixed ? 'editor.curve.endPoint' : 'editor.curve.point')
+            | translate: { value: handle.value }
+        "
+        (keydown)="onKey($event, handle.index)"
+      ></button>
+    }
+  </div>
+
+  <p class="curve__help label">
+    {{ (removable() ? 'editor.curve.helpFull' : 'editor.curve.help') | translate }}
+  </p>
+</section>

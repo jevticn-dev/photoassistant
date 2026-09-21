@@ -137,6 +137,12 @@
   }
 
   &__action {
+    // Written for buttons first, and one of these is now a link. A button
+    // centres its text on its own; an anchor needs to be told, and keeps its
+    // underline unless told otherwise. Harmless on the buttons.
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
     min-height: var(--touch-target);
     padding: 0 var(--space-3);
     border: var(--border-width) solid var(--line);

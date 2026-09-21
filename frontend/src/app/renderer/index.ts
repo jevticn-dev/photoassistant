@@ -11,6 +11,7 @@
 
 export {
   EditSchemaError,
+  MIN_POINT_SPACING,
   NEUTRAL_CURVE,
   NEUTRAL_RECIPE,
   SCHEMA_VERSION,

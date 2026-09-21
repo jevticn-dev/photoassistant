@@ -30,6 +30,18 @@ from photoassistant.storage.config import (
     ObjectStorageConfig,
 )
 from photoassistant.storage.database import connect, connection
+from photoassistant.storage.jobs import (
+    DONE,
+    EXPORT,
+    FAILED,
+    PENDING,
+    RUNNING,
+    ClaimedJob,
+    claim_next,
+    mark_done,
+    mark_failed,
+    reclaim_stale,
+)
 from photoassistant.storage.manifest import (
     STEP_DERIVE_BEFORE,
     STEP_EMBED_CONTENT,
@@ -44,17 +56,27 @@ from photoassistant.storage.manifest import (
 from photoassistant.storage.objects import ObjectStore
 
 __all__ = [
+    "DONE",
+    "EXPORT",
+    "FAILED",
+    "PENDING",
+    "RUNNING",
     "STEP_DERIVE_BEFORE",
     "STEP_EMBED_CONTENT",
     "STEP_PUBLISH",
+    "ClaimedJob",
     "ConfigurationError",
     "DatabaseConfig",
     "Manifest",
     "ObjectStorageConfig",
     "ObjectStore",
     "Status",
+    "claim_next",
     "connect",
     "connection",
+    "mark_done",
+    "mark_failed",
+    "reclaim_stale",
     "step_derive_after",
     "step_embed_style",
     "step_fit",

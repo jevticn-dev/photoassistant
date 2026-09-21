@@ -10,8 +10,11 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { Subscription, timer } from 'rxjs';
+import { exhaustMap, takeUntil, takeWhile } from 'rxjs/operators';
 
 import {
+  type CurvePoint,
   EditSchemaError,
   NEUTRAL_RECIPE,
   type EditRecipe,
@@ -19,9 +22,17 @@ import {
   toDocument,
   toJson,
 } from '../../renderer';
-import { PhotoApi, type ApiFailure, type Project } from '../../shared/photos/photo-api';
+import {
+  PhotoApi,
+  type ApiFailure,
+  type JobState,
+  type Project,
+  type VersionEntry,
+  saveBlob,
+} from '../../shared/photos/photo-api';
+import { CurveEditor } from './curve-editor';
 import { EditorCanvas, type CanvasFailure } from './editor-canvas';
-import { EditorService, type VersionEntry } from './editor-service';
+import { EditorService } from './editor-service';
 import { type ParamDef, SECTIONS, readParam, writeParam } from './editor-params';
 import { ParamSlider } from './param-slider';
 import { type StripEntry, VersionStrip } from './version-strip';
@@ -42,6 +53,32 @@ const SMALLEST_WORKING_COPY = 512;
 const DIVIDER_STEP = 5;
 
 /**
+ * How often to ask how the export is coming along.
+ *
+ * <p>A full-resolution render is seconds of work — six at 24 megapixels,
+ * measured — so a second and a half is the right order: often enough that the
+ * finish is not noticeably late, rare enough that a long export is a handful of
+ * requests rather than a stream of them.</p>
+ */
+const EXPORT_POLL_MS = 1500;
+
+/**
+ * How long to keep asking before giving up on an export.
+ *
+ * <p>Generously past anything measured — the slowest render in the corpus is
+ * twelve seconds — because this is not a deadline for the work but a floor
+ * under the screen: after this the button stops claiming to be busy and offers
+ * to try again. The export itself is a row in a table and carries on
+ * regardless; what ends here is only the waiting.</p>
+ */
+const EXPORT_GIVE_UP_MS = 5 * 60 * 1000;
+
+/** The two states that mean the work has not finished one way or the other. */
+function inProgress(job: JobState): boolean {
+  return job.status === 'pending' || job.status === 'running';
+}
+
+/**
  * The editor: one photograph, every scalar parameter of edit schema v1, and the
  * result redrawn as each one moves.
  *
@@ -58,7 +95,7 @@ const DIVIDER_STEP = 5;
  */
 @Component({
   selector: 'app-editor',
-  imports: [EditorCanvas, ParamSlider, RouterLink, TranslatePipe, VersionStrip],
+  imports: [CurveEditor, EditorCanvas, ParamSlider, RouterLink, TranslatePipe, VersionStrip],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './editor.html',
   styleUrl: './editor.scss',
@@ -155,6 +192,74 @@ export class Editor implements OnDestroy {
     return list.find((version) => version.id === id) ?? null;
   });
 
+  /**
+   * The export being waited on, or null when none is.
+   *
+   * <p>One at a time: the button is disabled while this is set, because two
+   * exports of the same photograph differ only in which finished last, and the
+   * second would tell the person nothing the first will not.</p>
+   */
+  protected readonly job = signal<JobState | null>(null);
+
+  /** Set while the request to queue one is in flight, before there is a job. */
+  protected readonly requestingExport = signal(false);
+
+  /** Set when the export could not be asked for, or its file not fetched. */
+  protected readonly exportProblem = signal<string | null>(null);
+
+  /** True from the moment the button is pressed until there is a file or a failure. */
+  protected readonly exporting = computed(() => {
+    const job = this.job();
+
+    return this.requestingExport() || job?.status === 'pending' || job?.status === 'running';
+  });
+
+  /**
+   * A finished export found when the screen opened, rather than watched here.
+   *
+   * <p>Kept apart from <c>job</c> on purpose: the two mean different things to
+   * the screen. This one says a file exists; that one says something is
+   * happening now. Mixing them would announce "your photograph is ready" every
+   * time a project with an old export is opened.</p>
+   */
+  private readonly previousExport = signal<JobState | null>(null);
+
+  /** The export that just finished here — what the notice announces. */
+  protected readonly exported = computed(() => {
+    const job = this.job();
+
+    return job?.status === 'done' ? job : null;
+  });
+
+  /**
+   * A finished export of **this** picture — what the button offers.
+   *
+   * <p>The comparison is the point. A file that was rendered before the last
+   * slider moved is no longer the photograph on screen, and a button still
+   * saying DOWNLOAD would hand over a different picture than the one being
+   * looked at. Recipes rather than versions, because an export is not tied to a
+   * version (§B118) and an unsaved change is still a change the file does not
+   * have.</p>
+   *
+   * <p>Canonical documents on both sides, the same equality `dirty` and the
+   * version strip use: two recipes are the same when their canonical JSON
+   * is.</p>
+   */
+  protected readonly downloadable = computed(() => {
+    const job = this.exported() ?? this.previousExport();
+
+    if (job === null) {
+      return null;
+    }
+
+    const rendered = readRecipe(job.edit);
+
+    // A document that will not parse cannot be shown to match anything. It
+    // came from our own queue, so this is a defect rather than a condition —
+    // and offering the file anyway would be guessing on the person's behalf.
+    return rendered !== null && toJson(rendered) === toJson(this.recipe()) ? job : null;
+  });
+
   protected readonly comparing = signal(false);
   protected readonly divider = signal(50);
 
@@ -215,6 +320,7 @@ export class Editor implements OnDestroy {
   private stepOpen = false;
   private dragging = false;
   private degrading = false;
+  private polling: Subscription | null = null;
 
   constructor() {
     this.load();
@@ -224,6 +330,11 @@ export class Editor implements OnDestroy {
     // Decoded pixels: 2048 x 1365 x 4 is eleven megabytes, held until the
     // bitmap is closed or collected. Closing it is cheap and certain.
     this.image()?.close();
+
+    // Leaving the screen stops the asking. The export itself carries on — it
+    // belongs to the job queue, not to this component — and is waiting when the
+    // project is opened again.
+    this.polling?.unsubscribe();
   }
 
   // -- the photograph -------------------------------------------------------
@@ -300,6 +411,18 @@ export class Editor implements OnDestroy {
 
   protected setValue(param: ParamDef, value: number): void {
     this.recipe.update((recipe) => writeParam(recipe, param, value));
+  }
+
+  /**
+   * The curve's control points, as the editor holds them.
+   *
+   * <p>Through the recipe rather than beside it: the curve is one of the
+   * thirteen parameters, saved with the rest and rendered with the rest. A
+   * separate piece of state for it would be a second place where "the edit"
+   * lives.</p>
+   */
+  protected setCurve(points: readonly CurvePoint[]): void {
+    this.recipe.update((recipe) => ({ ...recipe, toneCurve: { points } }));
   }
 
   protected reset(param: ParamDef): void {
@@ -473,6 +596,139 @@ export class Editor implements OnDestroy {
     });
   }
 
+  // -- export ---------------------------------------------------------------
+
+  /**
+   * Asks for the photograph at full size, with the edit as it stands.
+   *
+   * <p><b>What is exported is what is on screen</b>, not the newest saved
+   * version, and asking does not save one: a version is a turning point
+   * somebody meant to keep and an export is not (§B111). The two are
+   * deliberately unlinked, so exporting a trial edit leaves no trace in the
+   * history.</p>
+   *
+   * <p>Nothing renders here. The recipe goes to the queue, the ML service takes
+   * it, and this screen asks how it is going — a full-resolution render is
+   * seconds of arithmetic over hundreds of megabytes (ADR-7, §B121).</p>
+   */
+  protected requestExport(): void {
+    if (this.exporting() || this.projectId === '') {
+      return;
+    }
+
+    this.requestingExport.set(true);
+    this.exportProblem.set(null);
+    this.job.set(null);
+
+    // Whatever was there before is no longer what the button means; the one
+    // being asked for now is.
+    this.previousExport.set(null);
+
+    this.editor.requestExport(this.projectId, this.recipe()).subscribe({
+      next: ({ jobId }) => {
+        this.requestingExport.set(false);
+        this.follow(jobId);
+      },
+      error: (failure: ApiFailure) => {
+        this.exportProblem.set(failure.summaryKey);
+        this.requestingExport.set(false);
+      },
+    });
+  }
+
+  /**
+   * Asks after the job until it stops being in progress.
+   *
+   * <p>Polling rather than a push, because the queue is a table and nothing
+   * pushes from it (ADR-7). The subscription is held so that leaving the screen
+   * stops the asking.</p>
+   */
+  private follow(jobId: string): void {
+    this.polling?.unsubscribe();
+
+    this.polling = timer(0, EXPORT_POLL_MS)
+      .pipe(
+        // `exhaustMap`, not `switchMap`, and the difference is the defect it
+        // fixes rather than a preference. switchMap cancels whatever is in
+        // flight when the next tick arrives — and a poll competes for the
+        // machine with the very render it is asking about, so under load every
+        // request can be aborted a moment before it would have answered. The
+        // screen then asks for ever and learns nothing; in the browser's
+        // network panel that is a column of cancelled requests
+        // (NS_BINDING_ABORTED in Firefox), which is what put us on to it.
+        //
+        // exhaustMap ignores a tick while a request is still running, so every
+        // request gets to finish and the interval becomes a floor on the gap
+        // between polls rather than a deadline for them.
+        //
+        // A request that never answers would block every tick after it, so the
+        // service puts a timeout on the call itself.
+        exhaustMap(() => this.editor.job(jobId)),
+
+        // The stream ends itself once the answer is terminal, and `true` keeps
+        // that last answer rather than swallowing it.
+        //
+        // This is deliberately an operator rather than an unsubscribe inside
+        // `next`, and that is the fix rather than a tidy-up: a handler that
+        // both stores the state and ends the subscription can, if anything in
+        // it throws, end the subscription without storing the state — and RxJS
+        // sends a throw from `next` nowhere near the `error` branch. The screen
+        // is then left saying EXPORTING for ever, with no message and no way
+        // out. Below, `next` does one thing that cannot fail.
+        takeWhile(inProgress, true),
+
+        // A floor under the waiting. Whatever else happens — a poll that never
+        // answers, a worker that never gets to the job — the button stops
+        // claiming to be busy.
+        takeUntil(timer(EXPORT_GIVE_UP_MS)),
+      )
+      .subscribe({
+        next: (job) => this.job.set(job),
+        error: (failure: ApiFailure) => {
+          this.exportProblem.set(failure.summaryKey);
+          this.job.set(null);
+          this.polling = null;
+        },
+        complete: () => {
+          this.polling = null;
+
+          // Completing while the job is still in progress means the deadline
+          // above ran out, not that the work finished. Said plainly, and the
+          // state is cleared so the button offers to try again rather than
+          // sitting on a stale "running".
+          const job = this.job();
+
+          if (job !== null && inProgress(job)) {
+            this.exportProblem.set('editor.exportSlow');
+            this.job.set(null);
+          }
+        },
+      });
+  }
+
+  /**
+   * Hands the finished file to the browser.
+   *
+   * <p>Fetched rather than linked to, because the address needs the bearer
+   * token the interceptor attaches and an anchor carries none. The object URL
+   * is revoked once the click has been dispatched — the browser has the blob by
+   * then, and leaving it would hold the whole export in memory for as long as
+   * the page is open.</p>
+   */
+  protected download(): void {
+    const job = this.downloadable();
+    if (job === null) {
+      return;
+    }
+
+    this.exportProblem.set(null);
+
+    this.api.download(job.id).subscribe({
+      next: (blob) => saveBlob(blob, `${this.project()?.name ?? 'photograph'}.png`),
+      error: (failure: ApiFailure) => this.exportProblem.set(failure.summaryKey),
+    });
+  }
+
   // -- before and after -----------------------------------------------------
 
   /**
@@ -563,10 +819,23 @@ export class Editor implements OnDestroy {
           error: (failure: ApiFailure) => this.failure.set(failure),
         });
 
+        // A file rendered earlier is still a file. Asked for quietly: if this
+        // fails the editor is no worse off than before, so it says nothing.
+        this.api.exports(this.projectId).subscribe({
+          next: (exports) => {
+            const newest = exports[0];
+
+            if (newest !== undefined && newest.status === 'done') {
+              this.previousExport.set(newest);
+            }
+          },
+          error: () => undefined,
+        });
+
         // The history is read beside the photograph rather than before it: an
         // editor without its strip still edits, so a failure here is a notice
         // and not a screen that will not open.
-        this.editor.versions(this.projectId).subscribe({
+        this.api.versions(this.projectId).subscribe({
           next: (versions) => {
             this.versions.set(versions);
 
