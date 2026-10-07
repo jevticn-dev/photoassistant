@@ -1,182 +1,188 @@
 # PhotoAssistant
 
-Sistem preporuke stilova obrade fotografija sa web editorom.
+A photo editing style recommendation system with a web editor.
 
-Korisnik učita fotografiju, a sistem mu na osnovu njenog sadržaja predlaže **tri stilski
-različita predloga obrade**. Predlozi se primenjuju i doteruju u editoru sa live
-preview-om, a rad se čuva nedestruktivno po projektima — svaka sačuvana verzija je
-kompletan „recept", ne izmenjena slika.
+The user uploads a photograph, and based on its content the system suggests **three
+stylistically different edits**. The suggestions are applied and fine-tuned in an editor with a
+live preview, and the work is saved non-destructively per project — every saved version is a
+complete "recipe", not a modified image.
 
-Predlozi se ne generišu iz pravila nego se uče iz primera: offline pipeline obrađuje
-25.000 ekspertskih obrada iz [MIT-Adobe FiveK](https://data.csail.mit.edu/graphics/fivek/)
-dataseta, rekonstruiše svaku od njih kao skup parametara sopstvene šeme izmene, i
-indeksira ih vektorski. Umesto jednog „optimalnog" rešenja sistem nudi više različitih,
-jer je obrada fotografije subjektivna.
+The suggestions are not generated from rules but learned from examples: an offline pipeline
+processes 25,000 expert edits from the [MIT-Adobe FiveK](https://data.csail.mit.edu/graphics/fivek/)
+dataset, reconstructs each of them as a set of parameters in the project's own edit schema, and
+indexes them as vectors. Instead of a single "optimal" solution, the system offers several
+different ones, because photo editing is subjective.
 
-Diplomski rad — Prirodno-matematički fakultet, Univerzitet u Kragujevcu.
-**Status:** ceo korisnički put radi od kraja do kraja; rad na aplikaciji se nastavlja.
+Bachelor thesis — Faculty of Science, University of Kragujevac.
+**Status:** the entire user flow works end to end; work on the application continues.
 
-## Šta aplikacija ume
+## What the application can do
 
-- **Registracija i prijava** (ASP.NET Core Identity + JWT).
-- **Upload fotografije** — iz nje se prave dve izvedene kopije: 512 px za pretragu i
-  2048 px za editor. Upload otvara projekat.
-- **Tri predloga obrade** — fotografija se koduje CLIP-om, u bazi se nađu slične scene, a iz
-  njihovih ekspertskih obrada biraju se tri. Sličice predloga crta pregledač, istim
-  rendererom kojim radi editor, pa je ono što se bira tačno ono što se dobija.
-- **Editor sa živim prikazom** — svi parametri šeme izmene i tonska kriva sa kontrolnim
-  tačkama, nad 2048 px kopijom kroz WebGL2, bez ijednog poziva serveru po pomeraju slajdera.
-  Poređenje pre/posle, undo/redo, rad na uskim ekranima.
-- **Verzije** — svaka sačuvana verzija je ceo recept. Ranija verzija se otvara iz trake sa
-  leve strane, a vraćanje na nju pravi **novu** verziju: istorija se ne prepisuje.
-- **Export pune rezolucije** — renderuje se netaknuti original, u pozadini, kroz red poslova.
-  Izlaz je PNG, bez gubitaka. Svi izvezeni fajlovi projekta su dostupni sa njegove kartice.
+- **Registration and sign-in** (ASP.NET Core Identity + JWT).
+- **Photo upload** — two derived copies are made from it: 512 px for search and 2048 px for the
+  editor. An upload opens a project.
+- **Three edit suggestions** — the photograph is encoded with CLIP, similar scenes are found in
+  the database, and three are chosen from their expert edits. The suggestion thumbnails are drawn
+  by the browser, with the same renderer the editor uses, so what you pick is exactly what you get.
+- **Editor with a live preview** — every edit schema parameter plus a tone curve with control
+  points, over the 2048 px copy through WebGL2, without a single server call per slider move.
+  Before/after comparison, undo/redo, works on narrow screens.
+- **Versions** — every saved version is the complete recipe. An earlier version is opened from the
+  strip on the left, and restoring it creates a **new** version: history is never overwritten.
+- **Full-resolution export** — the untouched original is rendered in the background, through a
+  job queue. The output is a lossless PNG. All of a project's exported files are available from its
+  card.
 
-## Kako radi
+## How it works
 
 ```
-upload → derivati (512 / 2048) → embedding sadržaja → pretraga sličnih fotografija
-       → bazen kandidat-obrada → izbor tri → editor → verzije → export
+upload → derivatives (512 / 2048) → content embedding → similar-photo search
+       → candidate-edit pool → pick three → editor → versions → export
 ```
 
-Obrada je opisana **šemom izmene** — verzionisanim JSON zapisom sa 11 parametara
-(balans bele, tonske korekcije, boja, tonska kriva). Isti zapis koriste svi delovi
-sistema, pa je „recept" prenosiv između pipeline-a, baze, editora i exporta.
+An edit is described by the **edit schema** — a versioned JSON record with 11 parameters (white
+balance, tone adjustments, colour, tone curve). Every part of the system uses the same record, so a
+"recipe" is portable across the pipeline, the database, the editor and export.
 
-Ključna posledica: obrade iz dataseta se ne prevode iz Lightroom parametara, nego se
-**rekonstruišu iz rezultata** — traže se vrednosti naših parametara koje nad polaznom
-slikom daju najbliži rezultat ekspertskoj verziji. Sistem bi radio isto da je obrada
-nastala u bilo kom drugom alatu.
+The key consequence: edits from the dataset are not translated from Lightroom parameters but
+**reconstructed from the result** — the system searches for the values of its own parameters that,
+applied to the original image, come closest to the expert's version. The system would work the
+same way if the edit had been made in any other tool.
 
-Renderer postoji u dve implementacije — NumPy za server i pipeline, WebGL2 za live preview
-u pregledaču. Obe prevode istu specifikaciju ([`docs/RENDERER_SPEC.md`](docs/RENDERER_SPEC.md)),
-a njihova saglasnost se dokazuje testom nad fiksnim skupom slika i recepata: 295 kombinacija,
-najgori piksel ΔE 0,108 uz prag 3.
+The renderer has two implementations — NumPy for the server and the pipeline, WebGL2 for the live
+preview in the browser. Both translate the same specification ([`docs/RENDERER_SPEC.md`](docs/RENDERER_SPEC.md)),
+and their agreement is proven by a test over a fixed set of images and recipes: 295 combinations,
+worst pixel ΔE 0.108 against a threshold of 3.
 
-## Tehnologije
+## Technologies
 
-| Sloj | Tehnologija |
+| Layer | Technology |
 |---|---|
-| Frontend | Angular 22 (zoneless, signali), Angular CDK, WebGL2 renderer |
+| Frontend | Angular 22 (zoneless, signals), Angular CDK, WebGL2 renderer |
 | Backend | .NET 10, ASP.NET Core Identity + JWT, Clean Architecture |
-| ML servis | Python 3.14, FastAPI, NumPy, PyTorch (CLIP) |
-| Baza | PostgreSQL 18 + pgvector (HNSW) |
-| Skladište | MinIO (S3 API) |
+| ML service | Python 3.14, FastAPI, NumPy, PyTorch (CLIP) |
+| Database | PostgreSQL 18 + pgvector (HNSW) |
+| Storage | MinIO (S3 API) |
 
-## Struktura
+## Structure
 
 ```
-backend/    .NET API — jedina javna vrata (auth, projekti, istorija, orkestracija)
-frontend/   Angular SPA sa editorom
-ml/         Python paket (biblioteka) + FastAPI servis (interni)
-pipeline/   offline skripte koje uvoze isti Python paket
-fixtures/   deljeni test podaci za testove saglasnosti
-infra/      docker-compose, nginx, init skripte baze
-docs/       specifikacija renderera i dokumenti za mentore
-sandbox/    istraživačke skripte, nisu deo isporuke
+backend/    .NET API — the only public entry point (auth, projects, history, orchestration)
+frontend/   Angular SPA with the editor
+ml/         Python package (library) + FastAPI service (internal)
+pipeline/   offline scripts that import the same Python package
+fixtures/   shared test data for the agreement tests
+infra/      docker-compose, nginx, database init scripts
+docs/       renderer specification and documents for the mentors
+sandbox/    research scripts, not part of the deliverable
 ```
 
-## Pokretanje, od početka
+## Running it, from scratch
 
-Aplikacija se sastoji od dva dela koji nastaju različito: **servisi** se podižu jednom
-komandom, a **korpus** — 25.000 obrada nad kojima preporuka radi — pravi se jednom, offline
-pipeline-om nad FiveK datasetom. Bez korpusa aplikacija radi, ali predlozi nemaju iz čega da
-se biraju. Koraci ispod su redom kojim se izvode.
+The application consists of two parts that come into being differently: the **services** are
+started with a single command, while the **corpus** — the 25,000 edits the recommendation works
+over — is built once, by an offline pipeline over the FiveK dataset. Without the corpus the
+application runs, but the suggestions have nothing to be chosen from. The steps below are in the
+order in which they are run.
 
-Potrebno: Docker, [uv](https://docs.astral.sh/uv/) (Python okruženje za pipeline), oko 60 GB
-slobodnog prostora (arhiva dataseta ~50 GB, izvedene kopije ~12 GB), i stabilna veza — pipeline
-preuzima oko 1,6 TB. Sve komande se izvršavaju iz korena repoa.
+Requirements: Docker, [uv](https://docs.astral.sh/uv/) (the Python environment for the pipeline),
+about 60 GB of free space (dataset archive ~50 GB, derived copies ~12 GB), and a stable
+connection — the pipeline downloads about 1.6 TB. All commands are run from the repository root.
 
-### 1. Konfiguracija
+### 1. Configuration
 
 ```bash
-cp .env.example .env        # popuniti vrednosti; FIVEK_DATASET_PATH za sada može ostati prazan
+cp .env.example .env        # fill in the values; FIVEK_DATASET_PATH can stay empty for now
 ```
 
-Vrednosti koje sadrže razmak (npr. putanju do dataseta) staviti pod navodnike; bez toga se fajl
-ne može učitati iz shell-a.
+Put values that contain a space (e.g. the dataset path) in quotes; otherwise the file cannot be
+loaded from a shell.
 
-### 2. Servisi
+### 2. Services
 
 ```bash
 docker compose --env-file .env -f infra/docker-compose.yml up -d
-docker compose --env-file .env -f infra/docker-compose.yml ps    # čekati da svi budu healthy
+docker compose --env-file .env -f infra/docker-compose.yml ps    # wait until all are healthy
 ```
 
-Prvo pokretanje gradi tri slike (ML slika je oko 2 GB, jer nosi PyTorch) i traje desetak
-minuta. Pri pokretanju API **migrira bazu**, a pomoćni kontejner pravi tri bucket-a u
-skladištu — to su preduslovi za pipeline, pa ovaj korak ide pre njega.
+The first start builds three images (the ML image is about 2 GB, because it carries PyTorch) and
+takes around ten minutes. On startup the API **migrates the database**, and a helper container
+creates three buckets in storage — these are prerequisites for the pipeline, so this step comes
+before it.
 
-Aplikacija je od ovog trenutka dostupna na http://localhost:4200, ali sa praznim korpusom.
+From this point on the application is available at http://localhost:4200, but with an empty corpus.
 
 ### 3. Dataset
 
-Sa [stranice FiveK dataseta](https://data.csail.mit.edu/graphics/fivek/) preuzeti arhivu (oko
-50 GB) i raspakovati je, pa u `.env` postaviti `FIVEK_DATASET_PATH` na raspakovani direktorijum.
-Pipeline iz nje čita katalog `raw_photos/fivek.lrcat` i spiskove `filesAdobe.txt` i
-`filesAdobeMIT.txt`; same fotografije i ekspertske obrade preuzima zasebno, u koraku 4.
+Download the archive (about 50 GB) from the [FiveK dataset page](https://data.csail.mit.edu/graphics/fivek/)
+and extract it, then set `FIVEK_DATASET_PATH` in `.env` to the extracted directory. From it the
+pipeline reads the catalogue `raw_photos/fivek.lrcat` and the lists `filesAdobe.txt` and
+`filesAdobeMIT.txt`; it downloads the photographs and expert edits themselves separately, in step 4.
 
-FiveK je pod **istraživačkom licencom bez komercijalne upotrebe**. Njegove slike se ne nalaze u
-repozitorijumu ni u test podacima, i ne ulaze u isporuku.
+FiveK is under a **research licence with no commercial use**. Its images are not in the repository
+or in the test data, and are not part of the deliverable.
 
-Direktorijum dataseta pipeline samo čita; katalog je SQLite baza i otvara se isključivo za
-čitanje.
+The pipeline only reads the dataset directory; the catalogue is a SQLite database and is opened
+strictly read-only.
 
-### 4. Korpus
+### 4. Corpus
 
-Komande same postavljaju Python okruženje (`uv run`); samo korak 4.5 traži `--extra
-embeddings`, jer jedino on pokreće CLIP. Pipeline sam čita `.env`. Svaki korak je ponovljiv i
-nastavlja tamo gde je stao — stanje se vodi u bazi, pa se prekinut korak prosto pokrene ponovo.
+The commands set up the Python environment themselves (`uv run`); only step 4.5 needs `--extra
+embeddings`, because it is the only one that runs CLIP. The pipeline reads `.env` on its own. Every
+step is repeatable and resumes where it left off — state is kept in the database, so an
+interrupted step is simply run again.
 
-| | Korak | Šta radi | Trajanje |
+| | Step | What it does | Duration |
 |---|---|---|---|
-| 4.1 | `uv run --project ml python -m pipeline.parse_catalogue` | čita katalog: 5.000 fotografija, 25.000 obrada | sekunde |
-| 4.2 | `uv run --project ml python -m pipeline.fetch_derive` | preuzima polaznu i pet ekspertskih verzija svake fotografije, pravi 512 px i 2048 px kopije u skladište, a original briše | ~9 h |
-| 4.3 | `uv run --project ml python -m pipeline.fit_all` | za svaku ekspertsku obradu traži vrednosti naših parametara koje daju najbliži rezultat | jedna noć |
-| 4.4 | `uv run --project ml python -m pipeline.refit_worst --confirm` | detaljnija pretraga nad najgorih 5%; nikad ne pogoršava | ~3 h, opciono |
-| 4.5 | `uv run --project ml --extra embeddings python -m pipeline.embed_all --content` | CLIP vektor svake fotografije, za pretragu po sadržaju | minuti |
-| 4.6 | `uv run --project ml python -m pipeline.embed_all --style` | stilski otisak svake obrade | minuti |
-| 4.7 | `uv run --project ml python -m pipeline.publish --confirm` | upisuje 19 obrada koje šema ne ume da predstavi i proverava da je sve potpuno | sekunde |
+| 4.1 | `uv run --project ml python -m pipeline.parse_catalogue` | reads the catalogue: 5,000 photographs, 25,000 edits | seconds |
+| 4.2 | `uv run --project ml python -m pipeline.fetch_derive` | downloads the original and the five expert versions of every photograph, writes 512 px and 2048 px copies to storage, and deletes the original | ~9 h |
+| 4.3 | `uv run --project ml python -m pipeline.fit_all` | for every expert edit, searches for the values of our parameters that give the closest result | one night |
+| 4.4 | `uv run --project ml python -m pipeline.refit_worst --confirm` | a more thorough search over the worst 5%; never makes things worse | ~3 h, optional |
+| 4.5 | `uv run --project ml --extra embeddings python -m pipeline.embed_all --content` | a CLIP vector for every photograph, for content search | minutes |
+| 4.6 | `uv run --project ml python -m pipeline.embed_all --style` | a style fingerprint for every edit | minutes |
+| 4.7 | `uv run --project ml python -m pipeline.publish --confirm` | records the 19 edits the schema cannot represent and checks that everything is complete | seconds |
 
-**Redosled je obavezan.** Otisak u 4.6 se računa iz recepata, pa mora doći posle fitovanja *i*
-posle 4.4, koji prepisuje recepte najgorih 5% — otisci izračunati pre toga opisivali bi recepte
-koji više ne postoje, i ništa to ne bi prijavilo. Konstante skaliranja otiska su u repozitorijumu
-(`pipeline/reports/fingerprint_scaling.json`) i ne računaju se ponovo.
+**The order is mandatory.** The fingerprint in 4.6 is computed from the recipes, so it must come
+after fitting *and* after 4.4, which rewrites the recipes of the worst 5% — fingerprints computed
+before that would describe recipes that no longer exist, and nothing would report it. The
+fingerprint scaling constants are in the repository
+(`pipeline/reports/fingerprint_scaling.json`) and are not recomputed.
 
-`pipeline.publish --verify` pre 4.7 pokazuje šta nedostaje, bez ikakvog upisa.
+Running `pipeline.publish --verify` before 4.7 shows what is missing, without writing anything.
 
-Za manji korpus, `fetch_derive` i `fit_all` primaju `--experts` (npr. `--experts c` za jednog
-eksperta — oko trećine prenosa). Merenja u radu su izvedena nad svih pet.
+For a smaller corpus, `fetch_derive` and `fit_all` accept `--experts` (e.g. `--experts c` for a
+single expert — about a third of the transfer). The measurements in the thesis were made over all
+five.
 
-### 5. Gotovo
+### 5. Done
 
-Posle koraka 4 aplikacija na http://localhost:4200 daje predloge. Servisi ne moraju da se
-restartuju — preporuka korpus čita iz baze na svaki zahtev.
+After step 4 the application at http://localhost:4200 gives suggestions. The services do not need
+to be restarted — the recommendation reads the corpus from the database on every request.
 
-| | Adresa |
+| | Address |
 |---|---|
-| Aplikacija | http://localhost:4200 |
+| Application | http://localhost:4200 |
 | Health | http://localhost:4200/health |
-| API dokumentacija (van produkcije) | http://localhost:8080/scalar/v1 |
-| OpenAPI dokument (van produkcije) | http://localhost:8080/openapi/v1.json |
-| MinIO konzola | http://localhost:9001 |
+| API documentation (outside production) | http://localhost:8080/scalar/v1 |
+| OpenAPI document (outside production) | http://localhost:8080/openapi/v1.json |
+| MinIO console | http://localhost:9001 |
 
-ML servis namerno nema objavljen port — interni je i dostupan samo .NET API-ju, a nginx
-proksira isključivo `/api/` i `/health`. Prvi zahtev za predloge preuzima CLIP težine (oko
-600 MB) u volumen `mlcache`, pa traje nekoliko sekundi duže.
+The ML service deliberately has no published port — it is internal and reachable only by the .NET
+API, and nginx proxies only `/api/` and `/health`. The first request for suggestions downloads the
+CLIP weights (about 600 MB) into the `mlcache` volume, so it takes a few seconds longer.
 
-### Zaustavljanje
+### Stopping
 
 ```bash
-docker compose --env-file .env -f infra/docker-compose.yml down      # podaci ostaju
+docker compose --env-file .env -f infra/docker-compose.yml down      # data is kept
 ```
 
-> **`down -v` briše i volumene** — bazu sa korpusom i skladište sa izvedenim kopijama, čija
-> ponovna izgradnja je ceo korak 4. Ne koristiti je kao način zaustavljanja.
+> **`down -v` also deletes the volumes** — the database with the corpus and the storage with the
+> derived copies, and rebuilding them is the whole of step 4. Do not use it as a way to stop.
 
-## Razvoj
+## Development
 
-Za svakodnevni rad u Dockeru rade samo baza i skladište, a servisi lokalno:
+For day-to-day work only the database and storage run in Docker, and the services run locally:
 
 ```bash
 docker compose --env-file .env -f infra/docker-compose.yml up -d postgres minio
@@ -185,8 +191,9 @@ dotnet run --project backend/src/PhotoAssistant.Api --urls http://localhost:8080
 npm --prefix frontend start                                   # http://localhost:4200
 ```
 
-ML servis pokrenut lokalno **ne čita `.env` sam**, a u kontejneru mu promenljive daje compose.
-Na hostu se postavljaju iz `.env`, uz preimenovanje u imena koja kontejner koristi:
+The ML service, when run locally, **does not read `.env` on its own**; in the container, compose
+provides its variables. On the host they are set from `.env`, renamed to the names the container
+uses:
 
 ```bash
 set -a; source .env; set +a
@@ -195,15 +202,15 @@ export POSTGRES_HOST=$POSTGRES_HOST_LOCAL S3_ENDPOINT=$S3_ENDPOINT_LOCAL \
 uv run --project ml --extra service --extra embeddings uvicorn service.main:app --port 8000
 ```
 
-`--extra embeddings` je potreban za predloge, jer oni na svaki zahtev računaju CLIP vektor;
-bez njega servis radi, ali `POST /recommend` odbija.
+`--extra embeddings` is needed for suggestions, because they compute a CLIP vector on every
+request; without it the service runs, but `POST /recommend` refuses.
 
-Dve zamke:
+Two pitfalls:
 
-- `dotnet build` ne uspeva dok lokalni API radi, jer drži svoje DLL-ove — prvo ga zaustaviti.
-- Dev server ne primećuje **novu** lenjo učitanu rutu; posle dodavanja rute ga restartovati.
+- `dotnet build` fails while the local API is running, because it holds its DLLs — stop it first.
+- The dev server does not notice a **new** lazily loaded route; restart it after adding a route.
 
-## Testovi
+## Tests
 
 ```bash
 dotnet test backend/PhotoAssistant.slnx
@@ -213,20 +220,20 @@ npm --prefix frontend test
 npm --prefix frontend run format:check
 ```
 
-Testovi shadera se izvršavaju u pravom pregledaču, pa prvi put traže Playwright:
+The shader tests run in a real browser, so the first time they need Playwright:
 
 ```bash
 npx --prefix frontend playwright install chromium
 npm --prefix frontend run test:browser
 ```
 
-Saglasnost dva renderera se meri u dva koraka, jer se ΔE računa samo u Pythonu — prvi
-renderuje u pregledaču, drugi poredi:
+Agreement between the two renderers is measured in two steps, because ΔE is computed only in
+Python — the first renders in the browser, the second compares:
 
 ```bash
 npm --prefix frontend run golden
 uv run --project ml --extra service pytest ml/tests/golden
 ```
 
-Backend integracioni testovi traže podignut Postgres kontejner i koriste zasebnu bazu, da
-razvojni podaci ostanu netaknuti.
+The backend integration tests need the Postgres container to be up and use a separate database,
+so that development data stays untouched.
