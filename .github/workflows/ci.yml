@@ -67,18 +67,19 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # Started as a step rather than as a service container: MinIO needs a
+      # Started as a step rather than as a service container: the server needs a
       # command (`server /data`) and service containers cannot set one.
       #
-      # quay.io, not Docker Hub — `minio/minio` there is no longer pullable
-      # without credentials. Same tag, same build, verified by the release
-      # label and creation timestamp.
-      - name: Start MinIO
+      # Silo, not MinIO: MinIO withdrew every public build — Docker Hub, then
+      # quay.io (401 since 2026-09-24), and the binaries (410). Silo is a
+      # maintained fork that keeps the S3 API, the MINIO_* variables and the
+      # /minio/health routes, so nothing below this step changes (ADR-28).
+      - name: Start object storage (Silo)
         run: |
           docker run -d --name minio -p 9000:9000 \
             -e MINIO_ROOT_USER=photoassistant \
             -e MINIO_ROOT_PASSWORD=ci-password \
-            quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z server /data
+            pgsty/silo:RELEASE.2026-09-16T00-00-00Z server /data
           until curl -sf http://localhost:9000/minio/health/live; do sleep 1; done
 
       - uses: actions/setup-dotnet@v6

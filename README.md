@@ -62,7 +62,7 @@ worst pixel ΔE 0.108 against a threshold of 3.
 | Backend | .NET 10, ASP.NET Core Identity + JWT, Clean Architecture |
 | ML service | Python 3.14, FastAPI, NumPy, PyTorch (CLIP) |
 | Database | PostgreSQL 18 + pgvector (HNSW) |
-| Storage | MinIO (S3 API) |
+| Storage | Silo — a maintained MinIO fork (S3 API) |
 
 ## Structure
 
@@ -165,7 +165,7 @@ to be restarted — the recommendation reads the corpus from the database on eve
 | Health | http://localhost:4200/health |
 | API documentation (outside production) | http://localhost:8080/scalar/v1 |
 | OpenAPI document (outside production) | http://localhost:8080/openapi/v1.json |
-| MinIO console | http://localhost:9001 |
+| Storage console (Silo) | http://localhost:9001 |
 
 The ML service deliberately has no published port — it is internal and reachable only by the .NET
 API, and nginx proxies only `/api/` and `/health`. The first request for suggestions downloads the

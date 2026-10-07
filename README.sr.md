@@ -61,7 +61,7 @@ najgori piksel ΔE 0,108 uz prag 3.
 | Backend | .NET 10, ASP.NET Core Identity + JWT, Clean Architecture |
 | ML servis | Python 3.14, FastAPI, NumPy, PyTorch (CLIP) |
 | Baza | PostgreSQL 18 + pgvector (HNSW) |
-| Skladište | MinIO (S3 API) |
+| Skladište | Silo — održavani fork MinIO-a (S3 API) |
 
 ## Struktura
 
@@ -159,7 +159,7 @@ restartuju — preporuka korpus čita iz baze na svaki zahtev.
 | Health | http://localhost:4200/health |
 | API dokumentacija (van produkcije) | http://localhost:8080/scalar/v1 |
 | OpenAPI dokument (van produkcije) | http://localhost:8080/openapi/v1.json |
-| MinIO konzola | http://localhost:9001 |
+| Konzola skladišta (Silo) | http://localhost:9001 |
 
 ML servis namerno nema objavljen port — interni je i dostupan samo .NET API-ju, a nginx
 proksira isključivo `/api/` i `/health`. Prvi zahtev za predloge preuzima CLIP težine (oko

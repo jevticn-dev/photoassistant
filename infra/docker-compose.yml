@@ -40,11 +40,13 @@ services:
       start_period: 10s
 
   minio:
-    # Pinned to the last published community release. Upstream entered
-    # maintenance mode in December 2025 and the repository was archived in
-    # 2026; see ADR-15. Storage sits behind an S3 abstraction (ADR-12), so
-    # replacing this service is a configuration change.
-    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    # Silo, a maintained fork of MinIO. MinIO withdrew every public build in
+    # 2026 (Docker Hub, then quay.io, then the binaries), so the image pinned
+    # by ADR-15 can no longer be pulled on a fresh machine. Silo keeps the S3
+    # API, the MINIO_* variables, the health routes and the on-disk format, so
+    # the service keeps its name and an existing volume is read as is (ADR-28).
+    # Storage sits behind an S3 abstraction (ADR-12): this is configuration.
+    image: pgsty/silo:RELEASE.2026-09-16T00-00-00Z
     container_name: photoassistant-minio
     restart: unless-stopped
     command: server /data --console-address ":9001"
@@ -66,7 +68,8 @@ services:
   # One-shot: creates the buckets, then exits. Idempotent — re-running the
   # stack does not fail on buckets that already exist.
   createbuckets:
-    image: quay.io/minio/mc:RELEASE.2025-08-13T08-35-41Z
+    # Silo's fork of the MinIO client; same commands, same image layout.
+    image: pgsty/mc:RELEASE.2026-09-16T00-00-00Z
     container_name: photoassistant-createbuckets
     depends_on:
       minio:
